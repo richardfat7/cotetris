@@ -10,6 +10,7 @@ const keyboard = {
   83: 's',
   82: 'r',
   80: 'p',
+  90: 'z',
 };
 
 let keydownActive;
@@ -41,4 +42,3 @@ const keyUp = (e) => {
 
 document.addEventListener('keydown', keyDown, true);
 document.addEventListener('keyup', keyUp, true);
-
