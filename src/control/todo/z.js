@@ -5,10 +5,10 @@ import states from '../states';
 import { music } from '../../unit/music';
 
 const down = (store) => {
-  store.dispatch(actions.keyboard.rotate(true));
+  store.dispatch(actions.keyboard.z(true));
   if (store.getState().get('cur') !== null) {
     event.down({
-      key: 'rotate',
+      key: 'z',
       once: true,
       callback: () => {
         const state = store.getState();
@@ -25,7 +25,7 @@ const down = (store) => {
         if (music.rotate) {
           music.rotate();
         }
-        const next = cur.rotate();
+        const next = cur.z();
         if (want(next, state.get('matrix'))) {
           store.dispatch(actions.moveBlock(next));
         }
@@ -33,7 +33,7 @@ const down = (store) => {
     });
   } else {
     event.down({
-      key: 'rotate',
+      key: 'z',
       begin: 200,
       interval: 100,
       callback: () => {
@@ -49,7 +49,7 @@ const down = (store) => {
           return;
         }
         let startLines = state.get('startLines');
-        startLines = startLines + 1 > 10 ? 0 : startLines + 1;
+        startLines = startLines - 1 < 0 ? 10 : startLines - 1;
         store.dispatch(actions.startLines(startLines));
       },
     });
@@ -57,9 +57,9 @@ const down = (store) => {
 };
 
 const up = (store) => {
-  store.dispatch(actions.keyboard.rotate(false));
+  store.dispatch(actions.keyboard.z(false));
   event.up({
-    key: 'rotate',
+    key: 'z',
   });
 };
 

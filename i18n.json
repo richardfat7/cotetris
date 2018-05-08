@@ -92,9 +92,9 @@
       "fr": "Réinitialiser",
       "fa": "ریست"
     },
-    "rotation": {
-      "cn": "旋转",
-      "en": "Rotation",
+    "rotate": {
+      "cn": "逆转",
+      "en": "ACW Rotate",
       "fr": "Rotation",
       "fa": "چرخش"
     },
@@ -121,6 +121,12 @@
       "en": "Drop",
       "fr": "Tomber",
       "fa": "سقوط"
+    },
+    "z": {
+      "cn": "順转",
+      "en": "CW Rotate",
+      "fr": "",
+      "fa": ""
     }
   }
 }

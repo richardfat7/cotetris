@@ -77,6 +77,15 @@ class Block {
       timeStamp: this.timeStamp,
     };
   }
+  z(n = 2) {
+    return {
+      shape: this.shape,
+      type: this.type,
+      xy: [this.xy.get(0) + n, this.xy.get(1)],
+      rotateIndex: this.rotateIndex,
+      timeStamp: Date.now(),
+    };
+  }
   fall(n = 1) {
     return {
       shape: this.shape,

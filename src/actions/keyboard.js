@@ -35,6 +35,13 @@ function rotate(data) {
   };
 }
 
+function z(data) {
+  return {
+    type: reducerType.KEY_Z,
+    data,
+  };
+}
+
 function reset(data) {
   return {
     type: reducerType.KEY_RESET,
@@ -62,6 +69,7 @@ export default {
   left,
   right,
   rotate,
+  z,
   reset,
   music,
   pause,

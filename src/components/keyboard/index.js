@@ -73,7 +73,7 @@ export default class Keyboard extends React.Component {
           size="s1"
           top={0}
           left={374}
-          label={i18n.rotation[lan]}
+          label={i18n.rotate[lan]}
           arrow="translate(0, 63px)"
           position
           active={keyboard.get('rotate')}
@@ -111,12 +111,21 @@ export default class Keyboard extends React.Component {
         />
         <Button
           color="blue"
-          size="s0"
+          size="s1"
           top={100}
-          left={52}
+          left={150}
           label={`${i18n.drop[lan]} (SPACE)`}
           active={keyboard.get('drop')}
           ref={(c) => { this.dom_space = c; }}
+        />
+        <Button
+          color="blue"
+          size="s1"
+          top={100}
+          left={10}
+          label={`${i18n.z[lan]} (Z)`}
+          active={keyboard.get('z')}
+          ref={(c) => { this.dom_z = c; }}
         />
         <Button
           color="red"
