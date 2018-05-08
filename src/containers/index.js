@@ -9,6 +9,7 @@ import Matrix from '../components/matrix';
 import Decorate from '../components/decorate';
 import Number from '../components/number';
 import Next from '../components/next';
+import Hold from '../components/hold';
 import Music from '../components/music';
 import Pause from '../components/pause';
 import Point from '../components/point';
@@ -98,6 +99,8 @@ class App extends React.Component {
               />
               <Logo cur={!!this.props.cur} reset={this.props.reset} />
               <div className={style.state}>
+                <p>{i18n.hold[lan]}</p>
+                <Hold data={this.props.next} />
                 <Point cur={!!this.props.cur} point={this.props.points} max={this.props.max} />
                 <p>{ this.props.cur ? i18n.cleans[lan] : i18n.startLine[lan] }</p>
                 <Number number={this.props.cur ? this.props.clearLines : this.props.startLines} />
@@ -114,6 +117,11 @@ class App extends React.Component {
                   <Number time />
                 </div>
               </div>
+              <Matrix
+                matrix={this.props.matrix}
+                cur={this.props.cur}
+                reset={this.props.reset}
+              />
             </div>
           </div>
         </div>

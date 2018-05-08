@@ -77,13 +77,52 @@ class Block {
       timeStamp: this.timeStamp,
     };
   }
-  z(n = 2) {
+  z() {
+    const shape = this.shape;
+    const len = origin[this.type].length;
+    let result = List([]);
+    shape.forEach(m => m.forEach((n, k) => {
+      const index = m.size - k - 1;
+      if (result.get(index) === undefined) {
+        result = result.set(index, List([]));
+      }
+      const tempK = result.get(index).push(n);
+      result = result.set(index, tempK);
+    }));
+    let result1 = List([]);
+    result.forEach(m => m.forEach((n, k) => {
+      const index1 = m.size - k - 1;
+      if (result1.get(index1) === undefined) {
+        result1 = result1.set(index1, List([]));
+      }
+      const tempK1 = result1.get(index1).push(n);
+      result1 = result1.set(index1, tempK1);
+    }));
+    let result2 = List([]);
+    result1.forEach(m => m.forEach((n, k) => {
+      const index2 = m.size - k - 1;
+      if (result2.get(index2) === undefined) {
+        result2 = result2.set(index2, List([]));
+      }
+      const tempK2 = result2.get(index2).push(n);
+      result2 = result2.set(index2, tempK2);
+    }));
+    const nextXy = [
+      this.xy.get(0) + origin[this.type][this.rotateIndex][0]
+      + origin[this.type][(this.rotateIndex + 1) % len][0]
+      + origin[this.type][(this.rotateIndex + 2) % len][0],
+      this.xy.get(1) + origin[this.type][this.rotateIndex][1]
+      + origin[this.type][(this.rotateIndex + 1) % len][1]
+      + origin[this.type][(this.rotateIndex + 2) % len][1],
+    ];
+    const nextRotateIndex = this.rotateIndex - 1 < 0 ?
+      len - 1 : this.rotateIndex - 1;
     return {
-      shape: this.shape,
+      shape: result2,
       type: this.type,
-      xy: [this.xy.get(0) + n, this.xy.get(1)],
-      rotateIndex: this.rotateIndex,
-      timeStamp: Date.now(),
+      xy: nextXy,
+      rotateIndex: nextRotateIndex,
+      timeStamp: this.timeStamp,
     };
   }
   fall(n = 1) {

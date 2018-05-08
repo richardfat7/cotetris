@@ -74,6 +74,12 @@
       "fr": "Prochain",
       "fa": "بعدی"
     },
+    "hold": {
+      "cn": "暫存",
+      "en": "Hold",
+      "fr": "",
+      "fa": ""
+    },
     "pause": {
       "cn": "暂停",
       "en": "Pause",
