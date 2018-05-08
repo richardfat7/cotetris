@@ -55,6 +55,7 @@ class Block {
   rotate() {
     const shape = this.shape;
     let result = List([]);
+    let result2 = List([]);
     shape.forEach(m => m.forEach((n, k) => {
       const index = m.size - k - 1;
       if (result.get(index) === undefined) {
@@ -63,14 +64,22 @@ class Block {
       const tempK = result.get(index).push(n);
       result = result.set(index, tempK);
     }));
+    result.forEach(m => m.forEach((n, k) => {
+      const index = m.size - k - 1;
+      if (result2.get(index) === undefined) {
+        result2 = result2.set(index, List([]));
+      }
+      const tempK = result2.get(index).push(n);
+      result2 = result2.set(index, tempK);
+    }));
     const nextXy = [
       this.xy.get(0) + origin[this.type][this.rotateIndex][0],
       this.xy.get(1) + origin[this.type][this.rotateIndex][1],
     ];
-    const nextRotateIndex = this.rotateIndex + 1 >= origin[this.type].length ?
-      0 : this.rotateIndex + 1;
+    const nextRotateIndex = ((this.rotateIndex + origin[this.type].length) + 1)
+     % origin[this.type].length;
     return {
-      shape: result,
+      shape: result2,
       type: this.type,
       xy: nextXy,
       rotateIndex: nextRotateIndex,

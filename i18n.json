@@ -99,8 +99,8 @@
       "fa": "ریست"
     },
     "rotate": {
-      "cn": "逆转",
-      "en": "ACW Rotate",
+      "cn": "順转",
+      "en": "CW Rotate",
       "fr": "Rotation",
       "fa": "چرخش"
     },
@@ -129,8 +129,8 @@
       "fa": "سقوط"
     },
     "z": {
-      "cn": "順转",
-      "en": "CW Rotate",
+      "cn": "逆转",
+      "en": "ACW Rotate",
       "fr": "",
       "fa": ""
     }
