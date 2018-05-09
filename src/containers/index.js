@@ -100,7 +100,7 @@ class App extends React.Component {
               <Logo cur={!!this.props.cur} reset={this.props.reset} />
               <div className={style.state}>
                 <p>{i18n.hold[lan]}</p>
-                <Hold data={this.props.next} />
+                <Hold data={this.props.holdType} />
                 <Point cur={!!this.props.cur} point={this.props.points} max={this.props.max} />
                 <p>{ this.props.cur ? i18n.cleans[lan] : i18n.startLine[lan] }</p>
                 <Number number={this.props.cur ? this.props.clearLines : this.props.startLines} />
@@ -138,6 +138,7 @@ App.propTypes = {
   matrix: propTypes.object.isRequired,
   next: propTypes.string.isRequired,
   cur: propTypes.object,
+  holdType: propTypes.string.isRequired,
   dispatch: propTypes.func.isRequired,
   speedStart: propTypes.number.isRequired,
   speedRun: propTypes.number.isRequired,
@@ -156,6 +157,7 @@ const mapStateToProps = (state) => ({
   matrix: state.get('matrix'),
   next: state.get('next'),
   cur: state.get('cur'),
+  holdType: state.get('holdType'),
   speedStart: state.get('speedStart'),
   speedRun: state.get('speedRun'),
   startLines: state.get('startLines'),

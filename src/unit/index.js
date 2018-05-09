@@ -1,4 +1,4 @@
-import { blockType, StorageKey } from './const';
+import { blockType, StorageKey, StorageHold } from './const';
 
 const hiddenProperty = (() => { // document[hiddenProperty] 可以判断页面是否失焦
   let names = [
@@ -26,9 +26,12 @@ const isFocus = () => {
 };
 
 const unit = {
-  getNextType() { // 随机获取下一个方块类型
-    const len = blockType.length;
-    return blockType[Math.floor(Math.random() * len)];
+  getNextType(type) { // 随机获取下一个方块类型
+    if (type === undefined) {
+      const len = blockType.length - 1;
+      return blockType[Math.floor(Math.random() * len)];
+    }
+    return blockType[type];
   },
   want(next, matrix) { // 方块是否能移到到指定位置
     const xy = next.xy;
@@ -85,6 +88,20 @@ const unit = {
         data = btoa(data);
       }
       localStorage.setItem(StorageKey, data);
+    });
+  },
+  subscribeTile(store) { // 将状态记录到 localStorage
+    store.subscribe(() => {
+      let data = store.getState().toJS();
+      if (data.lock) {
+        return;
+      }
+      data = JSON.stringify(data);
+      data = encodeURIComponent(data);
+      if (window.btoa) {
+        data = btoa(data);
+      }
+      localStorage.setItem(StorageHold, data);
     });
   },
   isMobile() { // 判断是否为移动端

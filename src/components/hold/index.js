@@ -49,7 +49,7 @@ export default class Hold extends React.Component {
   }
   render() {
     return (
-      <div className={style.next}>
+      <div className={style.hold}>
         {
           this.state.block.map((arr, k1) => (
             <div key={k1}>

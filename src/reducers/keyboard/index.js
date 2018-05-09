@@ -8,6 +8,7 @@ import z from './z';
 import reset from './reset';
 import music from './music';
 import pause from './pause';
+import hold from './hold';
 
 const keyboardReducer = combineReducers({
   drop,
@@ -19,6 +20,7 @@ const keyboardReducer = combineReducers({
   reset,
   music,
   pause,
+  hold,
 });
 
 export default keyboardReducer;

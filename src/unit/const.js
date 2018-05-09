@@ -9,6 +9,7 @@ const blockShape = {
   S: [[0, 1, 1], [1, 1, 0]],
   O: [[1, 1], [1, 1]],
   T: [[0, 1, 0], [1, 1, 1]],
+  E: [[0, 0, 0, 0], [0, 0, 0, 0]],
 };
 
 const origin = {
@@ -19,6 +20,7 @@ const origin = {
   S: [[0, 0]],
   O: [[0, 0]],
   T: [[0, 0], [1, 0], [-1, 1], [0, -1]],
+  E: [[0, 0]],
 };
 
 const blockType = Object.keys(blockShape);
@@ -45,6 +47,28 @@ const StorageKey = 'REACT_TETRIS';
 
 const lastRecord = (() => { // 上一把的状态
   let data = localStorage.getItem(StorageKey);
+  if (!data) {
+    return false;
+  }
+  try {
+    if (window.btoa) {
+      data = atob(data);
+    }
+    data = decodeURIComponent(data);
+    data = JSON.parse(data);
+  } catch (e) {
+    if (window.console || window.console.error) {
+      window.console.error('读取记录错误:', e);
+    }
+    return false;
+  }
+  return data;
+})();
+
+const StorageHold = 'HOLD_TILE';
+
+const lastTile = (() => { // 上一把的状态
+  let data = localStorage.getItem(StorageHold);
   if (!data) {
     return false;
   }
@@ -99,6 +123,8 @@ module.exports = {
   clearPoints,
   StorageKey,
   lastRecord,
+  StorageHold,
+  lastTile,
   maxPoint,
   eachLines,
   transform,

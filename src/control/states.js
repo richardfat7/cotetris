@@ -54,6 +54,7 @@ const states = {
     store.dispatch(actions.matrix(startMatrix));
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
     store.dispatch(actions.nextBlock());
+    store.dispatch(actions.holdType());
     states.auto();
   },
 

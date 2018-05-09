@@ -3,7 +3,8 @@ import * as reducerType from '../unit/reducerType';
 import Block from '../unit/block';
 import keyboard from './keyboard';
 
-function nextBlock(next = getNextType()) {
+function nextBlock() {
+  const next = getNextType();
   return {
     type: reducerType.NEXT_BLOCK,
     data: next,
@@ -87,6 +88,14 @@ function drop(data) {
   };
 }
 
+function holdType(type) {
+  const next = getNextType(type);
+  return {
+    type: reducerType.HOLD_TYPE,
+    data: next,
+  };
+}
+
 function pause(data) {
   return {
     type: reducerType.PAUSE,
@@ -121,6 +130,7 @@ export default {
   reset,
   max,
   drop,
+  holdType,
   pause,
   keyboard,
   music,
