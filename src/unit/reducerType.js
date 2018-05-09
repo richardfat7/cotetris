@@ -13,6 +13,7 @@ export const CLEAR_LINES = 'CLEAR_LINES';
 export const RESET = 'RESET';
 export const DROP = 'DROP';
 export const HOLD_TYPE = 'HOLD_TYPE';
+export const CAN_HOLD = 'CAN_HOLD';
 export const KEY_DROP = 'KEY_DROP';
 export const KEY_DOWN = 'KEY_DOWN';
 export const KEY_LEFT = 'KEY_LEFT';

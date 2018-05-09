@@ -55,6 +55,7 @@ const states = {
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
     store.dispatch(actions.nextBlock());
     store.dispatch(actions.holdType(blockType.length - 1));
+    store.dispatch(actions.canHold(true));
     states.auto();
   },
 
@@ -122,6 +123,7 @@ const states = {
       store.dispatch(actions.lock(false));
       store.dispatch(actions.moveBlock({ type: store.getState().get('next') }));
       store.dispatch(actions.nextBlock());
+      store.dispatch(actions.canHold(true));
       states.auto();
     }, 100);
   },

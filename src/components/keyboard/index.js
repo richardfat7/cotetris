@@ -114,7 +114,7 @@ export default class Keyboard extends React.Component {
           size="s1"
           top={100}
           left={240}
-          label={`${i18n.drop[lan]} (SPACE)`}
+          label={`${i18n.drop[lan]}(SPACE)`}
           active={keyboard.get('drop')}
           ref={(c) => { this.dom_space = c; }}
         />
@@ -123,7 +123,7 @@ export default class Keyboard extends React.Component {
           size="s1"
           top={100}
           left={100}
-          label={`${i18n.z[lan]} (Z)`}
+          label={`${i18n.z[lan]}(Z)`}
           active={keyboard.get('z')}
           ref={(c) => { this.dom_z = c; }}
         />
@@ -132,7 +132,7 @@ export default class Keyboard extends React.Component {
           size="s1"
           top={100}
           left={-40}
-          label={`${i18n.hold[lan]} (SHIFT)`}
+          label={`${i18n.hold[lan]}(SHIFT)`}
           active={keyboard.get('hold')}
           ref={(c) => { this.dom_hold = c; }}
         />

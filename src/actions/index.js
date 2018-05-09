@@ -96,6 +96,13 @@ function holdType(type) {
   };
 }
 
+function canHold(data) {
+  return {
+    type: reducerType.CAN_HOLD,
+    data,
+  };
+}
+
 function pause(data) {
   return {
     type: reducerType.PAUSE,
@@ -131,6 +138,7 @@ export default {
   max,
   drop,
   holdType,
+  canHold,
   pause,
   keyboard,
   music,

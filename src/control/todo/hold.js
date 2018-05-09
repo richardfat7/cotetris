@@ -7,7 +7,7 @@ import { music } from '../../unit/music';
 
 const down = (store) => {
   store.dispatch(actions.keyboard.hold(true));
-  if (store.getState().get('cur') !== null) {
+  if (store.getState().get('cur') !== null && store.getState().get('canHold') === true) {
     event.down({
       key: 'hold',
       once: true,
@@ -27,7 +27,6 @@ const down = (store) => {
           music.fall();
         }
         store.dispatch(actions.lock(false));
-        console.log(state.get('holdType'));
         if (state.get('holdType') !== 'E' && state.get('holdType') !== null) {
           store.dispatch(actions.moveBlock({ type: store.getState().get('holdType') }));
         } else {
@@ -37,6 +36,7 @@ const down = (store) => {
         store.dispatch(actions.holdType(blockType.indexOf(cur.type)));
         states.auto();
         subscribeTile(store);
+        store.dispatch(actions.canHold(false));
       },
     });
   }

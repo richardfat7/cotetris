@@ -16,6 +16,7 @@ import drop from './drop';
 import keyboard from './keyboard';
 import focus from './focus';
 import holdType from './holdType';
+import canHold from './canHold';
 
 
 const rootReducer = combineReducers({
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   keyboard,
   focus,
   holdType,
+  canHold,
 });
 
 export default rootReducer;
