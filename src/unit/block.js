@@ -67,8 +67,8 @@ class Block {
       this.xy.get(0) + origin[this.type][this.rotateIndex][0],
       this.xy.get(1) + origin[this.type][this.rotateIndex][1],
     ];
-    const nextRotateIndex = this.rotateIndex + 1 >= origin[this.type].length ?
-      0 : this.rotateIndex + 1;
+    const nextRotateIndex = ((this.rotateIndex + origin[this.type].length) + 1)
+     % origin[this.type].length;
     return {
       shape: result,
       type: this.type,
