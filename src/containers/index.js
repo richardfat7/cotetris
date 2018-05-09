@@ -6,14 +6,17 @@ import propTypes from 'prop-types';
 import style from './index.less';
 
 import Matrix from '../components/matrix';
+import MatrixOPPO from '../components/matrixOPPO';
 import Decorate from '../components/decorate';
 import Number from '../components/number';
 import Next from '../components/next';
 import Hold from '../components/hold';
+import HoldOPPO from '../components/holdOPPO';
 import Music from '../components/music';
 import Pause from '../components/pause';
 import Point from '../components/point';
 import Logo from '../components/logo';
+import LogoOPPO from '../components/logoOPPO';
 import Keyboard from '../components/keyboard';
 import Guide from '../components/guide';
 
@@ -92,12 +95,6 @@ class App extends React.Component {
           <Decorate />
           <div className={style.screen}>
             <div className={style.panel}>
-              <Matrix
-                matrix={this.props.matrix}
-                cur={this.props.cur}
-                reset={this.props.reset}
-              />
-              <Logo cur={!!this.props.cur} reset={this.props.reset} />
               <div className={style.state}>
                 <p>{i18n.hold[lan]}</p>
                 <Hold data={this.props.holdType} />
@@ -122,6 +119,27 @@ class App extends React.Component {
                 cur={this.props.cur}
                 reset={this.props.reset}
               />
+              <Logo cur={!!this.props.cur} reset={this.props.reset} />
+              <MatrixOPPO
+                matrix={this.props.matrix}
+                cur={this.props.cur}
+                reset={this.props.reset}
+              />
+              <LogoOPPO cur={!!this.props.cur} reset={this.props.reset} />
+              <div className={style.state}>
+                <p>{i18n.hold[lan]}</p>
+                <HoldOPPO data={this.props.holdType} />
+                <Point cur={!!this.props.cur} point={this.props.points} max={this.props.max} />
+                <p>{ this.props.cur ? i18n.cleans[lan] : i18n.startLine[lan] }</p>
+                <Number number={this.props.cur ? this.props.clearLines : this.props.startLines} />
+                <p>{i18n.level[lan]}</p>
+                <Number
+                  number={this.props.cur ? this.props.speedRun : this.props.speedStart}
+                  length={1}
+                />
+                <p>{i18n.next[lan]}</p>
+                <Next data={this.props.next} />
+              </div>
             </div>
           </div>
         </div>
