@@ -19,7 +19,6 @@ import Logo from '../components/logo';
 import LogoOPPO from '../components/logoOPPO';
 import Keyboard from '../components/keyboard';
 import Guide from '../components/guide';
-import Peer from '../components/peer';
 
 import { transform, lastRecord, speeds, i18n, lan } from '../unit/const';
 import { visibilityChangeEvent, isFocus } from '../unit/';
@@ -146,7 +145,6 @@ class App extends React.Component {
         </div>
         <Keyboard filling={filling} keyboard={this.props.keyboard} />
         <Guide />
-        <Peer />
       </div>
     );
   }
