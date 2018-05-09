@@ -27,7 +27,8 @@ const down = (store) => {
           music.fall();
         }
         store.dispatch(actions.lock(false));
-        if (state.get('holdType') !== null) {
+        console.log(state.get('holdType'));
+        if (state.get('holdType') !== 'E' && state.get('holdType') !== null) {
           store.dispatch(actions.moveBlock({ type: store.getState().get('holdType') }));
         } else {
           store.dispatch(actions.moveBlock({ type: store.getState().get('next') }));

@@ -2,7 +2,7 @@ import { List } from 'immutable';
 import store from '../store';
 import { want, isClear, isOver } from '../unit/';
 import actions from '../actions';
-import { speeds, blankLine, blankMatrix, clearPoints, eachLines } from '../unit/const';
+import { speeds, blankLine, blankMatrix, clearPoints, eachLines, blockType } from '../unit/const';
 import { music } from '../unit/music';
 
 
@@ -54,7 +54,7 @@ const states = {
     store.dispatch(actions.matrix(startMatrix));
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
     store.dispatch(actions.nextBlock());
-    store.dispatch(actions.holdType());
+    store.dispatch(actions.holdType(blockType.length - 1));
     states.auto();
   },
 
@@ -187,6 +187,7 @@ const states = {
   overEnd: () => {
     store.dispatch(actions.matrix(blankMatrix));
     store.dispatch(actions.moveBlock({ reset: true }));
+    store.dispatch(actions.holdType(blockType.length - 1));
     store.dispatch(actions.reset(false));
     store.dispatch(actions.lock(false));
     store.dispatch(actions.clearLines(0));
