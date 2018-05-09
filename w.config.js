@@ -9,7 +9,10 @@ var version = require('./package.json').version;
 
 
 // 程序入口
-var entry =  __dirname + '/src/index.js';
+var entry =  {
+ 'app':  __dirname + '/src/index.js',
+ 'room':  __dirname + '/src/room.js',
+};
 
 // 输出文件
 var output =  {
@@ -62,7 +65,7 @@ var devPlugins =  [
     url: 'http://127.0.0.1:8080/'
   }),
   // css打包
-  new ExtractTextPlugin('css.css', {
+  new ExtractTextPlugin('[name].css', {
     allChunks: true
   }),
 ]

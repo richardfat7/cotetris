@@ -6,7 +6,7 @@ module.exports = {
   entry: config.entry,
   output: {
     path: __dirname + '/server',
-    filename: 'app.js',
+    filename: '[name].js',
   },
   eslint: config.eslint,
   module: {
