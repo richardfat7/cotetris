@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import propTypes from 'prop-types';
 
 import style from './index.less';
-import { isClear } from '../../unit/';
+import { isClear, want } from '../../unit/';
 import { fillLine, blankLine } from '../../unit/const';
 import states from '../../control/states';
 
@@ -53,8 +53,23 @@ export default class Matrix extends React.Component {
     const cur = props.cur;
     const shape = cur && cur.shape;
     const xy = cur && cur.xy;
-
+    
     let matrix = props.matrix;
+    
+    let ghost;
+    if (cur) { 
+      // calc ghost
+      let index = 0;
+      ghost = cur.fall(index);
+      while (want(ghost, matrix)) {
+        ghost = cur.fall(index);
+        index++;
+      }
+      ghost = cur.fall(index - 2);
+    }
+    let gshape = cur && ghost && ghost.shape;
+    let gxy = cur && ghost && List(ghost.xy);
+
     const clearLines = this.state.clearLines;
     if (clearLines) {
       const animateColor = this.state.animateColor;
@@ -72,14 +87,44 @@ export default class Matrix extends React.Component {
           animateColor,
         ]));
       });
-    } else if (shape) {
-      shape.forEach((m, k1) => (
-        m.forEach((n, k2) => {
-          if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
-            let line = matrix.get(xy.get(0) + k1);
-            let color;
-            if (line.get(xy.get(1) + k2) === 1 && !clearLines) { // 矩阵与方块重合
-              if (cur.type === 'I') {
+    } else {
+      if (cur && gshape) {
+        gshape.forEach((m, k1) => (
+          m.forEach((n, k2) => {
+            if (n && gxy.get(0) + k1 >= 0) { // 竖坐标可以为负
+              let line = matrix.get(gxy.get(0) + k1);
+              const color = 10;
+              line = line.set(gxy.get(1) + k2, color);
+              matrix = matrix.set(gxy.get(0) + k1, line);
+            }
+          })
+        ));
+      }
+      if (shape) {
+        shape.forEach((m, k1) => (
+          m.forEach((n, k2) => {
+            if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
+              let line = matrix.get(xy.get(0) + k1);
+              let color;
+              if (line.get(xy.get(1) + k2) === 1 && !clearLines) { // 矩阵与方块重合
+                if (cur.type === 'I') {
+                  color = 3;
+                } else if (cur.type === 'O') {
+                  color = 4;
+                } else if (cur.type === 'T') {
+                  color = 5;
+                } else if (cur.type === 'S') {
+                  color = 6;
+                } else if (cur.type === 'Z') {
+                  color = 7;
+                } else if (cur.type === 'J') {
+                  color = 8;
+                } else if (cur.type === 'L') {
+                  color = 9;
+                } else {
+                  color = 2;
+                }
+              } else if (cur.type === 'I') {
                 color = 3;
               } else if (cur.type === 'O') {
                 color = 4;
@@ -96,28 +141,12 @@ export default class Matrix extends React.Component {
               } else {
                 color = 2;
               }
-            } else if (cur.type === 'I') {
-              color = 3;
-            } else if (cur.type === 'O') {
-              color = 4;
-            } else if (cur.type === 'T') {
-              color = 5;
-            } else if (cur.type === 'S') {
-              color = 6;
-            } else if (cur.type === 'Z') {
-              color = 7;
-            } else if (cur.type === 'J') {
-              color = 8;
-            } else if (cur.type === 'L') {
-              color = 9;
-            } else {
-              color = 2;
+              line = line.set(xy.get(1) + k2, color);
+              matrix = matrix.set(xy.get(0) + k1, line);
             }
-            line = line.set(xy.get(1) + k2, color);
-            matrix = matrix.set(xy.get(0) + k1, line);
-          }
-        })
-      ));
+          })
+        ));
+      }
     }
     return matrix;
   }
@@ -193,6 +222,7 @@ export default class Matrix extends React.Component {
                   z: e === 7,
                   j: e === 8,
                   l: e === 9,
+                  g: e === 10,
                 })}
                 key={k2}
               />)
