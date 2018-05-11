@@ -55,7 +55,31 @@ export default class Next extends React.Component {
             <div key={k1}>
               {
                 arr.map((e, k2) => (
-                  <b className={e ? 'c' : ''} key={k2} />
+                  <b
+                    className={
+                      ((f, g) => {
+                        if (g) {
+                          if (f === 'I') {
+                            return 'i';
+                          } else if (f === 'O') {
+                            return 'o';
+                          } else if (f === 'T') {
+                            return 't';
+                          } else if (f === 'S') {
+                            return 's';
+                          } else if (f === 'Z') {
+                            return 'z';
+                          } else if (f === 'J') {
+                            return 'j';
+                          } else if (f === 'L') {
+                            return 'l';
+                          }
+                          return 'c';
+                        }
+                        return '';
+                      })(this.props.data, e)
+                    } key={k2}
+                  />
                 ))
               }
             </div>

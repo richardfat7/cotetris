@@ -79,9 +79,39 @@ export default class Matrix extends React.Component {
             let line = matrix.get(xy.get(0) + k1);
             let color;
             if (line.get(xy.get(1) + k2) === 1 && !clearLines) { // 矩阵与方块重合
-              color = 2;
+              if (cur.type === 'I') {
+                color = 3;
+              } else if (cur.type === 'O') {
+                color = 4;
+              } else if (cur.type === 'T') {
+                color = 5;
+              } else if (cur.type === 'S') {
+                color = 6;
+              } else if (cur.type === 'Z') {
+                color = 7;
+              } else if (cur.type === 'J') {
+                color = 8;
+              } else if (cur.type === 'L') {
+                color = 9;
+              } else {
+                color = 2;
+              }
+            } else if (cur.type === 'I') {
+              color = 3;
+            } else if (cur.type === 'O') {
+              color = 4;
+            } else if (cur.type === 'T') {
+              color = 5;
+            } else if (cur.type === 'S') {
+              color = 6;
+            } else if (cur.type === 'Z') {
+              color = 7;
+            } else if (cur.type === 'J') {
+              color = 8;
+            } else if (cur.type === 'L') {
+              color = 9;
             } else {
-              color = 1;
+              color = 2;
             }
             line = line.set(xy.get(1) + k2, color);
             matrix = matrix.set(xy.get(0) + k1, line);
@@ -156,6 +186,13 @@ export default class Matrix extends React.Component {
                 className={classnames({
                   c: e === 1,
                   d: e === 2,
+                  i: e === 3,
+                  o: e === 4,
+                  t: e === 5,
+                  s: e === 6,
+                  z: e === 7,
+                  j: e === 8,
+                  l: e === 9,
                 })}
                 key={k2}
               />)
