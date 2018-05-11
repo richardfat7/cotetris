@@ -31,7 +31,8 @@ const down = (store) => {
           store.dispatch(actions.moveBlock({ type: store.getState().get('holdType') }));
         } else {
           store.dispatch(actions.moveBlock({ type: store.getState().get('next') }));
-          store.dispatch(actions.nextBlock());
+          store.dispatch(actions.nextBlock(store.getState().get('bag').first()));
+          store.dispatch(actions.shiftNextBlock());
         }
         store.dispatch(actions.holdType(blockType.indexOf(cur.type)));
         states.auto();

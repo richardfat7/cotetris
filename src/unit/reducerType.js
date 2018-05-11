@@ -25,3 +25,5 @@ export const KEY_MUSIC = 'KEY_MUSIC';
 export const KEY_PAUSE = 'KEY_PAUSE';
 export const KEY_HOLD = 'KEY_HOLD';
 export const FOCUS = 'FOCUS';
+export const SHIFT_NEXT_BLOCK = 'SHIFT_NEXT_BLOCK';
+export const RESET_BAG = 'RESET_BAG';

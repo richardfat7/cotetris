@@ -2,7 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import propTypes from 'prop-types';
-
+import {
+  Link,
+} from 'react-router-dom';
 import style from './room.less';
 
 import Decorate from '../../components/decorate';
@@ -90,6 +92,7 @@ class Room extends React.Component {
         <div className={classnames({ [style.rect]: true })}>
           <Decorate />
           <Peer />
+          <Link to={'/tetris'}>Home</Link>
         </div>
       </div>
     );
