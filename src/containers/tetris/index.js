@@ -71,10 +71,10 @@ class Tetris extends React.Component {
       const ratio = h / w;
       let scale;
       let css = {};
-      if (ratio < 1.5) {
+      if (ratio < 0.93) {
         scale = h / 960;
       } else {
-        scale = w / 640;
+        scale = w / 1040;
         filling = (h - (960 * scale)) / scale / 3;
         css = {
           paddingTop: Math.floor(filling) + 42,
