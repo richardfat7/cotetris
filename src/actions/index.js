@@ -3,8 +3,13 @@ import * as reducerType from '../unit/reducerType';
 import Block from '../unit/block';
 import keyboard from './keyboard';
 
-function nextBlock() {
-  const next = getNextType();
+function nextBlock(data) {
+  let next;
+  if (data) {
+    next = data;
+  } else {
+    next = null;
+  }
   return {
     type: reducerType.NEXT_BLOCK,
     data: next,
@@ -124,6 +129,18 @@ function focus(data) {
   };
 }
 
+function shiftNextBlock() {
+  return {
+    type: reducerType.SHIFT_NEXT_BLOCK,
+  };
+}
+
+function resetBag() {
+  return {
+    type: reducerType.RESET_BAG,
+  };
+}
+
 export default {
   nextBlock,
   moveBlock,
@@ -143,4 +160,6 @@ export default {
   keyboard,
   music,
   focus,
+  shiftNextBlock,
+  resetBag,
 };
