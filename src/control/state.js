@@ -52,8 +52,11 @@ const states = {
     const startLines = state.get('startLines');
     const startMatrix = getStartMatrix(startLines);
     store.dispatch(actions.matrix(startMatrix));
-    store.dispatch(actions.moveBlock({ type: state.get('next') }));
-    store.dispatch(actions.nextBlock());
+    store.dispatch(actions.resetBag());
+    store.dispatch(actions.moveBlock({ type: store.getState().get('bag').first() }));
+    store.dispatch(actions.shiftNextBlock());
+    store.dispatch(actions.nextBlock(store.getState().get('bag').first()));
+    store.dispatch(actions.shiftNextBlock());
     store.dispatch(actions.holdType(blockType.length - 1));
     store.dispatch(actions.canHold(true));
     states.auto();
@@ -140,7 +143,8 @@ const states = {
     setTimeout(() => {
       store.dispatch(actions.lock(false));
       store.dispatch(actions.moveBlock({ type: store.getState().get('next') }));
-      store.dispatch(actions.nextBlock());
+      store.dispatch(actions.nextBlock(store.getState().get('bag').first()));
+      store.dispatch(actions.shiftNextBlock());
       store.dispatch(actions.canHold(true));
       states.auto();
     }, 100);
@@ -179,7 +183,8 @@ const states = {
     });
     store.dispatch(actions.matrix(newMatrix));
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
-    store.dispatch(actions.nextBlock());
+    store.dispatch(actions.nextBlock(state.get('bag').first()));
+    store.dispatch(actions.shiftNextBlock());
     states.auto();
     store.dispatch(actions.lock(false));
     const clearLines = state.get('clearLines') + lines.length;
