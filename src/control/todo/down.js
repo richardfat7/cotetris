@@ -35,11 +35,29 @@ const down = (store) => {
           let matrix = state.get('matrix');
           const shape = cur.shape;
           const xy = cur.xy;
+          let color;
+          if (cur.type === 'I') {
+            color = 3;
+          } else if (cur.type === 'O') {
+            color = 4;
+          } else if (cur.type === 'T') {
+            color = 5;
+          } else if (cur.type === 'S') {
+            color = 6;
+          } else if (cur.type === 'Z') {
+            color = 7;
+          } else if (cur.type === 'J') {
+            color = 8;
+          } else if (cur.type === 'L') {
+            color = 9;
+          } else {
+            color = 1;
+          }
           shape.forEach((m, k1) => (
             m.forEach((n, k2) => {
               if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
                 let line = matrix.get(xy.get(0) + k1);
-                line = line.set(xy.get(1) + k2, 1);
+                line = line.set(xy.get(1) + k2, color);
                 matrix = matrix.set(xy.get(0) + k1, line);
               }
             })
