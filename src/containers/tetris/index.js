@@ -5,26 +5,26 @@ import propTypes from 'prop-types';
 
 import style from './index.less';
 
-import Matrix from '../components/matrix';
-import MatrixOPPO from '../components/matrixOPPO';
-import Decorate from '../components/decorate';
-import Number from '../components/number';
-import Next from '../components/next';
-import Hold from '../components/hold';
-import HoldOPPO from '../components/holdOPPO';
-import Music from '../components/music';
-import Pause from '../components/pause';
-import Point from '../components/point';
-import Logo from '../components/logo';
-import LogoOPPO from '../components/logoOPPO';
-import Keyboard from '../components/keyboard';
-import Guide from '../components/guide';
+import Matrix from '../../components/matrix';
+import MatrixOPPO from '../../components/matrixOPPO';
+import Decorate from '../../components/decorate';
+import Number from '../../components/number';
+import Next from '../../components/next';
+import Hold from '../../components/hold';
+import HoldOPPO from '../../components/holdOPPO';
+import Music from '../../components/music';
+import Pause from '../../components/pause';
+import Point from '../../components/point';
+import Logo from '../../components/logo';
+import LogoOPPO from '../../components/logoOPPO';
+import Keyboard from '../../components/keyboard';
+import Guide from '../../components/guide';
 
-import { transform, lastRecord, speeds, i18n, lan } from '../unit/const';
-import { visibilityChangeEvent, isFocus } from '../unit/';
-import states from '../control/states';
+import { transform, lastRecord, speeds, i18n, lan } from '../../unit/const';
+import { visibilityChangeEvent, isFocus } from '../../unit/';
+import states from '../../control/states';
 
-class App extends React.Component {
+class Tetris extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -150,7 +150,7 @@ class App extends React.Component {
   }
 }
 
-App.propTypes = {
+Tetris.propTypes = {
   music: propTypes.bool.isRequired,
   pause: propTypes.bool.isRequired,
   matrix: propTypes.object.isRequired,
@@ -187,4 +187,6 @@ const mapStateToProps = (state) => ({
   keyboard: state.get('keyboard'),
 });
 
-export default connect(mapStateToProps)(App);
+// export default connect(mapStateToProps)(App);
+
+export default connect(mapStateToProps)(Tetris);

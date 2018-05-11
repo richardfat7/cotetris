@@ -11,7 +11,6 @@ var version = require('./package.json').version;
 // 程序入口
 var entry =  {
  'app':  __dirname + '/src/index.js',
- 'room':  __dirname + '/src/room.js',
 };
 
 // 输出文件
@@ -38,7 +37,8 @@ var loaders = [
     {
       test: /\.(js|jsx)$/,
       exclude: /node_modules/,
-      loader: 'babel!eslint-loader',
+      // loader: 'babel!eslint-loader',
+      loader: 'babel-loader',
     },
     {
       test: /\.(?:png|jpg|gif)$/,
@@ -100,8 +100,9 @@ var productionPlugins = [
 // dev server
 var devServer = {
   contentBase: './server',
+  publicPath: '/',
   colors: true,
-  historyApiFallback: false,
+  historyApiFallback: true,
   port: 8080, // defaults to "8080"
   hot: true, // Hot Module Replacement
   inline: true, // Livereload
