@@ -157,6 +157,12 @@ function focus(data) {
   };
 }
 
+function shiftTwice() {
+  return {
+    type: reducerType.SHIFT_TWICE,
+  };
+}
+
 function shiftNextBlock() {
   return {
     type: reducerType.SHIFT_NEXT_BLOCK,
@@ -173,7 +179,7 @@ function combo(data) {
   return {
     type: reducerType.COMBO,
     data,
-  }
+  };
 }
 
 function peerSavePeer(data) {
@@ -220,6 +226,7 @@ export default {
   keyboard,
   music,
   focus,
+  shiftTwice,
   shiftNextBlock,
   resetBag,
   combo,

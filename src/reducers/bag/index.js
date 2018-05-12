@@ -17,6 +17,20 @@ const initState = (() => {
 
 const bag = (state = initState, action) => {
   switch (action.type) {
+    case reducerType.SHIFT_TWICE: {
+      let sbag = state;
+      sbag = sbag.shift().shift().shift();
+      if (sbag.size < 7) {
+        let newBag = List();
+        const len = blockType.length - 1;
+        for (let i = 0; i < len; i++) {
+          newBag = newBag.push(blockType[i]);
+        }
+        newBag = newBag.sortBy(Math.random);
+        sbag = sbag.concat(newBag);
+      }
+      return sbag;
+    }
     case reducerType.SHIFT_NEXT_BLOCK: {
       let sbag = state;
       sbag = sbag.shift();

@@ -54,12 +54,10 @@ const states = {
     const startMatrix = getStartMatrix(startLines);
     store.dispatch(actions.matrix(startMatrix));
     store.dispatch(actions.resetBag());
-    store.dispatch(actions.moveBlock({ type: store.getState().get('bag').first() }));
-    store.dispatch(actions.shiftNextBlock());
-    store.dispatch(actions.nextBlock(store.getState().get('bag').first()));
-    store.dispatch(actions.moveBlock2({ type: store.getState().get('bag').get(2) }));
-    store.dispatch(actions.shiftNextBlock());
-    store.dispatch(actions.nextBlock(store.getState().get('bag').first()));
+    store.dispatch(actions.moveBlock({ type: store.getState().get('bag').get(0) }));
+    store.dispatch(actions.moveBlock2({ type: store.getState().get('bag').get(1) }));
+    store.dispatch(actions.nextBlock(store.getState().get('bag').get(2)));
+    store.dispatch(actions.shiftTwice());
     store.dispatch(actions.holdType(blockType.length - 1));
     store.dispatch(actions.canHold(true));
     states.auto();
@@ -191,7 +189,6 @@ const states = {
       if (music.clear) {
         music.clear();
       }
-      return;
     } else {
       store.dispatch(actions.combo(-1));
     }
@@ -200,12 +197,11 @@ const states = {
         music.gameover();
       }
       states.overStart();
-      return;
     }
     setTimeout(() => {
       store.dispatch(actions.lock(false));
       store.dispatch(actions.moveBlock({ type: store.getState().get('next') }));
-      store.dispatch(actions.nextBlock(store.getState().get('bag').first()));
+      store.dispatch(actions.nextBlock(store.getState().get('bag').get(0)));
       store.dispatch(actions.shiftNextBlock());
       store.dispatch(actions.canHold(true));
       states.auto();
@@ -245,7 +241,7 @@ const states = {
     });
     store.dispatch(actions.matrix(newMatrix));
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
-    store.dispatch(actions.nextBlock(state.get('bag').first()));
+    store.dispatch(actions.nextBlock(state.get('bag').get(0)));
     store.dispatch(actions.shiftNextBlock());
     store.dispatch(actions.canHold(true));
     states.auto();
@@ -279,6 +275,7 @@ const states = {
     store.dispatch(actions.reset(false));
     store.dispatch(actions.lock(false));
     store.dispatch(actions.clearLines(0));
+    store.dispatch(actions.resetBag());
   },
 
   // 写入分数

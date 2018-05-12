@@ -19,7 +19,7 @@ const initState = (() => {
 
 const cur2 = (state = initState, action) => {
   switch (action.type) {
-    case reducerType.MOVE_BLOCK:
+    case reducerType.MOVE_BLOCK2:
       return action.data;
     default:
       return state;
