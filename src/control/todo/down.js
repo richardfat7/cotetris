@@ -7,14 +7,25 @@ import { music } from '../../unit/music';
 const down = (store) => {
   store.dispatch(actions.keyboard.down(true));
   const peerState = store.getState().get('peerConnection');
+  const myplayerid = store.getState().get('myplayerid');
   if (peerState.conns) {
     for (let i = 0; i < peerState.conns.length; i++) {
       // later should a sequence number to reorder packet by us
-      const data = { label: 'movement', payload: 'down' };
+      const data = { label: 'movement', payload: 'down', playerid: myplayerid };
       peerState.conns[i].send(JSON.stringify(data));
     }
   }
-  if (store.getState().get('cur') !== null) {
+  let curV;
+  if (myplayerid === 0) {
+    curV = 'cur';
+  } else if (myplayerid === 1) {
+    curV = 'cur2';
+  } else if (myplayerid === 2) {
+    curV = 'curOppo';
+  } else if (myplayerid === 3) {
+    curV = 'curOppo2';
+  }
+  if (store.getState().get(curV) !== null) {
     event.down({
       key: 'down',
       begin: 40,
@@ -27,7 +38,7 @@ const down = (store) => {
         if (music.move) {
           music.move();
         }
-        const cur = state.get('cur');
+        const cur = state.get(curV);
         if (cur === null) {
           return;
         }
@@ -84,7 +95,7 @@ const down = (store) => {
           return;
         }
         const state = store.getState();
-        const cur = state.get('cur');
+        const cur = state.get(curV);
         if (cur) {
           return;
         }

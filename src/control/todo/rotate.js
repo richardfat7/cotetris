@@ -6,10 +6,11 @@ import { music } from '../../unit/music';
 
 const down = (store) => {
   const peerState = store.getState().get('peerConnection');
+  const myplayerid = store.getState().get('myplayerid');
   if (peerState.conns) {
     for (let i = 0; i < peerState.conns.length; i++) {
       // later should a sequence number to reorder packet by us
-      const data = { label: 'movement', payload: 'rotate' };
+      const data = { label: 'movement', payload: 'rotate', playerid: myplayerid };
       peerState.conns[i].send(JSON.stringify(data));
     }
   }
@@ -52,7 +53,17 @@ const down = (store) => {
           music.move();
         }
         const state = store.getState();
-        const cur = state.get('cur');
+        let curV;
+        if (myplayerid === 0) {
+          curV = 'cur';
+        } else if (myplayerid === 1) {
+          curV = 'cur2';
+        } else if (myplayerid === 2) {
+          curV = 'curOppo';
+        } else if (myplayerid === 3) {
+          curV = 'curOppo2';
+        }
+        const cur = state.get(curV);
         if (cur) {
           return;
         }

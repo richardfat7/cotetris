@@ -43,14 +43,23 @@ export default class Matrix extends React.Component {
         (props.cur && props.cur.shape)
       ) &&
       immutable.is(
+        (nextProps.cur2 && nextProps.cur2.shape),
+        (props.cur2 && props.cur2.shape)
+      ) &&
+      immutable.is(
         (nextProps.cur && nextProps.cur.xy),
         (props.cur && props.cur.xy)
+      ) &&
+      immutable.is(
+        (nextProps.cur2 && nextProps.cur2.xy),
+        (props.cur2 && props.cur2.xy)
       )
     ) || this.state.clearLines
     || this.state.isOver;
   }
   getResult(props = this.props) {
     const cur = props.cur;
+    // const cur2 = props.cur2;
     const shape = cur && cur.shape;
     const xy = cur && cur.xy;
 
@@ -237,7 +246,6 @@ export default class Matrix extends React.Component {
 Matrix.propTypes = {
   matrix: propTypes.object.isRequired,
   cur: propTypes.object,
-  cur1: propTypes.object,
   cur2: propTypes.object,
   reset: propTypes.bool.isRequired,
 };

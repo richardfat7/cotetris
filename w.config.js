@@ -37,8 +37,8 @@ var loaders = [
     {
       test: /\.(js|jsx)$/,
       exclude: /node_modules/,
-      // loader: 'babel!eslint-loader',
-      loader: 'babel-loader',
+      loader: 'babel!eslint-loader',
+      // loader: 'babel-loader',
     },
     {
       test: /\.(?:png|jpg|gif)$/,

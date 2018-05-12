@@ -4,11 +4,14 @@ import { Link } from 'react-router-dom';
 import Peerjs from 'peerjs';
 import store from '../../store';
 import actions from '../../actions';
+import * as reducerType from '../../unit/reducerType';
+
 
 export default class Peer extends React.Component {
   constructor() {
     super();
     this.state = {
+      currentplayerid: 0,
       id: '',
       opp: '',
       conns: [],
@@ -51,8 +54,11 @@ export default class Peer extends React.Component {
         c.on('open', () => {
           console.log('someone connected.');
           this.setState({ conns: [...this.state.conns, c] });
-          c.send(JSON.stringify({ label: 'header', payload: 'ACK' }));
-          c.on('data', (data) => {
+          // payload is player's id
+          const lastPlayer = this.state.currentplayerid + 1;
+          this.setState({ lastPlayer });
+          c.send(JSON.stringify({ label: 'header', flag: 'ACK', payload: lastPlayer }));
+          c.on('data', (data) => { // NOTE please copy bottom code to here too
             alert(data);
             console.log(data);
           });
@@ -85,9 +91,37 @@ export default class Peer extends React.Component {
       con.on('data', (res) => {
         console.log(res);
         const data = JSON.parse(res);
+        const storeStates = store.getState();
         if (data.label === 'header') {
-          if (data.payload === 'ACK') {
+          if (data.flag === 'ACK') {
+            const myplayerid = data.payload;
+            store.dispatch(actions.setMyPlayerID(myplayerid));
             console.log('connect success.');
+          }
+        } else if (data.label === 'movement') {
+          const playerid = data.playerid;
+          let type; let cur;
+          if (playerid === 0) {
+            type = reducerType.MOVE_BLOCK;
+            cur = storeStates.cur;
+          } else if (playerid === 1) {
+            type = reducerType.MOVE_BLOCK2;
+            cur = storeStates.cur2;
+          } else if (playerid === 2) {
+            type = reducerType.MOVE_BLOCK_OPPO;
+            cur = storeStates.curOppo;
+          } else if (playerid === 2) {
+            type = reducerType.MOVE_BLOCK_OPPO2;
+            cur = storeStates.curOppo2;
+          }
+          console.log(type, cur);
+          const direction = data.payload;
+          if (direction === 'left') {
+            store.dispatch(actions.moveBlockGeneral(cur.left(), type));
+          } else if (direction === 'right') {
+            store.dispatch(actions.moveBlockGeneral(cur.right(), type));
+          } else if (direction === 'rotate') {
+            store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
           }
         }
       });
@@ -132,7 +166,6 @@ export default class Peer extends React.Component {
         <Link
           to={{
             pathname: '/tetris',
-            state: { peer: this.state.peer, conns: this.state.conns },
           }}
         >Home</Link>
       </div>

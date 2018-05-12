@@ -67,15 +67,29 @@ const states = {
     const out = (timeout < 0 ? 0 : timeout);
     let state = store.getState();
     let cur = state.get('cur');
+    let cur2 = state.get('cur2');
     const fall = () => {
       state = store.getState();
       cur = state.get('cur');
+      cur2 = state.get('cur2');
       const next = cur.fall();
+      const next2 = cur2.fall();
+      console.log(next2);
+      let matrix; let s1 = false; let s2 = false;
       if (want(next, state.get('matrix'))) {
         store.dispatch(actions.moveBlock(next));
         states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
-      } else {
-        let matrix = state.get('matrix');
+        s1 = true;
+        console.log(s1);
+      }
+      if (want(next2, state.get('matrix'))) {
+        store.dispatch(actions.moveBlock2(next2));
+        s2 = true;
+        console.log(s2);
+        // states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
+      }
+      if (!s1 || !s2) {
+        matrix = state.get('matrix');
         const shape = cur && cur.shape;
         const xy = cur && cur.xy;
         let color;
@@ -158,7 +172,7 @@ const states = {
       return;
     }
     const state = store.getState();
-    if (state.get('cur') && !state.get('reset') && !state.get('pause')) {
+    if (state.get('cur') && state.get('cur2') && !state.get('reset') && !state.get('pause')) {
       states.auto();
     }
   },

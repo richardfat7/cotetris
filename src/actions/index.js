@@ -16,9 +16,37 @@ function nextBlock(data) {
   };
 }
 
+function moveBlockGeneral(option, type) {
+  return {
+    type,
+    data: option.reset === true ? null : new Block(option),
+  };
+}
+
 function moveBlock(option) {
   return {
     type: reducerType.MOVE_BLOCK,
+    data: option.reset === true ? null : new Block(option),
+  };
+}
+
+function moveBlock2(option) {
+  return {
+    type: reducerType.MOVE_BLOCK2,
+    data: option.reset === true ? null : new Block(option),
+  };
+}
+
+function moveBlockOppo(option) {
+  return {
+    type: reducerType.MOVE_BLOCK_OPPO,
+    data: option.reset === true ? null : new Block(option),
+  };
+}
+
+function moveBlockOppo2(option) {
+  return {
+    type: reducerType.MOVE_BLOCK_OPPO2,
     data: option.reset === true ? null : new Block(option),
   };
 }
@@ -148,6 +176,13 @@ function peerSavePeer(data) {
   };
 }
 
+function setMyPlayerID(data) {
+  return {
+    type: reducerType.MYPLAYERID,
+    data,
+  };
+}
+
 function peerSaveConnection(data) {
   return {
     type: reducerType.PEER_SAVE_CONNECTION,
@@ -158,6 +193,10 @@ function peerSaveConnection(data) {
 export default {
   nextBlock,
   moveBlock,
+  moveBlock2,
+  moveBlockOppo,
+  moveBlockOppo2,
+  moveBlockGeneral,
   speedStart,
   speedRun,
   startLines,
@@ -178,4 +217,5 @@ export default {
   resetBag,
   peerSavePeer,
   peerSaveConnection,
+  setMyPlayerID,
 };

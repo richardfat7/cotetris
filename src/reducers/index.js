@@ -6,6 +6,8 @@ import matrixOppo from './matrixOppo';
 import next from './next';
 import cur from './cur';
 import curOppo from './curOppo';
+import cur2 from './cur2';
+import curOppo2 from './curOppo2';
 import startLines from './startLines';
 import max from './max';
 import points from './points';
@@ -21,7 +23,7 @@ import holdType from './holdType';
 import canHold from './canHold';
 import bag from './bag';
 import peerConnection from './peerConnection';
-
+import myplayerid from './myplayerid';
 
 const rootReducer = combineReducers({
   pause,
@@ -29,7 +31,9 @@ const rootReducer = combineReducers({
   matrix,
   next,
   cur,
+  cur2,
   curOppo,
+  curOppo2,
   startLines,
   max,
   points,
@@ -46,6 +50,7 @@ const rootReducer = combineReducers({
   bag,
   matrixOppo,
   peerConnection,
+  myplayerid,
 });
 
 export default rootReducer;

@@ -79,11 +79,12 @@ const unit = {
   subscribeRecord(store) { // 将状态记录到 localStorage
     store.subscribe(() => {
       let data = store.getState().toJS();
+      data.peerConnection = null; // no need to preserve on a already closed connection
       if (data.lock) { // 当状态为锁定, 不记录
         return;
       }
-      // data = JSON.stringify(data);
-      // data = encodeURIComponent(data);
+      data = JSON.stringify(data);
+      data = encodeURIComponent(data);
       if (window.btoa) {
         data = btoa(data);
       }

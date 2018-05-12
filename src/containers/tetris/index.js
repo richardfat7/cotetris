@@ -117,15 +117,14 @@ class Tetris extends React.Component {
               <Matrix
                 matrix={this.props.matrix}
                 cur={this.props.cur}
-                cur1={this.props.cur1}
-                cur2={this.props.curOppo}
+                cur2={this.props.cur2}
                 reset={this.props.reset}
               />
               <Logo cur={!!this.props.cur} reset={this.props.reset} />
               <MatrixOPPO
                 matrix={this.props.matrixOppo}
-                cur1={this.props.curOppo}
-                cur2={this.props.curOppo}
+                cur={this.props.curOppo}
+                cur2={this.props.curOppo2}
                 reset={this.props.reset}
               />
               <LogoOPPO cur={!!this.props.cur} reset={this.props.reset} />
@@ -160,9 +159,9 @@ Tetris.propTypes = {
   matrixOppo: propTypes.object.isRequired,
   next: propTypes.string.isRequired,
   cur: propTypes.object,
-  cur1: propTypes.object,
   cur2: propTypes.object,
   curOppo: propTypes.object,
+  curOppo2: propTypes.object,
   holdType: propTypes.string.isRequired,
   dispatch: propTypes.func.isRequired,
   speedStart: propTypes.number.isRequired,
@@ -183,9 +182,10 @@ const mapStateToProps = (state) => ({
   matrixOppo: state.get('matrixOppo'),
   next: state.get('next'),
   cur: state.get('cur'),
-  cur1: state.get('cur'),
+  cur2: state.get('cur2'),
   // cur2: state.get('cur2'),
   curOppo: state.get('curOppo'),
+  curOppo2: state.get('curOppo2'),
   holdType: state.get('holdType'),
   speedStart: state.get('speedStart'),
   speedRun: state.get('speedRun'),
