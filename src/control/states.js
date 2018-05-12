@@ -114,7 +114,7 @@ const states = {
             }
           })
         ));
-        states.nextAround(matrix);
+        // states.nextAround(matrix);
       }
       if (want(next2, state.get('matrix'))) {
         store.dispatch(actions.moveBlock2(next2));

@@ -183,7 +183,6 @@ const mapStateToProps = (state) => ({
   next: state.get('next'),
   cur: state.get('cur'),
   cur2: state.get('cur2'),
-  // cur2: state.get('cur2'),
   curOppo: state.get('curOppo'),
   curOppo2: state.get('curOppo2'),
   holdType: state.get('holdType'),
