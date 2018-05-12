@@ -169,6 +169,13 @@ function resetBag() {
   };
 }
 
+function combo(data) {
+  return {
+    type: reducerType.COMBO,
+    data,
+  }
+}
+
 function peerSavePeer(data) {
   return {
     type: reducerType.PEER_SAVE_PEER,
@@ -215,6 +222,7 @@ export default {
   focus,
   shiftNextBlock,
   resetBag,
+  combo,
   peerSavePeer,
   peerSaveConnection,
   setMyPlayerID,

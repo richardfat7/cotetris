@@ -12,7 +12,7 @@ const initState = (() => {
     bag = bag.sortBy(Math.random);
     return bag;
   }
-  return lastRecord.bag;
+  return List(lastRecord.bag);
 })();
 
 const bag = (state = initState, action) => {

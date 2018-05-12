@@ -22,6 +22,7 @@ import focus from './focus';
 import holdType from './holdType';
 import canHold from './canHold';
 import bag from './bag';
+import combo from './combo';
 import peerConnection from './peerConnection';
 import myplayerid from './myplayerid';
 
@@ -48,6 +49,7 @@ const rootReducer = combineReducers({
   holdType,
   canHold,
   bag,
+  combo,
   matrixOppo,
   peerConnection,
   myplayerid,
