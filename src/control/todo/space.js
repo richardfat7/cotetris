@@ -65,6 +65,7 @@ const down = (store) => {
         setTimeout(() => {
           store.dispatch(actions.drop(false));
         }, 100);
+        store.dispatch(actions.canHold(true));
         states.nextAround(matrix);
       } else {
         states.start();
