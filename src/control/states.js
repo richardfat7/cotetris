@@ -185,6 +185,7 @@ const states = {
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
     store.dispatch(actions.nextBlock(state.get('bag').first()));
     store.dispatch(actions.shiftNextBlock());
+    store.dispatch(actions.canHold(true));
     states.auto();
     store.dispatch(actions.lock(false));
     const clearLines = state.get('clearLines') + lines.length;
