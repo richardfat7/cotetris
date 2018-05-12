@@ -56,7 +56,9 @@ const states = {
     store.dispatch(actions.moveBlock({ type: store.getState().get('bag').first() }));
     store.dispatch(actions.shiftNextBlock());
     store.dispatch(actions.nextBlock(store.getState().get('bag').first()));
+    store.dispatch(actions.moveBlock2({ type: store.getState().get('bag').get(2) }));
     store.dispatch(actions.shiftNextBlock());
+    store.dispatch(actions.nextBlock(store.getState().get('bag').first()));
     store.dispatch(actions.holdType(blockType.length - 1));
     store.dispatch(actions.canHold(true));
     states.auto();
@@ -74,21 +76,14 @@ const states = {
       cur2 = state.get('cur2');
       const next = cur.fall();
       const next2 = cur2.fall();
-      console.log(next2);
-      let matrix; let s1 = false; let s2 = false;
+      let matrix;
+      // let s1 = false; let s2 = false;
       if (want(next, state.get('matrix'))) {
         store.dispatch(actions.moveBlock(next));
         states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
-        s1 = true;
-        console.log(s1);
-      }
-      if (want(next2, state.get('matrix'))) {
-        store.dispatch(actions.moveBlock2(next2));
-        s2 = true;
-        console.log(s2);
-        // states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
-      }
-      if (!s1 || !s2) {
+        // s1 = true;
+        // console.log(s1);
+      } else {
         matrix = state.get('matrix');
         const shape = cur && cur.shape;
         const xy = cur && cur.xy;
@@ -106,6 +101,44 @@ const states = {
         } else if (cur.type === 'J') {
           color = 8;
         } else if (cur.type === 'L') {
+          color = 9;
+        } else {
+          color = 1;
+        }
+        shape.forEach((m, k1) => (
+          m.forEach((n, k2) => {
+            if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
+              let line = matrix.get(xy.get(0) + k1);
+              line = line.set(xy.get(1) + k2, color);
+              matrix = matrix.set(xy.get(0) + k1, line);
+            }
+          })
+        ));
+        states.nextAround(matrix);
+      }
+      if (want(next2, state.get('matrix'))) {
+        store.dispatch(actions.moveBlock2(next2));
+        // s2 = true;
+        // console.log(s2);
+        // states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
+      } else {
+        matrix = state.get('matrix');
+        const shape = cur2 && cur2.shape;
+        const xy = cur2 && cur2.xy;
+        let color;
+        if (cur2.type === 'I') {
+          color = 3;
+        } else if (cur2.type === 'O') {
+          color = 4;
+        } else if (cur2.type === 'T') {
+          color = 5;
+        } else if (cur2.type === 'S') {
+          color = 6;
+        } else if (cur2.type === 'Z') {
+          color = 7;
+        } else if (cur2.type === 'J') {
+          color = 8;
+        } else if (cur2.type === 'L') {
           color = 9;
         } else {
           color = 1;
