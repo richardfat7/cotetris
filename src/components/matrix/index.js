@@ -53,11 +53,11 @@ export default class Matrix extends React.Component {
     const cur = props.cur;
     const shape = cur && cur.shape;
     const xy = cur && cur.xy;
-    
+
     let matrix = props.matrix;
-    
+
     let ghost;
-    if (cur) { 
+    if (cur) {
       // calc ghost
       let index = 0;
       ghost = cur.fall(index);
@@ -67,8 +67,8 @@ export default class Matrix extends React.Component {
       }
       ghost = cur.fall(index - 2);
     }
-    let gshape = cur && ghost && ghost.shape;
-    let gxy = cur && ghost && List(ghost.xy);
+    const gshape = cur && ghost && ghost.shape;
+    const gxy = cur && ghost && List(ghost.xy);
 
     const clearLines = this.state.clearLines;
     if (clearLines) {
