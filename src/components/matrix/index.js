@@ -237,5 +237,7 @@ export default class Matrix extends React.Component {
 Matrix.propTypes = {
   matrix: propTypes.object.isRequired,
   cur: propTypes.object,
+  cur1: propTypes.object,
+  cur2: propTypes.object,
   reset: propTypes.bool.isRequired,
 };

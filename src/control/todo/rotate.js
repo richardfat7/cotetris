@@ -5,6 +5,14 @@ import states from '../states';
 import { music } from '../../unit/music';
 
 const down = (store) => {
+  const peerState = store.getState().get('peerConnection');
+  if (peerState.conns) {
+    for (let i = 0; i < peerState.conns.length; i++) {
+      // later should a sequence number to reorder packet by us
+      const data = { label: 'movement', payload: 'rotate' };
+      peerState.conns[i].send(JSON.stringify(data));
+    }
+  }
   store.dispatch(actions.keyboard.rotate(true));
   if (store.getState().get('cur') !== null) {
     event.down({

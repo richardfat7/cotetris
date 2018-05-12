@@ -7,6 +7,14 @@ import { music } from '../../unit/music';
 
 const down = (store) => {
   store.dispatch(actions.keyboard.right(true));
+  const peerState = store.getState().get('peerConnection');
+  if (peerState.conns) {
+    for (let i = 0; i < peerState.conns.length; i++) {
+      // later should a sequence number to reorder packet by us
+      const data = { label: 'movement', payload: 'right' };
+      peerState.conns[i].send(JSON.stringify(data));
+    }
+  }
   event.down({
     key: 'right',
     begin: 200,

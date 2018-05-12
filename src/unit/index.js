@@ -82,8 +82,8 @@ const unit = {
       if (data.lock) { // 当状态为锁定, 不记录
         return;
       }
-      data = JSON.stringify(data);
-      data = encodeURIComponent(data);
+      // data = JSON.stringify(data);
+      // data = encodeURIComponent(data);
       if (window.btoa) {
         data = btoa(data);
       }

@@ -141,6 +141,20 @@ function resetBag() {
   };
 }
 
+function peerSavePeer(data) {
+  return {
+    type: reducerType.PEER_SAVE_PEER,
+    data,
+  };
+}
+
+function peerSaveConnection(data) {
+  return {
+    type: reducerType.PEER_SAVE_CONNECTION,
+    data,
+  };
+}
+
 export default {
   nextBlock,
   moveBlock,
@@ -162,4 +176,6 @@ export default {
   focus,
   shiftNextBlock,
   resetBag,
+  peerSavePeer,
+  peerSaveConnection,
 };

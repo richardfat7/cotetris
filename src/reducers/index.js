@@ -2,8 +2,10 @@ import { combineReducers } from 'redux-immutable';
 import pause from './pause';
 import music from './music';
 import matrix from './matrix';
+import matrixOppo from './matrixOppo';
 import next from './next';
 import cur from './cur';
+import curOppo from './curOppo';
 import startLines from './startLines';
 import max from './max';
 import points from './points';
@@ -18,6 +20,7 @@ import focus from './focus';
 import holdType from './holdType';
 import canHold from './canHold';
 import bag from './bag';
+import peerConnection from './peerConnection';
 
 
 const rootReducer = combineReducers({
@@ -26,6 +29,7 @@ const rootReducer = combineReducers({
   matrix,
   next,
   cur,
+  curOppo,
   startLines,
   max,
   points,
@@ -40,6 +44,8 @@ const rootReducer = combineReducers({
   holdType,
   canHold,
   bag,
+  matrixOppo,
+  peerConnection,
 });
 
 export default rootReducer;

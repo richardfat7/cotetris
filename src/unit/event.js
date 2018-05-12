@@ -16,8 +16,9 @@ const down = (o) => { // 键盘、手指按下
   if (o.once === true) {
     return;
   }
+  // hold down
   let begin = o.begin || 100;
-  const interval = o.interval || 50;
+  const interval = o.interval || 500;
   const loop = () => {
     eventName[o.key] = setTimeout(() => {
       begin = null;
