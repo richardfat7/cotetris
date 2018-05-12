@@ -141,6 +141,13 @@ function resetBag() {
   };
 }
 
+function combo(data) {
+  return {
+    type: reducerType.COMBO,
+    data,
+  }
+}
+
 export default {
   nextBlock,
   moveBlock,
@@ -162,4 +169,5 @@ export default {
   focus,
   shiftNextBlock,
   resetBag,
+  combo,
 };

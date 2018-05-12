@@ -48,6 +48,7 @@ const states = {
     }
     const state = store.getState();
     states.dispatchPoints(0);
+    store.dispatch(actions.combo(-1));
     store.dispatch(actions.speedRun(state.get('speedStart')));
     const startLines = state.get('startLines');
     const startMatrix = getStartMatrix(startLines);
@@ -128,10 +129,24 @@ const states = {
     states.dispatchPoints(addPoints);
 
     if (isClear(matrix)) {
+      let combo = store.getState().get('combo');
+      if (combo < 2) {
+        combo += 1;
+      } else if (combo < 4) {
+        combo += 2;
+      } else if (combo < 6) {
+        combo += 3;
+      } else {
+        combo += 4;
+      }
+      console.log(combo);
+      store.dispatch(actions.combo(combo));
       if (music.clear) {
         music.clear();
       }
       return;
+    } else {
+      store.dispatch(actions.combo(-1));
     }
     if (isOver(matrix)) {
       if (music.gameover) {
