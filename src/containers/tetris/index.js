@@ -119,6 +119,7 @@ class Tetris extends React.Component {
                 cur={this.props.cur}
                 cur2={this.props.cur2}
                 reset={this.props.reset}
+                myplayerid={this.props.myplayerid}
               />
               <Logo cur={!!this.props.cur} reset={this.props.reset} />
               <MatrixOPPO
@@ -126,6 +127,7 @@ class Tetris extends React.Component {
                 cur={this.props.curOppo}
                 cur2={this.props.curOppo2}
                 reset={this.props.reset}
+                myplayerid={null}
               />
               <LogoOPPO cur={!!this.props.cur} reset={this.props.reset} />
               <div className={style.state}>
@@ -153,6 +155,7 @@ class Tetris extends React.Component {
 }
 
 Tetris.propTypes = {
+  myplayerid: propTypes.number.isRequired,
   music: propTypes.bool.isRequired,
   pause: propTypes.bool.isRequired,
   matrix: propTypes.object.isRequired,
@@ -176,6 +179,7 @@ Tetris.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
+  myplayerid: state.get('myplayerid'),
   pause: state.get('pause'),
   music: state.get('music'),
   matrix: state.get('matrix'),

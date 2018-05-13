@@ -7,6 +7,7 @@ import style from './index.less';
 import { isClear, want } from '../../unit/';
 import { fillLine, blankLine } from '../../unit/const';
 import states from '../../control/states';
+import store from '../../store';
 
 const t = setTimeout;
 
@@ -64,22 +65,28 @@ export default class Matrix extends React.Component {
     const shape2 = cur2 && cur2.shape;
     const xy = cur && cur.xy;
     const xy2 = cur2 && cur2.xy;
-
     let matrix = props.matrix;
-
-    let ghost; // NOTE: later ghost if u are the player, now fixed player0
-    if (cur) {
+    const myplayerid = this.props.myplayerid;
+    let tmpcur;
+    if (myplayerid === 0) {
+      tmpcur = store.getState().get('cur');
+    }
+    if (myplayerid === 1) {
+      tmpcur = store.getState().get('cur2');
+    }
+    let ghost;
+    if (tmpcur) {
       // calc ghost
       let index = 0;
-      ghost = cur.fall(index);
+      ghost = tmpcur.fall(index);
       while (want(ghost, matrix)) {
-        ghost = cur.fall(index);
+        ghost = tmpcur.fall(index);
         index++;
       }
-      ghost = cur.fall(index - 2);
+      ghost = tmpcur.fall(index - 2);
     }
-    const gshape = cur && ghost && ghost.shape;
-    const gxy = cur && ghost && List(ghost.xy);
+    const gshape = tmpcur && ghost && ghost.shape;
+    const gxy = tmpcur && ghost && List(ghost.xy);
 
     const clearLines = this.state.clearLines;
     if (clearLines) {
@@ -99,7 +106,7 @@ export default class Matrix extends React.Component {
         ]));
       });
     } else {
-      if (cur && gshape) {
+      if (tmpcur && gshape) {
         gshape.forEach((m, k1) => (
           m.forEach((n, k2) => {
             if (n && gxy.get(0) + k1 >= 0) { // 竖坐标可以为负
@@ -294,6 +301,7 @@ export default class Matrix extends React.Component {
 }
 
 Matrix.propTypes = {
+  myplayerid: propTypes.number.isRequired,
   matrix: propTypes.object.isRequired,
   cur: propTypes.object,
   cur2: propTypes.object,
