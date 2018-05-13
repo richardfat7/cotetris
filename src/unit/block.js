@@ -48,6 +48,9 @@ class Block {
         default:
           break;
       }
+      if (option.x !== undefined && option.y !== undefined) {
+        this.xy = List([this.xy.get(0) + option.x, this.xy.get(1) + option.y]);
+      }
     } else {
       this.xy = List(option.xy);
     }

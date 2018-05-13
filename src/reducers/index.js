@@ -3,6 +3,8 @@ import pause from './pause';
 import music from './music';
 import matrix from './matrix';
 import matrixOppo from './matrixOppo';
+import tempMatrix from './tempMatrix';
+import tempMatrix2 from './tempMatrix2';
 import next from './next';
 import cur from './cur';
 import curOppo from './curOppo';
@@ -53,6 +55,8 @@ const rootReducer = combineReducers({
   matrixOppo,
   peerConnection,
   myplayerid,
+  tempMatrix,
+  tempMatrix2,
 });
 
 export default rootReducer;

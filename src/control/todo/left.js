@@ -29,18 +29,29 @@ const down = (store) => {
       if (music.move) {
         music.move();
       }
-      let curV; let type;
+      let curV;
+      let curV2;
+      let tmpMatrix;
+      let type;
       if (myplayerid === 0) {
         curV = 'cur';
+        curV2 = 'cur2';
+        tmpMatrix = 'tempMatrix';
         type = reducerType.MOVE_BLOCK;
       } else if (myplayerid === 1) {
         curV = 'cur2';
+        curV2 = 'cur';
+        tmpMatrix = 'tempMatrix';
         type = reducerType.MOVE_BLOCK2;
       } else if (myplayerid === 2) {
         curV = 'curOppo';
+        curV2 = 'curOppo2';
+        tmpMatrix = 'tempMatrix2';
         type = reducerType.MOVE_BLOCK_OPPO;
       } else if (myplayerid === 3) {
         curV = 'curOppo2';
+        curV2 = 'curOppo';
+        tmpMatrix = 'tempMatrix2';
         type = reducerType.MOVE_BLOCK_OPPO2;
       }
       const cur = state.get(curV);
@@ -58,7 +69,7 @@ const down = (store) => {
           timeStamp = next.timeStamp;
         } else {
           cur.timeStamp += parseInt(parseInt(delay, 10) / 1.5, 10); // 真实移动delay多一点，碰壁delay少一点
-          store.dispatch(actions.moveBlockGeneral(next, type));
+          store.dispatch(actions.moveBlockGeneral(cur, type));
           timeStamp = cur.timeStamp;
         }
         const remain = speeds[state.get('speedRun') - 1] - (Date.now() - timeStamp);

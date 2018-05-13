@@ -203,6 +203,20 @@ function peerSaveConnection(data) {
   };
 }
 
+function tempMatrix(data) {
+  return {
+    type: reducerType.TEMP_MATRIX,
+    data,
+  };
+}
+
+function tempMatrix2(data) {
+  return {
+    type: reducerType.TEMP_MATRIX2,
+    data,
+  };
+}
+
 export default {
   nextBlock,
   moveBlock,
@@ -233,4 +247,6 @@ export default {
   peerSavePeer,
   peerSaveConnection,
   setMyPlayerID,
+  tempMatrix,
+  tempMatrix2,
 };

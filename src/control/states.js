@@ -52,10 +52,14 @@ const states = {
     store.dispatch(actions.speedRun(state.get('speedStart')));
     const startLines = state.get('startLines');
     const startMatrix = getStartMatrix(startLines);
+    store.dispatch(actions.tempMatrix(startMatrix));
+    store.dispatch(actions.tempMatrix2(startMatrix));
     store.dispatch(actions.matrix(startMatrix));
     store.dispatch(actions.resetBag());
-    store.dispatch(actions.moveBlock({ type: store.getState().get('bag').get(0) }));
-    store.dispatch(actions.moveBlock2({ type: store.getState().get('bag').get(1) }));
+    store.dispatch(actions.moveBlock(
+      { type: store.getState().get('bag').get(0), x: 0, y: -2 }));
+    store.dispatch(actions.moveBlock2(
+      { type: store.getState().get('bag').get(1), x: 0, y: 2 }));
     store.dispatch(actions.nextBlock(store.getState().get('bag').get(2)));
     store.dispatch(actions.shiftTwice());
     store.dispatch(actions.holdType(blockType.length - 1));
@@ -76,8 +80,8 @@ const states = {
       const next = cur.fall();
       const next2 = cur2.fall();
       let matrix;
-      let s1 = false; let s2 = false;
-      states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
+      let s1 = false;
+      let s2 = false;
       if (want(next, state.get('matrix'))) {
         store.dispatch(actions.moveBlock(next));
         s1 = true;
@@ -211,6 +215,8 @@ const states = {
           })
         ));
         states.nextAround(matrix);
+      } else {
+        states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       }
     };
     clearTimeout(states.fallInterval);
@@ -376,8 +382,11 @@ const states = {
 
   // 游戏结束动画完成
   overEnd: () => {
+    store.dispatch(actions.tempMatrix(blankMatrix));
+    store.dispatch(actions.tempMatrix2(blankMatrix));
     store.dispatch(actions.matrix(blankMatrix));
     store.dispatch(actions.moveBlock({ reset: true }));
+    store.dispatch(actions.moveBlock2({ reset: true }));
     store.dispatch(actions.holdType(blockType.length - 1));
     store.dispatch(actions.reset(false));
     store.dispatch(actions.lock(false));

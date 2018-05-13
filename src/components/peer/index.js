@@ -81,7 +81,7 @@ export default class Peer extends React.Component {
               } else if (playerid === 2) {
                 type = reducerType.MOVE_BLOCK_OPPO;
                 cur = storeStates.curOppo;
-              } else if (playerid === 2) {
+              } else if (playerid === 3) {
                 type = reducerType.MOVE_BLOCK_OPPO2;
                 cur = storeStates.curOppo2;
               }
@@ -222,4 +222,3 @@ Peer.propTypes = {
   max: propTypes.number,
   point: propTypes.number,
 };
-

@@ -16,18 +16,29 @@ const down = (store) => {
       peerState.conns[i].send(JSON.stringify(data));
     }
   }
-  let curV; let type;
+  let curV;
+  let curV2;
+  let tmpMatrix;
+  let type;
   if (myplayerid === 0) {
     curV = 'cur';
+    curV2 = 'cur2';
+    tmpMatrix = 'tempMatrix';
     type = reducerType.MOVE_BLOCK;
   } else if (myplayerid === 1) {
     curV = 'cur2';
+    curV2 = 'cur';
+    tmpMatrix = 'tempMatrix';
     type = reducerType.MOVE_BLOCK2;
   } else if (myplayerid === 2) {
     curV = 'curOppo';
+    curV2 = 'curOppo2';
+    tmpMatrix = 'tempMatrix2';
     type = reducerType.MOVE_BLOCK_OPPO;
   } else if (myplayerid === 3) {
     curV = 'curOppo2';
+    curV2 = 'curOppo';
+    tmpMatrix = 'tempMatrix2';
     type = reducerType.MOVE_BLOCK_OPPO2;
   }
   if (store.getState().get(curV) !== null) {
@@ -44,6 +55,7 @@ const down = (store) => {
           music.move();
         }
         const cur = state.get(curV);
+        const cur2 = state.get(curV2);
         if (cur === null) {
           return;
         }
@@ -53,8 +65,60 @@ const down = (store) => {
         }
         const next = cur.fall();
         if (want(next, state.get('matrix'))) {
-          store.dispatch(actions.moveBlockGeneral(next, type));
-          states.auto();
+          let tMatrix = state.get(tmpMatrix);
+          const tshape = cur2 && cur2.shape;
+          const txy = cur2 && cur2.xy;
+          tshape.forEach((m, k1) => (
+            m.forEach((n, k2) => {
+              if (n && txy.get(0) + k1 >= 0) { // 竖坐标可以为负
+                let line = tMatrix.get(txy.get(0) + k1);
+                line = line.set(txy.get(1) + k2, 1);
+                tMatrix = tMatrix.set(txy.get(0) + k1, line);
+              }
+            })
+          ));
+          if (want(next, tMatrix)) {
+            store.dispatch(actions.moveBlockGeneral(next, type));
+            states.auto();
+          } else {
+            if (want(cur2.fall(), state.get(tmpMatrix))) {
+              store.dispatch(actions.moveBlockGeneral(cur2.fall(), type));
+              store.dispatch(actions.moveBlockGeneral(next, type));
+              states.auto();
+            } else {
+              let matrix = state.get('matrix');
+              const shape = cur.shape;
+              const xy = cur.xy;
+              let color;
+              if (cur.type === 'I') {
+                color = 3;
+              } else if (cur.type === 'O') {
+                color = 4;
+              } else if (cur.type === 'T') {
+                color = 5;
+              } else if (cur.type === 'S') {
+                color = 6;
+              } else if (cur.type === 'Z') {
+                color = 7;
+              } else if (cur.type === 'J') {
+                color = 8;
+              } else if (cur.type === 'L') {
+                color = 9;
+              } else {
+                color = 1;
+              }
+              shape.forEach((m, k1) => (
+                m.forEach((n, k2) => {
+                  if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
+                    let line = matrix.get(xy.get(0) + k1);
+                    line = line.set(xy.get(1) + k2, color);
+                    matrix = matrix.set(xy.get(0) + k1, line);
+                  }
+                })
+              ));
+              states.nextAround(matrix, stopDownTrigger);
+            }            
+          }
         } else {
           let matrix = state.get('matrix');
           const shape = cur.shape;
