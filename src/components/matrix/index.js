@@ -88,7 +88,7 @@ export default class Matrix extends React.Component {
         ]));
       });
     } else {
-      if (cur && gshape) {
+      if (cur && !this.props.lock && gshape) {
         gshape.forEach((m) => {
           if (gxy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
             let line = matrix.get(gxy.get(0) + m.get(1));
@@ -237,4 +237,5 @@ Matrix.propTypes = {
   matrix: propTypes.object.isRequired,
   cur: propTypes.object,
   reset: propTypes.bool.isRequired,
+  lock: propTypes.bool.isRequired,
 };

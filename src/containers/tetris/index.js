@@ -116,12 +116,14 @@ class Tetris extends React.Component {
                 matrix={this.props.matrix}
                 cur={this.props.cur}
                 reset={this.props.reset}
+                lock={this.props.lock}
               />
               <Logo cur={!!this.props.cur} reset={this.props.reset} />
               <Matrix
                 matrix={this.props.matrix}
                 cur={this.props.cur}
                 reset={this.props.reset}
+                lock={this.props.lock}
               />
               <LogoOPPO cur={!!this.props.cur} reset={this.props.reset} />
               <div className={style.state}>
@@ -165,6 +167,7 @@ Tetris.propTypes = {
   reset: propTypes.bool.isRequired,
   drop: propTypes.bool.isRequired,
   keyboard: propTypes.object.isRequired,
+  lock: propTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -183,6 +186,7 @@ const mapStateToProps = (state) => ({
   reset: state.get('reset'),
   drop: state.get('drop'),
   keyboard: state.get('keyboard'),
+  lock: state.get('lock'),
 });
 
 // export default connect(mapStateToProps)(App);
