@@ -12,6 +12,27 @@ import { speeds,
 } from '../unit/const';
 import { music } from '../unit/music';
 
+const getColor = (type) => {
+  let color;
+  if (type === 'I') {
+    color = 3;
+  } else if (type === 'O') {
+    color = 4;
+  } else if (type === 'T') {
+    color = 5;
+  } else if (type === 'S') {
+    color = 6;
+  } else if (type === 'Z') {
+    color = 7;
+  } else if (type === 'J') {
+    color = 8;
+  } else if (type === 'L') {
+    color = 9;
+  } else {
+    color = 1;
+  }
+  return color;
+};
 
 const getStartMatrix = (startLines) => { // 生成startLines
   const getLine = (min, max) => { // 返回标亮个数在min~max之间一行方块, (包含边界)
@@ -105,6 +126,7 @@ const states = {
       state = store.getState();
       cur = state.get('cur');
       cur2 = state.get('cur2');
+      // const myplayerid = state.get('myplayerid');
       const next = cur.fall();
       const next2 = cur2.fall();
       let matrix;
@@ -122,24 +144,7 @@ const states = {
         matrix = state.get('matrix');
         const shape = cur && cur.shape;
         const xy = cur && cur.xy;
-        let color;
-        if (cur.type === 'I') {
-          color = 3;
-        } else if (cur.type === 'O') {
-          color = 4;
-        } else if (cur.type === 'T') {
-          color = 5;
-        } else if (cur.type === 'S') {
-          color = 6;
-        } else if (cur.type === 'Z') {
-          color = 7;
-        } else if (cur.type === 'J') {
-          color = 8;
-        } else if (cur.type === 'L') {
-          color = 9;
-        } else {
-          color = 1;
-        }
+        const color = getColor(cur.type);
         shape.forEach((m, k1) => (
           m.forEach((n, k2) => {
             if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
@@ -149,29 +154,12 @@ const states = {
             }
           })
         ));
-        states.nextAround(matrix);
+        states.nextAround(matrix, null, 0); // NOTE: might have bugs
       } else if (s1 && !s2) {
         matrix = state.get('matrix');
         const shape = cur2 && cur2.shape;
         const xy = cur2 && cur2.xy;
-        let color;
-        if (cur2.type === 'I') {
-          color = 3;
-        } else if (cur2.type === 'O') {
-          color = 4;
-        } else if (cur2.type === 'T') {
-          color = 5;
-        } else if (cur2.type === 'S') {
-          color = 6;
-        } else if (cur2.type === 'Z') {
-          color = 7;
-        } else if (cur2.type === 'J') {
-          color = 8;
-        } else if (cur2.type === 'L') {
-          color = 9;
-        } else {
-          color = 1;
-        }
+        const color = getColor(cur2.type);
         shape.forEach((m, k1) => (
           m.forEach((n, k2) => {
             if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
@@ -181,49 +169,15 @@ const states = {
             }
           })
         ));
-        states.nextAround2(matrix);
+        states.nextAround(matrix, null, 1); // NOTE: might have bugs
       } else if (!s1 && !s2) {
         matrix = state.get('matrix');
         const shape = cur && cur.shape;
         const shape2 = cur2 && cur2.shape;
         const xy = cur && cur.xy;
         const xy2 = cur2 && cur2.xy;
-        let color;
-        let color2;
-        if (cur.type === 'I') {
-          color = 3;
-        } else if (cur.type === 'O') {
-          color = 4;
-        } else if (cur.type === 'T') {
-          color = 5;
-        } else if (cur.type === 'S') {
-          color = 6;
-        } else if (cur.type === 'Z') {
-          color = 7;
-        } else if (cur.type === 'J') {
-          color = 8;
-        } else if (cur.type === 'L') {
-          color = 9;
-        } else {
-          color = 1;
-        }
-        if (cur2.type === 'I') {
-          color2 = 3;
-        } else if (cur2.type === 'O') {
-          color2 = 4;
-        } else if (cur2.type === 'T') {
-          color2 = 5;
-        } else if (cur2.type === 'S') {
-          color2 = 6;
-        } else if (cur2.type === 'Z') {
-          color2 = 7;
-        } else if (cur2.type === 'J') {
-          color2 = 8;
-        } else if (cur2.type === 'L') {
-          color2 = 9;
-        } else {
-          color2 = 1;
-        }
+        const color = getColor(cur.type);
+        const color2 = getColor(cur2.type);
         shape.forEach((m, k1) => (
           m.forEach((n, k2) => {
             if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
@@ -242,7 +196,7 @@ const states = {
             }
           })
         ));
-        states.nextAround(matrix);
+        states.nextAround(matrix, null, 0); // NOTE: might have bugs
       }
     };
     clearTimeout(states.fallInterval);
@@ -251,7 +205,8 @@ const states = {
   },
 
   // 一个方块结束, 触发下一个
-  nextAround: (matrix, stopDownTrigger) => {
+  // character = {0, 1, 2, 3}
+  nextAround: (matrix, stopDownTrigger, character = 0) => {
     clearTimeout(states.fallInterval);
     store.dispatch(actions.lock(true));
     store.dispatch(actions.matrix(matrix));
@@ -281,55 +236,15 @@ const states = {
     }
     setTimeout(() => {
       store.dispatch(actions.lock(false));
-      store.dispatch(actions.moveBlock({ type: store.getState().get('next') }));
-      store.dispatch(actions.nextBlock(store.getState().get('bag').get(0)));
-      store.dispatch(actions.shiftNextBlock());
-      store.dispatch(actions.canHold(true));
-      states.auto();
-    }, 100);
-  },
-
-  nextAround2: (matrix, stopDownTrigger) => {
-    clearTimeout(states.fallInterval);
-    store.dispatch(actions.lock(true));
-    store.dispatch(actions.matrix(matrix));
-    if (typeof stopDownTrigger === 'function') {
-      stopDownTrigger();
-    }
-
-    const addPoints = (store.getState().get('points') + 10) +
-      ((store.getState().get('speedRun') - 1) * 2); // 速度越快, 得分越高
-
-    states.dispatchPoints(addPoints);
-
-    if (isClear(matrix)) {
-      let combo = store.getState().get('combo');
-      if (combo < 2) {
-        combo += 1;
-      } else if (combo < 4) {
-        combo += 2;
-      } else if (combo < 6) {
-        combo += 3;
-      } else {
-        combo += 4;
+      if (character === 0) {
+        store.dispatch(actions.moveBlock({ type: store.getState().get('next') }));
+      } else if (character === 1) {
+        store.dispatch(actions.moveBlock2({ type: store.getState().get('next') }));
+      } else if (character === 2) {
+        store.dispatch(actions.moveBlockOppo({ type: store.getState().get('next') }));
+      } else if (character === 3) {
+        store.dispatch(actions.moveBlockOppo2({ type: store.getState().get('next') }));
       }
-      console.log(combo);
-      store.dispatch(actions.combo(combo));
-      if (music.clear) {
-        music.clear();
-      }
-    } else {
-      store.dispatch(actions.combo(-1));
-    }
-    if (isOver(matrix)) {
-      if (music.gameover) {
-        music.gameover();
-      }
-      states.overStart();
-    }
-    setTimeout(() => {
-      store.dispatch(actions.lock(false));
-      store.dispatch(actions.moveBlock2({ type: store.getState().get('next') }));
       store.dispatch(actions.nextBlock(store.getState().get('bag').get(0)));
       store.dispatch(actions.shiftNextBlock());
       store.dispatch(actions.canHold(true));

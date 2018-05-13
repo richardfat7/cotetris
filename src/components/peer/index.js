@@ -2,6 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Peerjs from 'peerjs';
+import { want } from '../../unit';
 import store from '../../store';
 import actions from '../../actions';
 import * as reducerType from '../../unit/reducerType';
@@ -98,6 +99,17 @@ export default class Peer extends React.Component {
                 store.dispatch(actions.moveBlockGeneral(cur.right(), type));
               } else if (cur && direction === 'rotate') {
                 store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
+              } else if (cur && direction === 'space') {
+                let index = 0;
+                let bottom = cur.fall(index);
+                while (want(bottom, store.getState().get('matrix'))) {
+                  bottom = cur.fall(index);
+                  index++;
+                }
+                bottom = cur.fall(index - 2);
+                store.dispatch(actions.moveBlockGeneral(bottom, type));
+              } else if (cur && direction === 'down') {
+                store.dispatch(actions.moveBlockGeneral(cur.fall(), type));
               }
             }
           });
@@ -166,6 +178,17 @@ export default class Peer extends React.Component {
             store.dispatch(actions.moveBlockGeneral(cur.right(), type));
           } else if (cur && direction === 'rotate') {
             store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
+          } else if (cur && direction === 'space') {
+            let index = 0;
+            let bottom = cur.fall(index);
+            while (want(bottom, store.getState().get('matrix'))) {
+              bottom = cur.fall(index);
+              index++;
+            }
+            bottom = cur.fall(index - 2);
+            store.dispatch(actions.moveBlockGeneral(bottom, type));
+          } else if (cur && direction === 'down') {
+            store.dispatch(actions.moveBlockGeneral(cur.fall(), type));
           }
         }
       });

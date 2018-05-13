@@ -86,7 +86,15 @@ const down = (store) => {
               }
             })
           ));
-          states.nextAround(matrix, stopDownTrigger);
+          if (myplayerid === 0) { // NOTE might have bugs
+            states.nextAround(matrix, stopDownTrigger, myplayerid);
+          } else if (myplayerid === 1) {
+            states.nextAround(matrix, stopDownTrigger, myplayerid);
+          } else if (myplayerid === 2) {
+            states.nextAround(matrix, stopDownTrigger, myplayerid);
+          } else if (myplayerid === 2) {
+            states.nextAround(matrix, stopDownTrigger, myplayerid);
+          }
         }
       },
     });
