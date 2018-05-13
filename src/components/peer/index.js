@@ -50,7 +50,12 @@ export default class Peer extends React.Component {
       id,
       peer,
     }, () => {
+      const stateConns = store.getState().get('peerConnection').conns;
+      const connsCopy = stateConns.slice();
       this.state.peer.on('connection', (c) => {
+        connsCopy.push(c);
+        store.dispatch(actions.peerSaveConnection(connsCopy));
+        this.setState({ conns: [...this.state.conns, c] });
         c.on('open', () => {
           console.log('someone opened connection.');
           this.setState({ conns: [...this.state.conns, c] });
