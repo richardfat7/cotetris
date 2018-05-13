@@ -15,13 +15,6 @@ const down = (store) => {
     begin: 200,
     interval: 100,
     callback: () => {
-      if (peerState.conns) {
-        for (let i = 0; i < peerState.conns.length; i++) {
-          // later should a sequence number to reorder packet by us
-          const data = { label: 'movement', payload: 'right', playerid: myplayerid };
-          peerState.conns[i].send(JSON.stringify(data));
-        }
-      }
       const state = store.getState();
       if (state.get('lock')) {
         return;
@@ -53,6 +46,13 @@ const down = (store) => {
         const delay = delays[state.get('speedRun') - 1];
         let timeStamp;
         if (want(next, state.get('matrix'))) {
+          if (peerState.conns) {
+            for (let i = 0; i < peerState.conns.length; i++) {
+              // later should a sequence number to reorder packet by us
+              const data = { label: 'movement', payload: 'right', playerid: myplayerid };
+              peerState.conns[i].send(JSON.stringify(data));
+            }
+          }
           next.timeStamp += parseInt(delay, 10);
           store.dispatch(actions.moveBlockGeneral(next, type));
           timeStamp = next.timeStamp;
