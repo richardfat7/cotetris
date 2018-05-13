@@ -91,7 +91,7 @@ class Block {
     return {
       shape: result,
       type: this.type,
-      xy: [this.xy.get(0) + dyx[0], this.xy.get(1) + dyx[1]],
+      xy: [this.xy.get(0) + dyx[1], this.xy.get(1) + dyx[0]],
       rotateIndex: nextRotateIndex,
       timeStamp: this.timeStamp,
     };
