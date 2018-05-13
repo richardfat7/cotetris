@@ -126,7 +126,6 @@ const states = {
     let state = store.getState();
     let cur = state.get('cur');
     let cur2 = state.get('cur2');
-    console.log(cur);
     const fall = () => {
       state = store.getState();
       cur = state.get('cur');

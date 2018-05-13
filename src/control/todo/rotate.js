@@ -84,6 +84,7 @@ const down = (store) => {
             store.dispatch(actions.moveBlockGeneral(next, type));
           }
           if (!want(next, tMatrix)) {
+            store.dispatch(actions.moveBlockGeneral(next, type2));
             console.log('not yet do rotate collision');
           }
         }
