@@ -2,7 +2,14 @@ import { List } from 'immutable';
 import store from '../store';
 import { want, isClear, isOver } from '../unit/';
 import actions from '../actions';
-import { speeds, blankLine, bottomLine, blankMatrix, clearPoints, eachLines, blockType } from '../unit/const';
+import { speeds,
+  blankLine,
+  bottomLine,
+  blankMatrix,
+  clearPoints,
+  eachLines,
+  blockType,
+} from '../unit/const';
 import { music } from '../unit/music';
 
 
@@ -38,23 +45,23 @@ const getStartMatrix = (startLines) => { // 生成startLines
 };
 
   // sending lines to opponent
-function addPenalty(linesCleared){
-  let linesPerCombo = [0,1,1,2,2,2,3,4];
-  let linesPerCleared = [0,0,1,2,4];
-  let combo = store.getState().get('combo');
-  let linesSent = linesPerCombo[Math.min(Math.max(combo,0),7)] + linesPerCleared[linesCleared];
-  //TBD: if(linesSent > 0) send linesSent thru peerJS here (?)
+function addPenalty(linesCleared) {
+  const linesPerCombo = [0, 1, 1, 2, 2, 2, 3, 4];
+  const linesPerCleared = [0, 0, 1, 2, 4];
+  const combo = store.getState().get('combo');
+  const linesSent = linesPerCombo[Math.min(Math.max(combo, 0), 7)] + linesPerCleared[linesCleared];
+  // NOTE TBD: if(linesSent > 0) send linesSent thru peerJS here (?)
 
   // receviing lines from opponent
-  let selfSend = true;
+  const selfSend = true;
   let linesReceived;
-  if(selfSend == true){
+  if (selfSend === true) {
     linesReceived = linesSent; // TBD: get lines sent from opponent (lineReceived)
   }// TBD: add them up here
   let matrix = store.getState().get('matrix');
-  let hole = Math.floor((Math.random() * 10));
-  for(let i=0;i<linesReceived;i++){
-    let bottomLineHole = bottomLine.slice(0);
+  const hole = Math.floor((Math.random() * 10));
+  for (let i = 0; i < linesReceived; i++) {
+    const bottomLineHole = bottomLine.slice(0);
     bottomLineHole[hole] = 0;
     matrix = matrix.splice(0, 1);
     matrix = matrix.push(List(bottomLineHole));
@@ -263,9 +270,9 @@ const states = {
       if (music.clear) {
         music.clear();
       }
-    } else {
-      store.dispatch(actions.combo(-1));
+      return;
     }
+    store.dispatch(actions.combo(-1));
     if (isOver(matrix)) {
       if (music.gameover) {
         music.gameover();
