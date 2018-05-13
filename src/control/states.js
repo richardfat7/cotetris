@@ -151,7 +151,7 @@ const states = {
             }
           })
         ));
-        states.nextAround(matrix);
+        states.nextAround2(matrix);
       }
     };
     clearTimeout(states.fallInterval);
@@ -201,6 +201,54 @@ const states = {
     setTimeout(() => {
       store.dispatch(actions.lock(false));
       store.dispatch(actions.moveBlock({ type: store.getState().get('next') }));
+      store.dispatch(actions.nextBlock(store.getState().get('bag').get(0)));
+      store.dispatch(actions.shiftNextBlock());
+      store.dispatch(actions.canHold(true));
+      states.auto();
+    }, 100);
+  },
+
+  nextAround2: (matrix, stopDownTrigger) => {
+    clearTimeout(states.fallInterval);
+    store.dispatch(actions.lock(true));
+    store.dispatch(actions.matrix(matrix));
+    if (typeof stopDownTrigger === 'function') {
+      stopDownTrigger();
+    }
+
+    const addPoints = (store.getState().get('points') + 10) +
+      ((store.getState().get('speedRun') - 1) * 2); // 速度越快, 得分越高
+
+    states.dispatchPoints(addPoints);
+
+    if (isClear(matrix)) {
+      let combo = store.getState().get('combo');
+      if (combo < 2) {
+        combo += 1;
+      } else if (combo < 4) {
+        combo += 2;
+      } else if (combo < 6) {
+        combo += 3;
+      } else {
+        combo += 4;
+      }
+      console.log(combo);
+      store.dispatch(actions.combo(combo));
+      if (music.clear) {
+        music.clear();
+      }
+    } else {
+      store.dispatch(actions.combo(-1));
+    }
+    if (isOver(matrix)) {
+      if (music.gameover) {
+        music.gameover();
+      }
+      states.overStart();
+    }
+    setTimeout(() => {
+      store.dispatch(actions.lock(false));
+      store.dispatch(actions.moveBlock2({ type: store.getState().get('next') }));
       store.dispatch(actions.nextBlock(store.getState().get('bag').get(0)));
       store.dispatch(actions.shiftNextBlock());
       store.dispatch(actions.canHold(true));
