@@ -126,6 +126,7 @@ const states = {
     let state = store.getState();
     let cur = state.get('cur');
     let cur2 = state.get('cur2');
+    console.log(cur);
     const fall = () => {
       state = store.getState();
       cur = state.get('cur');
@@ -136,11 +137,11 @@ const states = {
       let matrix;
       let s1 = false;
       let s2 = false;
-      if (want(next, state.get('matrix'))) {
+      if (want(next, state.get('tempMatrix'))) {
         store.dispatch(actions.moveBlock(next));
         s1 = true;
       }
-      if (want(next2, state.get('matrix'))) {
+      if (want(next2, state.get('tempMatrix'))) {
         store.dispatch(actions.moveBlock2(next2));
         s2 = true;
       }
@@ -216,6 +217,11 @@ const states = {
     clearTimeout(states.fallInterval);
     store.dispatch(actions.lock(true));
     store.dispatch(actions.matrix(matrix));
+    if (character === 0 || character === 1) {
+      store.dispatch(actions.tempMatrix(matrix));
+    } else {
+      store.dispatch(actions.tempMatrix2(matrix));
+    }
     if (typeof stopDownTrigger === 'function') {
       stopDownTrigger();
     }

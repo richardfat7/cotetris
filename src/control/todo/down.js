@@ -20,26 +20,31 @@ const down = (store) => {
   let curV2;
   let tmpMatrix;
   let type;
+  let type2;
   if (myplayerid === 0) {
     curV = 'cur';
     curV2 = 'cur2';
     tmpMatrix = 'tempMatrix';
     type = reducerType.MOVE_BLOCK;
+    type2 = reducerType.MOVE_BLOCK2;
   } else if (myplayerid === 1) {
     curV = 'cur2';
     curV2 = 'cur';
     tmpMatrix = 'tempMatrix';
     type = reducerType.MOVE_BLOCK2;
+    type2 = reducerType.MOVE_BLOCK;
   } else if (myplayerid === 2) {
     curV = 'curOppo';
     curV2 = 'curOppo2';
     tmpMatrix = 'tempMatrix2';
     type = reducerType.MOVE_BLOCK_OPPO;
+    type2 = reducerType.MOVE_BLOCK_OPPO2;
   } else if (myplayerid === 3) {
     curV = 'curOppo2';
     curV2 = 'curOppo';
     tmpMatrix = 'tempMatrix2';
     type = reducerType.MOVE_BLOCK_OPPO2;
+    type2 = reducerType.MOVE_BLOCK_OPPO;
   }
   if (store.getState().get(curV) !== null) {
     event.down({
@@ -80,9 +85,10 @@ const down = (store) => {
           if (want(next, tMatrix)) {
             store.dispatch(actions.moveBlockGeneral(next, type));
             states.auto();
-          } else {
+          }
+          if (!want(next, tMatrix)) {
             if (want(cur2.fall(), state.get(tmpMatrix))) {
-              store.dispatch(actions.moveBlockGeneral(cur2.fall(), type));
+              store.dispatch(actions.moveBlockGeneral(cur2.fall(), type2));
               store.dispatch(actions.moveBlockGeneral(next, type));
               states.auto();
             } else {
@@ -116,10 +122,19 @@ const down = (store) => {
                   }
                 })
               ));
-              states.nextAround(matrix, stopDownTrigger);
-            }            
+              if (myplayerid === 0) {
+                states.nextAround(matrix, stopDownTrigger, myplayerid);
+              } else if (myplayerid === 1) {
+                states.nextAround(matrix, stopDownTrigger, myplayerid);
+              } else if (myplayerid === 2) {
+                states.nextAround(matrix, stopDownTrigger, myplayerid);
+              } else if (myplayerid === 2) {
+                states.nextAround(matrix, stopDownTrigger, myplayerid);
+              }
+            }
           }
         } else {
+          console.log('notFirstWant');
           let matrix = state.get('matrix');
           const shape = cur.shape;
           const xy = cur.xy;
@@ -150,15 +165,6 @@ const down = (store) => {
               }
             })
           ));
-          if (myplayerid === 0) { // NOTE might have bugs
-            states.nextAround(matrix, stopDownTrigger, myplayerid);
-          } else if (myplayerid === 1) {
-            states.nextAround(matrix, stopDownTrigger, myplayerid);
-          } else if (myplayerid === 2) {
-            states.nextAround(matrix, stopDownTrigger, myplayerid);
-          } else if (myplayerid === 2) {
-            states.nextAround(matrix, stopDownTrigger, myplayerid);
-          }
         }
       },
     });

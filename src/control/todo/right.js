@@ -29,21 +29,38 @@ const down = (store) => {
       if (music.move) {
         music.move();
       }
-      let curV; let type;
+      let curV;
+      let curV2;
+      let tmpMatrix;
+      let type;
+      let type2;
       if (myplayerid === 0) {
         curV = 'cur';
+        curV2 = 'cur2';
+        tmpMatrix = 'tempMatrix';
         type = reducerType.MOVE_BLOCK;
+        type2 = reducerType.MOVE_BLOCK2;
       } else if (myplayerid === 1) {
         curV = 'cur2';
+        curV2 = 'cur';
+        tmpMatrix = 'tempMatrix';
         type = reducerType.MOVE_BLOCK2;
+        type2 = reducerType.MOVE_BLOCK;
       } else if (myplayerid === 2) {
         curV = 'curOppo';
+        curV2 = 'curOppo2';
+        tmpMatrix = 'tempMatrix2';
         type = reducerType.MOVE_BLOCK_OPPO;
+        type2 = reducerType.MOVE_BLOCK_OPPO2;
       } else if (myplayerid === 3) {
         curV = 'curOppo2';
+        curV2 = 'curOppo';
+        tmpMatrix = 'tempMatrix2';
         type = reducerType.MOVE_BLOCK_OPPO2;
+        type2 = reducerType.MOVE_BLOCK_OPPO;
       }
       const cur = state.get(curV);
+      const cur2 = state.get(curV2);
       if (cur !== null) {
         if (state.get('pause')) {
           states.pause(false);
@@ -53,9 +70,33 @@ const down = (store) => {
         const delay = delays[state.get('speedRun') - 1];
         let timeStamp;
         if (want(next, state.get('matrix'))) {
-          next.timeStamp += parseInt(delay, 10);
-          store.dispatch(actions.moveBlockGeneral(next, type));
-          timeStamp = next.timeStamp;
+          let tMatrix = state.get(tmpMatrix);
+          const tshape = cur2 && cur2.shape;
+          const txy = cur2 && cur2.xy;
+          tshape.forEach((m, k1) => (
+            m.forEach((n, k2) => {
+              if (n && txy.get(0) + k1 >= 0) { // 竖坐标可以为负
+                let line = tMatrix.get(txy.get(0) + k1);
+                line = line.set(txy.get(1) + k2, 1);
+                tMatrix = tMatrix.set(txy.get(0) + k1, line);
+              }
+            })
+          ));
+          if (want(next, tMatrix)) {
+            next.timeStamp += parseInt(delay, 10);
+            store.dispatch(actions.moveBlockGeneral(next, type));
+            timeStamp = next.timeStamp;
+          }
+          if (!want(next, tMatrix)) {
+            if (want(cur2.right(), state.get(tmpMatrix))) {
+              store.dispatch(actions.moveBlockGeneral(cur2.right(), type2));
+              store.dispatch(actions.moveBlockGeneral(next, type));
+            } else {
+              cur.timeStamp += parseInt(parseInt(delay, 10) / 1.5, 10); // 真实移动delay多一点，碰壁delay少一点
+              store.dispatch(actions.moveBlockGeneral(cur, type));
+              timeStamp = cur.timeStamp;
+            }
+          }
         } else {
           cur.timeStamp += parseInt(parseInt(delay, 10) / 1.5, 10); // 真实移动delay多一点，碰壁delay少一点
           store.dispatch(actions.moveBlockGeneral(cur, type));
