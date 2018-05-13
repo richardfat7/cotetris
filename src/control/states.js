@@ -92,6 +92,7 @@ const states = {
     store.dispatch(actions.shiftNextBlock());
     store.dispatch(actions.holdType(blockType.length - 1));
     store.dispatch(actions.canHold(true));
+    store.dispatch(actions.resetLockDelay());
     states.auto();
   },
 
@@ -106,37 +107,47 @@ const states = {
       const next = cur.fall();
       if (want(next, state.get('matrix'))) {
         store.dispatch(actions.moveBlock(next));
+        store.dispatch(actions.resetLockDelay());
         states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       } else {
-        let matrix = state.get('matrix');
-        const shape = cur && cur.shape;
-        const xy = cur && cur.xy;
-        let color;
-        if (cur.type === 'I') {
-          color = 3;
-        } else if (cur.type === 'O') {
-          color = 4;
-        } else if (cur.type === 'T') {
-          color = 5;
-        } else if (cur.type === 'S') {
-          color = 6;
-        } else if (cur.type === 'Z') {
-          color = 7;
-        } else if (cur.type === 'J') {
-          color = 8;
-        } else if (cur.type === 'L') {
-          color = 9;
+        if (state.get('lockDelay').startTime !== null) {
+          store.dispatch(actions.updateLockDelay());
         } else {
-          color = 1;
+          store.dispatch(actions.startLockDelay());
         }
-        shape.forEach((m) => {
-          if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
-            let line = matrix.get(xy.get(0) + m.get(1));
-            line = line.set(xy.get(1) + m.get(0), color);
-            matrix = matrix.set(xy.get(0) + m.get(1), line);
+        if (store.getState().get('lockDelay').shouldLock) {
+          let matrix = state.get('matrix');
+          const shape = cur && cur.shape;
+          const xy = cur && cur.xy;
+          let color;
+          if (cur.type === 'I') {
+            color = 3;
+          } else if (cur.type === 'O') {
+            color = 4;
+          } else if (cur.type === 'T') {
+            color = 5;
+          } else if (cur.type === 'S') {
+            color = 6;
+          } else if (cur.type === 'Z') {
+            color = 7;
+          } else if (cur.type === 'J') {
+            color = 8;
+          } else if (cur.type === 'L') {
+            color = 9;
+          } else {
+            color = 1;
           }
-        });
-        states.nextAround(matrix);
+          shape.forEach((m) => {
+            if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+              let line = matrix.get(xy.get(0) + m.get(1));
+              line = line.set(xy.get(1) + m.get(0), color);
+              matrix = matrix.set(xy.get(0) + m.get(1), line);
+            }
+          });
+          states.nextAround(matrix);
+        } else {
+          states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
+        }
       }
     };
     clearTimeout(states.fallInterval);
@@ -180,6 +191,7 @@ const states = {
       store.dispatch(actions.nextBlock(store.getState().get('bag').first()));
       store.dispatch(actions.shiftNextBlock());
       store.dispatch(actions.canHold(true));
+      store.dispatch(actions.resetLockDelay());
       addPenalty(0);
       states.auto();
     }, 100);
@@ -217,7 +229,7 @@ const states = {
       newMatrix = newMatrix.unshift(List(blankLine));
     });
     store.dispatch(actions.matrix(newMatrix));
-    addPenalty(lines.length);
+    // addPenalty(lines.length);
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
     store.dispatch(actions.nextBlock(state.get('bag').first()));
     store.dispatch(actions.shiftNextBlock());

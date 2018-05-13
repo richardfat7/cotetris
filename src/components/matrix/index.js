@@ -138,9 +138,12 @@ export default class Matrix extends React.Component {
             } else {
               color = 2;
             }
+            // Center as black
+            /*
             if (m.get(0) === 0 && m.get(1) === 0) {
               color = 1;
             }
+            */
             line = line.set(xy.get(1) + m.get(0), color);
             matrix = matrix.set(xy.get(0) + m.get(1), line);
           }

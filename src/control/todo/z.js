@@ -30,6 +30,7 @@ const down = (store) => {
           next = cur.z(i);
           if (want(next, state.get('matrix'))) {
             store.dispatch(actions.moveBlock(next));
+            store.dispatch(actions.resetLockDelay());
             break;
           }
         }

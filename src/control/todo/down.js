@@ -30,40 +30,46 @@ const down = (store) => {
         const next = cur.fall();
         if (want(next, state.get('matrix'))) {
           store.dispatch(actions.moveBlock(next));
+          store.dispatch(actions.resetLockDelay());
           states.auto();
-        }
-        /* else {
-          let matrix = state.get('matrix');
-          const shape = cur.shape;
-          const xy = cur.xy;
-          let color;
-          if (cur.type === 'I') {
-            color = 3;
-          } else if (cur.type === 'O') {
-            color = 4;
-          } else if (cur.type === 'T') {
-            color = 5;
-          } else if (cur.type === 'S') {
-            color = 6;
-          } else if (cur.type === 'Z') {
-            color = 7;
-          } else if (cur.type === 'J') {
-            color = 8;
-          } else if (cur.type === 'L') {
-            color = 9;
+        } else {
+          if (state.get('lockDelay').startTime !== null) {
+            store.dispatch(actions.updateLockDelay());
           } else {
-            color = 1;
+            store.dispatch(actions.startLockDelay());
           }
-          shape.forEach((m) => {
-            if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
-              let line = matrix.get(xy.get(0) + m.get(1));
-              line = line.set(xy.get(1) + m.get(0), color);
-              matrix = matrix.set(xy.get(0) + m.get(1), line);
+          if (store.getState().get('lockDelay').shouldLock) {
+            let matrix = state.get('matrix');
+            const shape = cur.shape;
+            const xy = cur.xy;
+            let color;
+            if (cur.type === 'I') {
+              color = 3;
+            } else if (cur.type === 'O') {
+              color = 4;
+            } else if (cur.type === 'T') {
+              color = 5;
+            } else if (cur.type === 'S') {
+              color = 6;
+            } else if (cur.type === 'Z') {
+              color = 7;
+            } else if (cur.type === 'J') {
+              color = 8;
+            } else if (cur.type === 'L') {
+              color = 9;
+            } else {
+              color = 1;
             }
-          });
-          states.nextAround(matrix, stopDownTrigger);
+            shape.forEach((m) => {
+              if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+                let line = matrix.get(xy.get(0) + m.get(1));
+                line = line.set(xy.get(1) + m.get(0), color);
+                matrix = matrix.set(xy.get(0) + m.get(1), line);
+              }
+            });
+            states.nextAround(matrix, stopDownTrigger);
+          }
         }
-        */
       },
     });
   } else {

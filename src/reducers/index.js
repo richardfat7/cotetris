@@ -19,6 +19,7 @@ import holdType from './holdType';
 import canHold from './canHold';
 import bag from './bag';
 import combo from './combo';
+import lockDelay from './lockDelay';
 
 
 const rootReducer = combineReducers({
@@ -42,6 +43,7 @@ const rootReducer = combineReducers({
   canHold,
   bag,
   combo,
+  lockDelay,
 });
 
 export default rootReducer;

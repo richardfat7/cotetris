@@ -35,6 +35,7 @@ const down = (store) => {
           store.dispatch(actions.shiftNextBlock());
         }
         store.dispatch(actions.holdType(blockType.indexOf(cur.type)));
+        store.dispatch(actions.resetLockDelay());
         states.auto();
         subscribeTile(store);
         store.dispatch(actions.canHold(false));

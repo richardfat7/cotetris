@@ -28,3 +28,6 @@ export const KEY_HOLD = 'KEY_HOLD';
 export const FOCUS = 'FOCUS';
 export const SHIFT_NEXT_BLOCK = 'SHIFT_NEXT_BLOCK';
 export const RESET_BAG = 'RESET_BAG';
+export const LOCK_DELAY_START = 'LOCK_DELAY_START';
+export const LOCK_DELAY_RESET = 'LOCK_DELAY_RESET';
+export const LOCK_DELAY_UPDATE = 'LOCK_DELAY_UPDATE';

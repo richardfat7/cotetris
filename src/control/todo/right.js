@@ -32,6 +32,7 @@ const down = (store) => {
           next.timeStamp += parseInt(delay, 10);
           store.dispatch(actions.moveBlock(next));
           timeStamp = next.timeStamp;
+          store.dispatch(actions.resetLockDelay());
         } else {
           cur.timeStamp += parseInt(parseInt(delay, 10) / 1.5, 10); // 真实移动delay多一点，碰壁delay少一点
           store.dispatch(actions.moveBlock(cur));
