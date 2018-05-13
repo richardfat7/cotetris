@@ -58,7 +58,7 @@ const down = (store) => {
           timeStamp = next.timeStamp;
         } else {
           cur.timeStamp += parseInt(parseInt(delay, 10) / 1.5, 10); // 真实移动delay多一点，碰壁delay少一点
-          store.dispatch(actions.moveBlockGeneral(next, type));
+          store.dispatch(actions.moveBlockGeneral(cur, type));
           timeStamp = cur.timeStamp;
         }
         const remain = speeds[state.get('speedRun') - 1] - (Date.now() - timeStamp);
