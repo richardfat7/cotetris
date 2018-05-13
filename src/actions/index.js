@@ -145,7 +145,7 @@ function combo(data) {
   return {
     type: reducerType.COMBO,
     data,
-  }
+  };
 }
 
 export default {

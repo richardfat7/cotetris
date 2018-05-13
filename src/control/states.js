@@ -167,9 +167,8 @@ const states = {
         music.clear();
       }
       return;
-    } else {
-      store.dispatch(actions.combo(-1));
     }
+    store.dispatch(actions.combo(-1));
     if (isOver(matrix)) {
       if (music.gameover) {
         music.gameover();
