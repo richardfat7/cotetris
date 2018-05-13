@@ -77,9 +77,9 @@ const states = {
       const next2 = cur2.fall();
       let matrix;
       // let s1 = false; let s2 = false;
+      states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       if (want(next, state.get('matrix'))) {
         store.dispatch(actions.moveBlock(next));
-        states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
         // s1 = true;
         // console.log(s1);
       } else {
@@ -113,7 +113,7 @@ const states = {
             }
           })
         ));
-        // states.nextAround(matrix);
+        states.nextAround(matrix);
       }
       if (want(next2, state.get('matrix'))) {
         store.dispatch(actions.moveBlock2(next2));
