@@ -2,7 +2,7 @@ import { List } from 'immutable';
 import store from '../store';
 import { want, isClear, isOver } from '../unit/';
 import actions from '../actions';
-import { speeds, blankLine, blankMatrix, clearPoints, eachLines, blockType } from '../unit/const';
+import { speeds, blankLine, bottomLine, blankMatrix, clearPoints, eachLines, blockType } from '../unit/const';
 import { music } from '../unit/music';
 
 
@@ -36,6 +36,31 @@ const getStartMatrix = (startLines) => { // 生成startLines
   }
   return startMatrix;
 };
+
+  // sending lines to opponent
+function addPenalty(linesCleared){
+  let linesPerCombo = [0,1,1,2,2,2,3,4];
+  let linesPerCleared = [0,0,1,2,4];
+  let combo = store.getState().get('combo');
+  let linesSent = linesPerCombo[Math.min(Math.max(combo,0),7)] + linesPerCleared[linesCleared];
+  //TBD: if(linesSent > 0) send linesSent thru peerJS here (?)
+
+  // receviing lines from opponent
+  let selfSend = true;
+  let linesReceived;
+  if(selfSend == true){
+    linesReceived = linesSent; // TBD: get lines sent from opponent (lineReceived)
+  }// TBD: add them up here
+  let matrix = store.getState().get('matrix');
+  let hole = Math.floor((Math.random() * 10));
+  for(let i=0;i<linesReceived;i++){
+    let bottomLineHole = bottomLine.slice(0);
+    bottomLineHole[hole] = 0;
+    matrix = matrix.splice(0, 1);
+    matrix = matrix.push(List(bottomLineHole));
+  }
+  store.dispatch(actions.matrix(matrix));
+}
 
 const states = {
   // 自动下落setTimeout变量
@@ -122,7 +147,6 @@ const states = {
     if (typeof stopDownTrigger === 'function') {
       stopDownTrigger();
     }
-
     const addPoints = (store.getState().get('points') + 10) +
       ((store.getState().get('speedRun') - 1) * 2); // 速度越快, 得分越高
 
@@ -130,16 +154,7 @@ const states = {
 
     if (isClear(matrix)) {
       let combo = store.getState().get('combo');
-      if (combo < 2) {
-        combo += 1;
-      } else if (combo < 4) {
-        combo += 2;
-      } else if (combo < 6) {
-        combo += 3;
-      } else {
-        combo += 4;
-      }
-      console.log(combo);
+      combo += 1;
       store.dispatch(actions.combo(combo));
       if (music.clear) {
         music.clear();
@@ -161,6 +176,7 @@ const states = {
       store.dispatch(actions.nextBlock(store.getState().get('bag').first()));
       store.dispatch(actions.shiftNextBlock());
       store.dispatch(actions.canHold(true));
+      addPenalty(0);
       states.auto();
     }, 100);
   },
@@ -197,6 +213,7 @@ const states = {
       newMatrix = newMatrix.unshift(List(blankLine));
     });
     store.dispatch(actions.matrix(newMatrix));
+    addPenalty(lines.length);
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
     store.dispatch(actions.nextBlock(state.get('bag').first()));
     store.dispatch(actions.shiftNextBlock());
