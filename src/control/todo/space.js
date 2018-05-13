@@ -90,15 +90,7 @@ const down = (store) => {
           store.dispatch(actions.drop(false));
         }, 100);
         store.dispatch(actions.canHold(true));
-        if (myplayerid === 0) { // NOTE might have bugs
-          states.nextAround(matrix, null, myplayerid);
-        } else if (myplayerid === 1) {
-          states.nextAround(matrix, null, myplayerid);
-        } else if (myplayerid === 2) {
-          states.nextAround(matrix, null, myplayerid);
-        } else if (myplayerid === 2) {
-          states.nextAround(matrix, null, myplayerid);
-        }
+        states.nextAround(matrix, null, myplayerid);
       } else {
         states.start();
       }

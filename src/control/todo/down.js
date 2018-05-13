@@ -9,13 +9,6 @@ const down = (store) => {
   store.dispatch(actions.keyboard.down(true));
   const peerState = store.getState().get('peerConnection');
   const myplayerid = store.getState().get('myplayerid');
-  if (peerState.conns) {
-    for (let i = 0; i < peerState.conns.length; i++) {
-      // later should a sequence number to reorder packet by us
-      const data = { label: 'movement', payload: 'down', playerid: myplayerid };
-      peerState.conns[i].send(JSON.stringify(data));
-    }
-  }
   let curV; let type;
   if (myplayerid === 0) {
     curV = 'cur';
@@ -36,6 +29,13 @@ const down = (store) => {
       begin: 40,
       interval: 40,
       callback: (stopDownTrigger) => {
+        if (peerState.conns) {
+          for (let i = 0; i < peerState.conns.length; i++) {
+            // later should a sequence number to reorder packet by us
+            const data = { label: 'movement', payload: 'down', playerid: myplayerid };
+            peerState.conns[i].send(JSON.stringify(data));
+          }
+        }
         const state = store.getState();
         if (state.get('lock')) {
           return;
@@ -86,15 +86,7 @@ const down = (store) => {
               }
             })
           ));
-          if (myplayerid === 0) { // NOTE might have bugs
-            states.nextAround(matrix, stopDownTrigger, myplayerid);
-          } else if (myplayerid === 1) {
-            states.nextAround(matrix, stopDownTrigger, myplayerid);
-          } else if (myplayerid === 2) {
-            states.nextAround(matrix, stopDownTrigger, myplayerid);
-          } else if (myplayerid === 2) {
-            states.nextAround(matrix, stopDownTrigger, myplayerid);
-          }
+          states.nextAround(matrix, stopDownTrigger, myplayerid);
         }
       },
     });

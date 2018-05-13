@@ -76,30 +76,32 @@ export default class Peer extends React.Component {
                 }
               }
             } else if (data.label === 'movement') {
+              // {"label":"movement","payload":"down","playerid":1}
               const playerid = data.playerid;
               let type; let cur;
               if (playerid === 0) {
                 type = reducerType.MOVE_BLOCK;
-                cur = storeStates.cur;
+                cur = storeStates.get('cur');
               } else if (playerid === 1) {
                 type = reducerType.MOVE_BLOCK2;
-                cur = storeStates.cur2;
+                cur = storeStates.get('cur2');
               } else if (playerid === 2) {
                 type = reducerType.MOVE_BLOCK_OPPO;
-                cur = storeStates.curOppo;
+                cur = storeStates.get('curOppo');
               } else if (playerid === 3) {
                 type = reducerType.MOVE_BLOCK_OPPO2;
-                cur = storeStates.curOppo2;
+                cur = storeStates.get('curOppo2');
               }
               console.log(type, cur);
               const direction = data.payload;
-              if (cur && direction === 'left') {
+              if (cur && (direction === 'left')) {
                 store.dispatch(actions.moveBlockGeneral(cur.left(), type));
-              } else if (cur && direction === 'right') {
+                console.log('haha');
+              } else if (cur && (direction === 'right')) {
                 store.dispatch(actions.moveBlockGeneral(cur.right(), type));
-              } else if (cur && direction === 'rotate') {
+              } else if (cur && (direction === 'rotate')) {
                 store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
-              } else if (cur && direction === 'space') {
+              } else if (cur && (direction === 'space')) {
                 let index = 0;
                 let bottom = cur.fall(index);
                 while (want(bottom, store.getState().get('matrix'))) {
@@ -108,7 +110,7 @@ export default class Peer extends React.Component {
                 }
                 bottom = cur.fall(index - 2);
                 store.dispatch(actions.moveBlockGeneral(bottom, type));
-              } else if (cur && direction === 'down') {
+              } else if (cur && (direction === 'down')) {
                 store.dispatch(actions.moveBlockGeneral(cur.fall(), type));
               }
             }
@@ -159,26 +161,26 @@ export default class Peer extends React.Component {
           let type; let cur;
           if (playerid === 0) {
             type = reducerType.MOVE_BLOCK;
-            cur = storeStates.cur;
+            cur = storeStates.get('cur');
           } else if (playerid === 1) {
             type = reducerType.MOVE_BLOCK2;
-            cur = storeStates.cur2;
+            cur = storeStates.get('cur2');
           } else if (playerid === 2) {
             type = reducerType.MOVE_BLOCK_OPPO;
-            cur = storeStates.curOppo;
+            cur = storeStates.get('curOppo');
           } else if (playerid === 3) {
             type = reducerType.MOVE_BLOCK_OPPO2;
-            cur = storeStates.curOppo2;
+            cur = storeStates.get('curOppo2');
           }
           console.log(type, cur);
           const direction = data.payload;
-          if (cur && direction === 'left') {
+          if (cur && (direction === 'left')) {
             store.dispatch(actions.moveBlockGeneral(cur.left(), type));
-          } else if (cur && direction === 'right') {
+          } else if (cur && (direction === 'right')) {
             store.dispatch(actions.moveBlockGeneral(cur.right(), type));
-          } else if (cur && direction === 'rotate') {
+          } else if (cur && (direction === 'rotate')) {
             store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
-          } else if (cur && direction === 'space') {
+          } else if (cur && (direction === 'space')) {
             let index = 0;
             let bottom = cur.fall(index);
             while (want(bottom, store.getState().get('matrix'))) {
@@ -187,7 +189,7 @@ export default class Peer extends React.Component {
             }
             bottom = cur.fall(index - 2);
             store.dispatch(actions.moveBlockGeneral(bottom, type));
-          } else if (cur && direction === 'down') {
+          } else if (cur && (direction === 'down')) {
             store.dispatch(actions.moveBlockGeneral(cur.fall(), type));
           }
         }

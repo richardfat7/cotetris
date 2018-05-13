@@ -10,18 +10,18 @@ const down = (store) => {
   store.dispatch(actions.keyboard.right(true));
   const peerState = store.getState().get('peerConnection');
   const myplayerid = store.getState().get('myplayerid');
-  if (peerState.conns) {
-    for (let i = 0; i < peerState.conns.length; i++) {
-      // later should a sequence number to reorder packet by us
-      const data = { label: 'movement', payload: 'right', playerid: myplayerid };
-      peerState.conns[i].send(JSON.stringify(data));
-    }
-  }
   event.down({
     key: 'right',
     begin: 200,
     interval: 100,
     callback: () => {
+      if (peerState.conns) {
+        for (let i = 0; i < peerState.conns.length; i++) {
+          // later should a sequence number to reorder packet by us
+          const data = { label: 'movement', payload: 'right', playerid: myplayerid };
+          peerState.conns[i].send(JSON.stringify(data));
+        }
+      }
       const state = store.getState();
       if (state.get('lock')) {
         return;
