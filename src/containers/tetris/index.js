@@ -6,12 +6,10 @@ import propTypes from 'prop-types';
 import style from './index.less';
 
 import Matrix from '../../components/matrix';
-import MatrixOPPO from '../../components/matrixOPPO';
 import Decorate from '../../components/decorate';
 import Number from '../../components/number';
 import Next from '../../components/next';
 import Hold from '../../components/hold';
-import HoldOPPO from '../../components/holdOPPO';
 import Music from '../../components/music';
 import Pause from '../../components/pause';
 import Point from '../../components/point';
@@ -120,7 +118,7 @@ class Tetris extends React.Component {
                 reset={this.props.reset}
               />
               <Logo cur={!!this.props.cur} reset={this.props.reset} />
-              <MatrixOPPO
+              <Matrix
                 matrix={this.props.matrix}
                 cur={this.props.cur}
                 reset={this.props.reset}
@@ -128,7 +126,7 @@ class Tetris extends React.Component {
               <LogoOPPO cur={!!this.props.cur} reset={this.props.reset} />
               <div className={style.state}>
                 <p>{i18n.hold[lan]}</p>
-                <HoldOPPO data={this.props.holdType} />
+                <Hold data={this.props.holdType} />
                 <Point cur={!!this.props.cur} point={this.props.points} max={this.props.max} />
                 <p>{ this.props.cur ? i18n.cleans[lan] : i18n.startLine[lan] }</p>
                 <Number number={this.props.cur ? this.props.clearLines : this.props.startLines} />

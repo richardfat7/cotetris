@@ -25,32 +25,14 @@ const down = (store) => {
         if (music.rotate) {
           music.rotate();
         }
-        const next = cur.z();
-        if (want(next, state.get('matrix'))) {
-          store.dispatch(actions.moveBlock(next));
+        let next;
+        for (let i = 0; i < 5; i++) {
+          next = cur.z(i);
+          if (want(next, state.get('matrix'))) {
+            store.dispatch(actions.moveBlock(next));
+            break;
+          }
         }
-      },
-    });
-  } else {
-    event.down({
-      key: 'z',
-      begin: 200,
-      interval: 100,
-      callback: () => {
-        if (store.getState().get('lock')) {
-          return;
-        }
-        if (music.move) {
-          music.move();
-        }
-        const state = store.getState();
-        const cur = state.get('cur');
-        if (cur) {
-          return;
-        }
-        let startLines = state.get('startLines');
-        startLines = startLines - 1 < 0 ? 10 : startLines - 1;
-        store.dispatch(actions.startLines(startLines));
       },
     });
   }

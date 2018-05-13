@@ -129,15 +129,13 @@ const states = {
         } else {
           color = 1;
         }
-        shape.forEach((m, k1) => (
-          m.forEach((n, k2) => {
-            if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
-              let line = matrix.get(xy.get(0) + k1);
-              line = line.set(xy.get(1) + k2, color);
-              matrix = matrix.set(xy.get(0) + k1, line);
-            }
-          })
-        ));
+        shape.forEach((m) => {
+          if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(xy.get(0) + m.get(1));
+            line = line.set(xy.get(1) + m.get(0), color);
+            matrix = matrix.set(xy.get(0) + m.get(1), line);
+          }
+        });
         states.nextAround(matrix);
       }
     };

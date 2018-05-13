@@ -25,9 +25,13 @@ const down = (store) => {
         if (music.rotate) {
           music.rotate();
         }
-        const next = cur.rotate();
-        if (want(next, state.get('matrix'))) {
-          store.dispatch(actions.moveBlock(next));
+        let next;
+        for (let i = 0; i < 5; i++) {
+          next = cur.rotate(i);
+          if (want(next, state.get('matrix'))) {
+            store.dispatch(actions.moveBlock(next));
+            break;
+          }
         }
       },
     });
