@@ -2,9 +2,37 @@ import { List } from 'immutable';
 import store from '../store';
 import { want, isClear, isOver } from '../unit/';
 import actions from '../actions';
-import { speeds, blankLine, blankMatrix, clearPoints, eachLines, blockType } from '../unit/const';
+import { speeds,
+  blankLine,
+  bottomLine,
+  blankMatrix,
+  clearPoints,
+  eachLines,
+  blockType,
+} from '../unit/const';
 import { music } from '../unit/music';
 
+const getColor = (type) => {
+  let color;
+  if (type === 'I') {
+    color = 3;
+  } else if (type === 'O') {
+    color = 4;
+  } else if (type === 'T') {
+    color = 5;
+  } else if (type === 'S') {
+    color = 6;
+  } else if (type === 'Z') {
+    color = 7;
+  } else if (type === 'J') {
+    color = 8;
+  } else if (type === 'L') {
+    color = 9;
+  } else {
+    color = 1;
+  }
+  return color;
+};
 
 const getStartMatrix = (startLines) => { // 生成startLines
   const getLine = (min, max) => { // 返回标亮个数在min~max之间一行方块, (包含边界)
@@ -36,6 +64,31 @@ const getStartMatrix = (startLines) => { // 生成startLines
   }
   return startMatrix;
 };
+
+  // sending lines to opponent
+function addPenalty(linesCleared) {
+  const linesPerCombo = [0, 1, 1, 2, 2, 2, 3, 4];
+  const linesPerCleared = [0, 0, 1, 2, 4];
+  const combo = store.getState().get('combo');
+  const linesSent = linesPerCombo[Math.min(Math.max(combo, 0), 7)] + linesPerCleared[linesCleared];
+  // NOTE TBD: if(linesSent > 0) send linesSent thru peerJS here (?)
+
+  // receviing lines from opponent
+  const selfSend = true;
+  let linesReceived;
+  if (selfSend === true) {
+    linesReceived = linesSent; // TBD: get lines sent from opponent (lineReceived)
+  }// TBD: add them up here
+  let matrix = store.getState().get('matrix');
+  const hole = Math.floor((Math.random() * 10));
+  for (let i = 0; i < linesReceived; i++) {
+    const bottomLineHole = bottomLine.slice(0);
+    bottomLineHole[hole] = 0;
+    matrix = matrix.splice(0, 1);
+    matrix = matrix.push(List(bottomLineHole));
+  }
+  store.dispatch(actions.matrix(matrix));
+}
 
 const states = {
   // 自动下落setTimeout变量
@@ -77,6 +130,7 @@ const states = {
       state = store.getState();
       cur = state.get('cur');
       cur2 = state.get('cur2');
+      // const myplayerid = state.get('myplayerid');
       const next = cur.fall();
       const next2 = cur2.fall();
       let matrix;
@@ -94,24 +148,7 @@ const states = {
         matrix = state.get('matrix');
         const shape = cur && cur.shape;
         const xy = cur && cur.xy;
-        let color;
-        if (cur.type === 'I') {
-          color = 3;
-        } else if (cur.type === 'O') {
-          color = 4;
-        } else if (cur.type === 'T') {
-          color = 5;
-        } else if (cur.type === 'S') {
-          color = 6;
-        } else if (cur.type === 'Z') {
-          color = 7;
-        } else if (cur.type === 'J') {
-          color = 8;
-        } else if (cur.type === 'L') {
-          color = 9;
-        } else {
-          color = 1;
-        }
+        const color = getColor(cur.type);
         shape.forEach((m, k1) => (
           m.forEach((n, k2) => {
             if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
@@ -121,29 +158,12 @@ const states = {
             }
           })
         ));
-        states.nextAround(matrix);
+        states.nextAround(matrix, null, 0); // NOTE: might have bugs
       } else if (s1 && !s2) {
         matrix = state.get('matrix');
         const shape = cur2 && cur2.shape;
         const xy = cur2 && cur2.xy;
-        let color;
-        if (cur2.type === 'I') {
-          color = 3;
-        } else if (cur2.type === 'O') {
-          color = 4;
-        } else if (cur2.type === 'T') {
-          color = 5;
-        } else if (cur2.type === 'S') {
-          color = 6;
-        } else if (cur2.type === 'Z') {
-          color = 7;
-        } else if (cur2.type === 'J') {
-          color = 8;
-        } else if (cur2.type === 'L') {
-          color = 9;
-        } else {
-          color = 1;
-        }
+        const color = getColor(cur2.type);
         shape.forEach((m, k1) => (
           m.forEach((n, k2) => {
             if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
@@ -153,49 +173,15 @@ const states = {
             }
           })
         ));
-        states.nextAround2(matrix);
+        states.nextAround(matrix, null, 1); // NOTE: might have bugs
       } else if (!s1 && !s2) {
         matrix = state.get('matrix');
         const shape = cur && cur.shape;
         const shape2 = cur2 && cur2.shape;
         const xy = cur && cur.xy;
         const xy2 = cur2 && cur2.xy;
-        let color;
-        let color2;
-        if (cur.type === 'I') {
-          color = 3;
-        } else if (cur.type === 'O') {
-          color = 4;
-        } else if (cur.type === 'T') {
-          color = 5;
-        } else if (cur.type === 'S') {
-          color = 6;
-        } else if (cur.type === 'Z') {
-          color = 7;
-        } else if (cur.type === 'J') {
-          color = 8;
-        } else if (cur.type === 'L') {
-          color = 9;
-        } else {
-          color = 1;
-        }
-        if (cur2.type === 'I') {
-          color2 = 3;
-        } else if (cur2.type === 'O') {
-          color2 = 4;
-        } else if (cur2.type === 'T') {
-          color2 = 5;
-        } else if (cur2.type === 'S') {
-          color2 = 6;
-        } else if (cur2.type === 'Z') {
-          color2 = 7;
-        } else if (cur2.type === 'J') {
-          color2 = 8;
-        } else if (cur2.type === 'L') {
-          color2 = 9;
-        } else {
-          color2 = 1;
-        }
+        const color = getColor(cur.type);
+        const color2 = getColor(cur2.type);
         shape.forEach((m, k1) => (
           m.forEach((n, k2) => {
             if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
@@ -214,7 +200,7 @@ const states = {
             }
           })
         ));
-        states.nextAround(matrix);
+        states.nextAround(matrix, null, 0);
       } else {
         states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       }
@@ -225,14 +211,14 @@ const states = {
   },
 
   // 一个方块结束, 触发下一个
-  nextAround: (matrix, stopDownTrigger) => {
+  // character = {0, 1, 2, 3}
+  nextAround: (matrix, stopDownTrigger, character = 0) => {
     clearTimeout(states.fallInterval);
     store.dispatch(actions.lock(true));
     store.dispatch(actions.matrix(matrix));
     if (typeof stopDownTrigger === 'function') {
       stopDownTrigger();
     }
-
     const addPoints = (store.getState().get('points') + 10) +
       ((store.getState().get('speedRun') - 1) * 2); // 速度越快, 得分越高
 
@@ -240,23 +226,14 @@ const states = {
 
     if (isClear(matrix)) {
       let combo = store.getState().get('combo');
-      if (combo < 2) {
-        combo += 1;
-      } else if (combo < 4) {
-        combo += 2;
-      } else if (combo < 6) {
-        combo += 3;
-      } else {
-        combo += 4;
-      }
-      console.log(combo);
+      combo += 1;
       store.dispatch(actions.combo(combo));
       if (music.clear) {
         music.clear();
       }
-    } else {
-      store.dispatch(actions.combo(-1));
+      return;
     }
+    store.dispatch(actions.combo(-1));
     if (isOver(matrix)) {
       if (music.gameover) {
         music.gameover();
@@ -265,58 +242,19 @@ const states = {
     }
     setTimeout(() => {
       store.dispatch(actions.lock(false));
-      store.dispatch(actions.moveBlock({ type: store.getState().get('next') }));
+      if (character === 0) {
+        store.dispatch(actions.moveBlock({ type: store.getState().get('next') }));
+      } else if (character === 1) {
+        store.dispatch(actions.moveBlock2({ type: store.getState().get('next') }));
+      } else if (character === 2) {
+        store.dispatch(actions.moveBlockOppo({ type: store.getState().get('next') }));
+      } else if (character === 3) {
+        store.dispatch(actions.moveBlockOppo2({ type: store.getState().get('next') }));
+      }
       store.dispatch(actions.nextBlock(store.getState().get('bag').get(0)));
       store.dispatch(actions.shiftNextBlock());
       store.dispatch(actions.canHold(true));
-      states.auto();
-    }, 100);
-  },
-
-  nextAround2: (matrix, stopDownTrigger) => {
-    clearTimeout(states.fallInterval);
-    store.dispatch(actions.lock(true));
-    store.dispatch(actions.matrix(matrix));
-    if (typeof stopDownTrigger === 'function') {
-      stopDownTrigger();
-    }
-
-    const addPoints = (store.getState().get('points') + 10) +
-      ((store.getState().get('speedRun') - 1) * 2); // 速度越快, 得分越高
-
-    states.dispatchPoints(addPoints);
-
-    if (isClear(matrix)) {
-      let combo = store.getState().get('combo');
-      if (combo < 2) {
-        combo += 1;
-      } else if (combo < 4) {
-        combo += 2;
-      } else if (combo < 6) {
-        combo += 3;
-      } else {
-        combo += 4;
-      }
-      console.log(combo);
-      store.dispatch(actions.combo(combo));
-      if (music.clear) {
-        music.clear();
-      }
-    } else {
-      store.dispatch(actions.combo(-1));
-    }
-    if (isOver(matrix)) {
-      if (music.gameover) {
-        music.gameover();
-      }
-      states.overStart();
-    }
-    setTimeout(() => {
-      store.dispatch(actions.lock(false));
-      store.dispatch(actions.moveBlock2({ type: store.getState().get('next') }));
-      store.dispatch(actions.nextBlock(store.getState().get('bag').get(0)));
-      store.dispatch(actions.shiftNextBlock());
-      store.dispatch(actions.canHold(true));
+      addPenalty(0);
       states.auto();
     }, 100);
   },
@@ -353,6 +291,7 @@ const states = {
       newMatrix = newMatrix.unshift(List(blankLine));
     });
     store.dispatch(actions.matrix(newMatrix));
+    addPenalty(lines.length);
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
     store.dispatch(actions.nextBlock(state.get('bag').get(0)));
     store.dispatch(actions.shiftNextBlock());

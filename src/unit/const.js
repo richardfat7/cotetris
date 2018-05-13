@@ -29,6 +29,8 @@ const speeds = [800, 650, 500, 370, 250, 160];
 
 const delays = [50, 60, 70, 80, 90, 100];
 
+const bottomLine = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2];
+
 const fillLine = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
 const blankLine = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -119,6 +121,7 @@ module.exports = {
   delays,
   fillLine,
   blankLine,
+  bottomLine,
   blankMatrix,
   clearPoints,
   StorageKey,

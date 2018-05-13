@@ -7,8 +7,8 @@ import tempMatrix from './tempMatrix';
 import tempMatrix2 from './tempMatrix2';
 import next from './next';
 import cur from './cur';
-import curOppo from './curOppo';
 import cur2 from './cur2';
+import curOppo from './curOppo';
 import curOppo2 from './curOppo2';
 import startLines from './startLines';
 import max from './max';
@@ -32,6 +32,7 @@ const rootReducer = combineReducers({
   pause,
   music,
   matrix,
+  matrixOppo,
   next,
   cur,
   cur2,
@@ -52,11 +53,10 @@ const rootReducer = combineReducers({
   canHold,
   bag,
   combo,
-  matrixOppo,
-  peerConnection,
   myplayerid,
   tempMatrix,
   tempMatrix2,
+  peerConnection,
 });
 
 export default rootReducer;

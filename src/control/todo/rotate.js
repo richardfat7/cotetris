@@ -30,7 +30,7 @@ const down = (store) => {
     }
   }
   store.dispatch(actions.keyboard.rotate(true));
-  if (store.getState().get('cur') !== null) {
+  if (store.getState().get(curV) !== null) {
     event.down({
       key: 'rotate',
       once: true,
@@ -42,7 +42,7 @@ const down = (store) => {
         if (state.get('pause')) {
           states.pause(false);
         }
-        const cur = state.get('cur');
+        const cur = state.get(curV);
         if (cur === null) {
           return;
         }
