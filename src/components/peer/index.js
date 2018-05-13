@@ -52,15 +52,49 @@ export default class Peer extends React.Component {
     }, () => {
       this.state.peer.on('connection', (c) => {
         c.on('open', () => {
-          console.log('someone connected.');
+          console.log('someone opened connection.');
           this.setState({ conns: [...this.state.conns, c] });
           // payload is player's id
           const lastPlayer = this.state.currentplayerid + 1;
           this.setState({ lastPlayer });
           c.send(JSON.stringify({ label: 'header', flag: 'ACK', payload: lastPlayer }));
-          c.on('data', (data) => { // NOTE please copy bottom code to here too
-            alert(data);
-            console.log(data);
+          c.on('data', (res) => {
+            console.log(res);
+            const data = JSON.parse(res);
+            const storeStates = store.getState();
+            if (data.label === 'header') {
+              if (data.flag === 'ACK') {
+                console.log('someone connected.');
+                if (this.props.history) {
+                  this.props.history.push('/tetris');
+                }
+              }
+            } else if (data.label === 'movement') {
+              const playerid = data.playerid;
+              let type; let cur;
+              if (playerid === 0) {
+                type = reducerType.MOVE_BLOCK;
+                cur = storeStates.cur;
+              } else if (playerid === 1) {
+                type = reducerType.MOVE_BLOCK2;
+                cur = storeStates.cur2;
+              } else if (playerid === 2) {
+                type = reducerType.MOVE_BLOCK_OPPO;
+                cur = storeStates.curOppo;
+              } else if (playerid === 2) {
+                type = reducerType.MOVE_BLOCK_OPPO2;
+                cur = storeStates.curOppo2;
+              }
+              console.log(type, cur);
+              const direction = data.payload;
+              if (cur && direction === 'left') {
+                store.dispatch(actions.moveBlockGeneral(cur.left(), type));
+              } else if (cur && direction === 'right') {
+                store.dispatch(actions.moveBlockGeneral(cur.right(), type));
+              } else if (cur && direction === 'rotate') {
+                store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
+              }
+            }
           });
           c.on('close', () => {
             c.close();
@@ -82,12 +116,13 @@ export default class Peer extends React.Component {
         message: 'hi i want to chat with you!',
       },
     });
-    const stateConns = store.getState().peerConnection.conn;
+    const stateConns = store.getState().get('peerConnection').conns;
     const connsCopy = stateConns.slice();
     connsCopy.push(con);
     store.dispatch(actions.peerSaveConnection(connsCopy));
     this.setState({ conns: [...this.state.conns, con] });
     con.on('open', () => {
+      console.log('connection opened.');
       con.on('data', (res) => {
         console.log(res);
         const data = JSON.parse(res);
@@ -97,6 +132,10 @@ export default class Peer extends React.Component {
             const myplayerid = data.payload;
             store.dispatch(actions.setMyPlayerID(myplayerid));
             console.log('connect success.');
+            con.send(JSON.stringify({ label: 'header', flag: 'ACK' }));
+            if (this.props.history) {
+              this.props.history.push('/tetris');
+            }
           }
         } else if (data.label === 'movement') {
           const playerid = data.playerid;
@@ -116,11 +155,11 @@ export default class Peer extends React.Component {
           }
           console.log(type, cur);
           const direction = data.payload;
-          if (direction === 'left') {
+          if (cur && direction === 'left') {
             store.dispatch(actions.moveBlockGeneral(cur.left(), type));
-          } else if (direction === 'right') {
+          } else if (cur && direction === 'right') {
             store.dispatch(actions.moveBlockGeneral(cur.right(), type));
-          } else if (direction === 'rotate') {
+          } else if (cur && direction === 'rotate') {
             store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
           }
         }
@@ -139,7 +178,7 @@ export default class Peer extends React.Component {
     if (this.modal && this.modal.value) {
       this.register(this.modal.value);
     }
-    console.log(this.state.peer, this.state.conns);
+    // console.log(this.state.peer, this.state.conns);
   }
 
   connClick() {
@@ -178,6 +217,7 @@ Peer.statics = {
 };
 
 Peer.propTypes = {
+  history: propTypes.object,
   cur: propTypes.bool,
   max: propTypes.number,
   point: propTypes.number,

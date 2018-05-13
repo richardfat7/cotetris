@@ -94,6 +94,7 @@ const unit = {
   subscribeTile(store) { // 将状态记录到 localStorage
     store.subscribe(() => {
       let data = store.getState().toJS();
+      data.peerConnection = null;
       if (data.lock) {
         return;
       }

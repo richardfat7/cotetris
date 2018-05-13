@@ -8,8 +8,7 @@ const peerConnection = (state = initState, action) => {
     case reducerType.PEER_SAVE_PEER:
       return { conns, peer: action.data };
     case reducerType.PEER_SAVE_CONNECTION:
-      conns.push(action.data);
-      return { peer, conns };
+      return { peer, conns: action.data };
     default:
       return state;
   }

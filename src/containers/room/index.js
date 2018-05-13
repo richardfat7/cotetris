@@ -72,7 +72,7 @@ class Room extends React.Component {
       >
         <div className={classnames({ [style.rect]: true })}>
           <Decorate />
-          <Peer />
+          <Peer history={this.props.history} />
         </div>
       </div>
     );
@@ -80,6 +80,7 @@ class Room extends React.Component {
 }
 
 Room.propTypes = {
+  history: propTypes.object,
   nth: propTypes.bool,
 };
 
