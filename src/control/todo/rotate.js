@@ -3,10 +3,25 @@ import event from '../../unit/event';
 import actions from '../../actions';
 import states from '../states';
 import { music } from '../../unit/music';
+import * as reducerType from '../../unit/reducerType';
 
 const down = (store) => {
   const peerState = store.getState().get('peerConnection');
   const myplayerid = store.getState().get('myplayerid');
+  let curV; let type;
+  if (myplayerid === 0) {
+    curV = 'cur';
+    type = reducerType.MOVE_BLOCK;
+  } else if (myplayerid === 1) {
+    curV = 'cur2';
+    type = reducerType.MOVE_BLOCK2;
+  } else if (myplayerid === 2) {
+    curV = 'curOppo';
+    type = reducerType.MOVE_BLOCK_OPPO;
+  } else if (myplayerid === 3) {
+    curV = 'curOppo2';
+    type = reducerType.MOVE_BLOCK_OPPO2;
+  }
   if (peerState.conns) {
     for (let i = 0; i < peerState.conns.length; i++) {
       // later should a sequence number to reorder packet by us
@@ -36,7 +51,7 @@ const down = (store) => {
         }
         const next = cur.rotate();
         if (want(next, state.get('matrix'))) {
-          store.dispatch(actions.moveBlock(next));
+          store.dispatch(actions.moveBlockGeneral(next, type));
         }
       },
     });
@@ -53,16 +68,6 @@ const down = (store) => {
           music.move();
         }
         const state = store.getState();
-        let curV;
-        if (myplayerid === 0) {
-          curV = 'cur';
-        } else if (myplayerid === 1) {
-          curV = 'cur2';
-        } else if (myplayerid === 2) {
-          curV = 'curOppo';
-        } else if (myplayerid === 3) {
-          curV = 'curOppo2';
-        }
         const cur = state.get(curV);
         if (cur) {
           return;

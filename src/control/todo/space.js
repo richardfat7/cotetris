@@ -3,6 +3,7 @@ import event from '../../unit/event';
 import actions from '../../actions';
 import states from '../states';
 import { music } from '../../unit/music';
+import * as reducerType from '../../unit/reducerType';
 
 const down = (store) => {
   store.dispatch(actions.keyboard.drop(true));
@@ -23,15 +24,19 @@ const down = (store) => {
       if (state.get('lock')) {
         return;
       }
-      let curV;
+      let curV; let type;
       if (myplayerid === 0) {
         curV = 'cur';
+        type = reducerType.MOVE_BLOCK;
       } else if (myplayerid === 1) {
         curV = 'cur2';
+        type = reducerType.MOVE_BLOCK2;
       } else if (myplayerid === 2) {
         curV = 'curOppo';
+        type = reducerType.MOVE_BLOCK_OPPO;
       } else if (myplayerid === 3) {
         curV = 'curOppo2';
+        type = reducerType.MOVE_BLOCK_OPPO2;
       }
       const cur = state.get(curV);
       if (cur !== null) { // 置底
@@ -50,7 +55,7 @@ const down = (store) => {
         }
         let matrix = state.get('matrix');
         bottom = cur.fall(index - 2);
-        store.dispatch(actions.moveBlock(bottom));
+        store.dispatch(actions.moveBlockGeneral(bottom, type));
         const shape = bottom.shape;
         const xy = bottom.xy;
         let color;

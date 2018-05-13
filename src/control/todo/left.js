@@ -4,6 +4,7 @@ import actions from '../../actions';
 import states from '../states';
 import { speeds, delays } from '../../unit/const';
 import { music } from '../../unit/music';
+import * as reducerType from '../../unit/reducerType';
 
 const down = (store) => {
   store.dispatch(actions.keyboard.left(true));
@@ -28,15 +29,19 @@ const down = (store) => {
       if (music.move) {
         music.move();
       }
-      let curV;
+      let curV; let type;
       if (myplayerid === 0) {
         curV = 'cur';
+        type = reducerType.MOVE_BLOCK;
       } else if (myplayerid === 1) {
         curV = 'cur2';
+        type = reducerType.MOVE_BLOCK2;
       } else if (myplayerid === 2) {
         curV = 'curOppo';
+        type = reducerType.MOVE_BLOCK_OPPO;
       } else if (myplayerid === 3) {
         curV = 'curOppo2';
+        type = reducerType.MOVE_BLOCK_OPPO2;
       }
       const cur = state.get(curV);
       if (cur !== null) {
@@ -49,11 +54,11 @@ const down = (store) => {
         let timeStamp;
         if (want(next, state.get('matrix'))) {
           next.timeStamp += parseInt(delay, 10);
-          store.dispatch(actions.moveBlock(next));
+          store.dispatch(actions.moveBlockGeneral(next, type));
           timeStamp = next.timeStamp;
         } else {
           cur.timeStamp += parseInt(parseInt(delay, 10) / 1.5, 10); // 真实移动delay多一点，碰壁delay少一点
-          store.dispatch(actions.moveBlock(cur));
+          store.dispatch(actions.moveBlockGeneral(next, type));
           timeStamp = cur.timeStamp;
         }
         const remain = speeds[state.get('speedRun') - 1] - (Date.now() - timeStamp);

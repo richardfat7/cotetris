@@ -3,6 +3,7 @@ import event from '../../unit/event';
 import actions from '../../actions';
 import states from '../states';
 import { music } from '../../unit/music';
+import * as reducerType from '../../unit/reducerType';
 
 const down = (store) => {
   store.dispatch(actions.keyboard.down(true));
@@ -15,15 +16,19 @@ const down = (store) => {
       peerState.conns[i].send(JSON.stringify(data));
     }
   }
-  let curV;
+  let curV; let type;
   if (myplayerid === 0) {
     curV = 'cur';
+    type = reducerType.MOVE_BLOCK;
   } else if (myplayerid === 1) {
     curV = 'cur2';
+    type = reducerType.MOVE_BLOCK2;
   } else if (myplayerid === 2) {
     curV = 'curOppo';
+    type = reducerType.MOVE_BLOCK_OPPO;
   } else if (myplayerid === 3) {
     curV = 'curOppo2';
+    type = reducerType.MOVE_BLOCK_OPPO2;
   }
   if (store.getState().get(curV) !== null) {
     event.down({
@@ -48,7 +53,7 @@ const down = (store) => {
         }
         const next = cur.fall();
         if (want(next, state.get('matrix'))) {
-          store.dispatch(actions.moveBlock(next));
+          store.dispatch(actions.moveBlockGeneral(next, type));
           states.auto();
         } else {
           let matrix = state.get('matrix');
