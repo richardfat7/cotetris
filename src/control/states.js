@@ -1,6 +1,7 @@
 import { List } from 'immutable';
 import store from '../store';
 import { want, isClear, isOver } from '../unit/';
+import Block from '../unit/block';
 import actions from '../actions';
 import { speeds,
   blankLine,
@@ -247,14 +248,27 @@ const states = {
     }
     setTimeout(() => {
       store.dispatch(actions.lock(false));
+      let option;
       if (character === 0) {
-        store.dispatch(actions.moveBlock({ type: store.getState().get('next') }));
+        option = states.getOffset(store.getState().get('next'),
+          store.getState().get('cur2'), store.getState().get('matrix'));
+        store.dispatch(actions.moveBlock({
+          type: store.getState().get('next'), x: option.x, y: option.y }));
       } else if (character === 1) {
-        store.dispatch(actions.moveBlock2({ type: store.getState().get('next') }));
+        option = states.getOffset(store.getState().get('next'),
+          store.getState().get('cur'), store.getState().get('matrix'));
+        store.dispatch(actions.moveBlock2({
+          type: store.getState().get('next'), x: option.x, y: option.y }));
       } else if (character === 2) {
-        store.dispatch(actions.moveBlockOppo({ type: store.getState().get('next') }));
+        option = states.getOffset(store.getState().get('next'),
+          store.getState().get('cur2'), store.getState().get('matrixOppo'));
+        store.dispatch(actions.moveBlockOppo({
+          type: store.getState().get('next'), x: option.x, y: option.y }));
       } else if (character === 3) {
-        store.dispatch(actions.moveBlockOppo2({ type: store.getState().get('next') }));
+        option = states.getOffset(store.getState().get('next'),
+          store.getState().get('cur'), store.getState().get('matrixOppo'));
+        store.dispatch(actions.moveBlockOppo2({
+          type: store.getState().get('next'), x: option.x, y: option.y }));
       }
       store.dispatch(actions.nextBlock(store.getState().get('bag').get(0)));
       store.dispatch(actions.shiftNextBlock());
@@ -344,6 +358,32 @@ const states = {
     if (point > 0 && point > store.getState().get('max')) {
       store.dispatch(actions.max(point));
     }
+  },
+
+  getOffset: (next, cur, matrix) => {
+    let tMatrix = matrix;
+    const tshape = cur && cur.shape;
+    const txy = cur && cur.xy;
+    tshape.forEach((m, k1) => (
+      m.forEach((n, k2) => {
+        if (n && txy.get(0) + k1 >= 0) { // 竖坐标可以为负
+          let line = tMatrix.get(txy.get(0) + k1);
+          line = line.set(txy.get(1) + k2, 1);
+          tMatrix = tMatrix.set(txy.get(0) + k1, line);
+        }
+      })
+    ));
+    if (cur === undefined || cur === null) return { x: 0, y: 0 };
+    let tmp;
+    for (let i = 0; i < 5; i++) {
+      tmp = new Block({ type: next, x: 0, y: -i });
+      tmp.xy = [tmp.xy.get(0), tmp.xy.get(1)];
+      if (want(tmp, tMatrix)) return { x: 0, y: -i };
+      tmp = new Block({ type: next, x: 0, y: i });
+      tmp.xy = [tmp.xy.get(0), tmp.xy.get(1)];
+      if (want(tmp, tMatrix)) return { x: 0, y: i };
+    }
+    return { x: 0, y: 0 };
   },
 };
 
