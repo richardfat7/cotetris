@@ -76,13 +76,17 @@ const states = {
       const next = cur.fall();
       const next2 = cur2.fall();
       let matrix;
-      // let s1 = false; let s2 = false;
+      let s1 = false; let s2 = false;
       states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       if (want(next, state.get('matrix'))) {
         store.dispatch(actions.moveBlock(next));
-        // s1 = true;
-        // console.log(s1);
-      } else {
+        s1 = true;
+      }
+      if (want(next2, state.get('matrix'))) {
+        store.dispatch(actions.moveBlock2(next2));
+        s2 = true;
+      }
+      if (!s1 && s2) {
         matrix = state.get('matrix');
         const shape = cur && cur.shape;
         const xy = cur && cur.xy;
@@ -114,13 +118,7 @@ const states = {
           })
         ));
         states.nextAround(matrix);
-      }
-      if (want(next2, state.get('matrix'))) {
-        store.dispatch(actions.moveBlock2(next2));
-        // s2 = true;
-        // console.log(s2);
-        // states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
-      } else {
+      } else if (s1 && !s2) {
         matrix = state.get('matrix');
         const shape = cur2 && cur2.shape;
         const xy = cur2 && cur2.xy;
@@ -152,6 +150,67 @@ const states = {
           })
         ));
         states.nextAround2(matrix);
+      } else if (!s1 && !s2) {
+        matrix = state.get('matrix');
+        const shape = cur && cur.shape;
+        const shape2 = cur2 && cur2.shape;
+        const xy = cur && cur.xy;
+        const xy2 = cur2 && cur2.xy;
+        let color;
+        let color2;
+        if (cur.type === 'I') {
+          color = 3;
+        } else if (cur.type === 'O') {
+          color = 4;
+        } else if (cur.type === 'T') {
+          color = 5;
+        } else if (cur.type === 'S') {
+          color = 6;
+        } else if (cur.type === 'Z') {
+          color = 7;
+        } else if (cur.type === 'J') {
+          color = 8;
+        } else if (cur.type === 'L') {
+          color = 9;
+        } else {
+          color = 1;
+        }
+        if (cur2.type === 'I') {
+          color2 = 3;
+        } else if (cur2.type === 'O') {
+          color2 = 4;
+        } else if (cur2.type === 'T') {
+          color2 = 5;
+        } else if (cur2.type === 'S') {
+          color2 = 6;
+        } else if (cur2.type === 'Z') {
+          color2 = 7;
+        } else if (cur2.type === 'J') {
+          color2 = 8;
+        } else if (cur2.type === 'L') {
+          color2 = 9;
+        } else {
+          color2 = 1;
+        }
+        shape.forEach((m, k1) => (
+          m.forEach((n, k2) => {
+            if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
+              let line = matrix.get(xy.get(0) + k1);
+              line = line.set(xy.get(1) + k2, color);
+              matrix = matrix.set(xy.get(0) + k1, line);
+            }
+          })
+        ));
+        shape2.forEach((m, k1) => (
+          m.forEach((n, k2) => {
+            if (n && xy2.get(0) + k1 >= 0) { // 竖坐标可以为负
+              let line = matrix.get(xy2.get(0) + k1);
+              line = line.set(xy2.get(1) + k2, color2);
+              matrix = matrix.set(xy2.get(0) + k1, line);
+            }
+          })
+        ));
+        states.nextAround(matrix);
       }
     };
     clearTimeout(states.fallInterval);
