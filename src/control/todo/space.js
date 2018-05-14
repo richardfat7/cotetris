@@ -150,7 +150,7 @@ const down = (store) => {
           states.nextAround(matrix, null, myplayerid);
         } else if (myplayerid === 2) {
           states.nextAround(matrix, null, myplayerid);
-        } else if (myplayerid === 2) {
+        } else if (myplayerid === 3) {
           states.nextAround(matrix, null, myplayerid);
         }
       } else {
