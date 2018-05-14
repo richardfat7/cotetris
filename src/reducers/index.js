@@ -28,6 +28,7 @@ import combo from './combo';
 import peerConnection from './peerConnection';
 import myplayerid from './myplayerid';
 import lockDelay from './lockDelay';
+import linesReceived from './linesReceived';
 
 const rootReducer = combineReducers({
   pause,
@@ -59,6 +60,7 @@ const rootReducer = combineReducers({
   tempMatrix2,
   peerConnection,
   lockDelay,
+  linesReceived,
 });
 
 export default rootReducer;

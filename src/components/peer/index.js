@@ -7,7 +7,7 @@ import store from '../../store';
 import states from '../../control/states';
 import todo from '../../control/todo';
 import actions from '../../actions';
-
+import * as reducerType from '../../unit/reducerType';
 
 export default class Peer extends React.Component {
   constructor() {
@@ -101,6 +101,10 @@ export default class Peer extends React.Component {
             } else if (data.label === 'syncmove') {
               todo[data.key].down(store, data.id);
               todo[data.key].up(store);
+            } else if (data.label === 'linesSent') {
+              if (data.team === 'LEFT') {
+                store.dispatch({ type: reducerType.LINES_RECEIVED, data: data.data });
+              }
             } else if (data.label === 'syncgame') {
               if (data.team === 'RIGHT') {
                 if (data.attr === 'matrix') {
@@ -197,6 +201,10 @@ export default class Peer extends React.Component {
           console.log(data);
           states.start();
           console.log('started!');
+        } else if (data.label === 'linesSent') {
+          if (data.team === ((this.state.mypid <= 1) ? 'LEFT' : 'RIGHT')) {
+            store.dispatch({ type: reducerType.LINES_RECEIVED, data: data.data });
+          }
         } else if (data.label === 'syncgame') {
           if (data.team === ((this.state.mypid <= 1) ? 'LEFT' : 'RIGHT')) {
             if (data.attr === 'matrix') {
@@ -340,6 +348,10 @@ export default class Peer extends React.Component {
           console.log(data);
           states.start();
           console.log('started!');
+        } else if (data.label === 'linesSent') {
+          if (data.team === 'RIGHT') {
+            store.dispatch({ type: reducerType.LINES_RECEIVED, data: data.data });
+          }
         } else if (data.label === 'syncmove') {
           todo[data.key].down(store, data.id);
           todo[data.key].up(store);

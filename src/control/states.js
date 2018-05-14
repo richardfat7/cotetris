@@ -12,6 +12,7 @@ import { speeds,
   blockType,
 } from '../unit/const';
 import { music } from '../unit/music';
+import * as reducerType from '../unit/reducerType';
 
 const getColor = (type) => {
   let color;
@@ -72,14 +73,23 @@ function addPenalty(linesCleared) {
   const linesPerCleared = [0, 0, 1, 2, 4];
   const combo = store.getState().get('combo');
   const linesSent = linesPerCombo[Math.min(Math.max(combo, 0), 7)] + linesPerCleared[linesCleared];
-  // NOTE TBD: if(linesSent > 0) send linesSent thru peerJS here (?)
-
+  // TBD: if(linesSent > 0) send linesSent thru peerJS here (?)
+  if (linesSent > 0) {
+    const peerState = store.getState().get('peerConnection');
+    senddata(peerState.conns, {
+      label: 'linesSent',
+      data: linesSent,
+      team: store.getState().get('myplayerid') <= 1 ? 'RIGHT' : 'LEFT',
+    });
+  }
   // receviing lines from opponent
-  const selfSend = true;
+  const selfSend = false;
   let linesReceived;
   if (selfSend === true) {
     linesReceived = linesSent; // TBD: get lines sent from opponent (lineReceived)
-  }// TBD: add them up here
+  } else {
+    linesReceived = store.getState().get('linesReceived');
+  }
   let matrix = store.getState().get('matrix');
   const hole = Math.floor((Math.random() * 10));
   for (let i = 0; i < linesReceived; i++) {
@@ -91,6 +101,10 @@ function addPenalty(linesCleared) {
   store.dispatch(actions.matrix(matrix));
   store.dispatch(actions.tempMatrix(matrix));
   store.dispatch(actions.tempMatrix2(matrix));
+  store.dispatch({
+    type: reducerType.LINES_RECEIVED,
+    data: -1,
+  });
 }
 
 const attributes = ['matrix', 'cur2', 'cur'];
