@@ -118,13 +118,14 @@ export default class Peer extends React.Component {
               states.start();
               console.log('started!');
             } else if (data.label === 'syncgame') {
-              console.log('syncgame');
-              let newMatrix = List();
-              data.matrix.forEach((m) => {
-                newMatrix = newMatrix.push(m);
-              });
-              console.log(newMatrix);
-              store.dispatch(actions.matrix(newMatrix));
+              if (data.attr === 'matrix') {
+                console.log('matrix');
+                let newMatrix = List();
+                data.data.forEach((m) => {
+                  newMatrix = newMatrix.push(List(m));
+                });
+                store.dispatch(actions.matrix(newMatrix));
+              }
             }
           });
           c.on('close', () => {

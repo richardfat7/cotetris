@@ -104,20 +104,21 @@ function senddata(conn, data) {
   }
 }
 
-let currentValue = store.getState().get('matrix');
+const attributes = ['matrix'];
+const currentValues = {};
+attributes.forEach((attr) => {
+  currentValues[attr] = store.getState().get(attr);
+});
 function handleChange() {
-  const previousValue = currentValue;
-  currentValue = store.getState().get('matrix');
-  if (previousValue !== currentValue) {
-    console.log(
-      'matrix changed from',
-      previousValue,
-      'to',
-      currentValue.toString()
-    );
-    const peerState = store.getState().get('peerConnection');
-    senddata(peerState.conns, { label: 'syncgame', matrix: currentValue });
-  }
+  const previousValues = Object.assign({}, currentValues);
+  attributes.forEach((attr) => {
+    currentValues[attr] = store.getState().get(attr);
+    if (previousValues[attr] !== currentValues[attr]) {
+      console.log(attr, 'changed from', previousValues[attr], 'to', currentValues[attr].toString());
+      const peerState = store.getState().get('peerConnection');
+      senddata(peerState.conns, { label: 'syncgame', attr, data: currentValues[attr] });
+    }
+  });
 }
 
 const states = {
