@@ -3,11 +3,9 @@ import React from 'react';
 import propTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Peerjs from 'peerjs';
-import { want } from '../../unit';
 import store from '../../store';
 import states from '../../control/states';
 import actions from '../../actions';
-import * as reducerType from '../../unit/reducerType';
 
 
 export default class Peer extends React.Component {
@@ -69,78 +67,12 @@ export default class Peer extends React.Component {
           c.on('data', (res) => {
             const data = JSON.parse(res);
             console.log('RECIEVE data', data);
-            const storeStates = store.getState();
             if (data.label === 'header') {
               if (data.flag === 'ACK') {
                 console.log('someone connected.');
                 if (this.props.history) {
                   this.props.history.push('/tetris');
                 }
-              }
-            } else if (data.label === 'movement') {
-              const playerid = data.playerid;
-              let type; let cur;
-              if (playerid === 0) {
-                type = reducerType.MOVE_BLOCK;
-                cur = storeStates.cur;
-              } else if (playerid === 1) {
-                type = reducerType.MOVE_BLOCK2;
-                cur = storeStates.cur2;
-              } else if (playerid === 2) {
-                type = reducerType.MOVE_BLOCK_OPPO;
-                cur = storeStates.curOppo;
-              } else if (playerid === 3) {
-                type = reducerType.MOVE_BLOCK_OPPO2;
-                cur = storeStates.curOppo2;
-              }
-              console.log(type, cur);
-              const direction = data.payload;
-              if (cur && direction === 'left') {
-                store.dispatch(actions.moveBlockGeneral(cur.left(), type));
-              } else if (cur && direction === 'right') {
-                store.dispatch(actions.moveBlockGeneral(cur.right(), type));
-              } else if (cur && direction === 'rotate') {
-                store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
-              } else if (cur && direction === 'space') {
-                let index = 0;
-                let bottom = cur.fall(index);
-                while (want(bottom, store.getState().get('matrix'))) {
-                  bottom = cur.fall(index);
-                  index++;
-                }
-                bottom = cur.fall(index - 2);
-                store.dispatch(actions.moveBlockGeneral(bottom, type));
-              } else if (cur && direction === 'down') {
-                store.dispatch(actions.moveBlockGeneral(cur.fall(), type));
-              }
-            } else if (data.label === 'start') {
-              console.log(data);
-              states.start();
-              console.log('started!');
-            } else if (data.label === 'syncgame') {
-              if (data.attr === 'matrix') {
-                console.log('matrix');
-                let newMatrix = List();
-                data.data.forEach((m) => {
-                  newMatrix = newMatrix.push(List(m));
-                });
-                store.dispatch(actions.matrix(newMatrix));
-              } else if (data.attr === 'cur2') {
-                console.log('cur2');
-                const newCur = data.data;
-                let newShape = List();
-                newCur.shape.forEach((m) => {
-                  newShape = newShape.push(List(m));
-                });
-                const next = {
-                  shape: newShape,
-                  type: newCur.type,
-                  xy: newCur.xy,
-                  rotateIndex: newCur.rotateIndex,
-                  timeStamp: newCur.timeStamp,
-                };
-                console.log(next);
-                store.dispatch(actions.moveBlock2(next));
               }
             }
           });
@@ -174,7 +106,7 @@ export default class Peer extends React.Component {
       con.on('data', (res) => {
         console.log(res);
         const data = JSON.parse(res);
-        const storeStates = store.getState();
+        console.log('RECIEVE data', data);
         if (data.label === 'header') {
           if (data.flag === 'ACK') {
             const myplayerid = data.payload;
@@ -185,41 +117,50 @@ export default class Peer extends React.Component {
               this.props.history.push('/tetris');
             }
           }
-        } else if (data.label === 'movement') {
-          const playerid = data.playerid;
-          let type; let cur;
-          if (playerid === 0) {
-            type = reducerType.MOVE_BLOCK;
-            cur = storeStates.cur;
-          } else if (playerid === 1) {
-            type = reducerType.MOVE_BLOCK2;
-            cur = storeStates.cur2;
-          } else if (playerid === 2) {
-            type = reducerType.MOVE_BLOCK_OPPO;
-            cur = storeStates.curOppo;
-          } else if (playerid === 3) {
-            type = reducerType.MOVE_BLOCK_OPPO2;
-            cur = storeStates.curOppo2;
-          }
-          console.log(type, cur);
-          const direction = data.payload;
-          if (cur && direction === 'left') {
-            store.dispatch(actions.moveBlockGeneral(cur.left(), type));
-          } else if (cur && direction === 'right') {
-            store.dispatch(actions.moveBlockGeneral(cur.right(), type));
-          } else if (cur && direction === 'rotate') {
-            store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
-          } else if (cur && direction === 'space') {
-            let index = 0;
-            let bottom = cur.fall(index);
-            while (want(bottom, store.getState().get('matrix'))) {
-              bottom = cur.fall(index);
-              index++;
-            }
-            bottom = cur.fall(index - 2);
-            store.dispatch(actions.moveBlockGeneral(bottom, type));
-          } else if (cur && direction === 'down') {
-            store.dispatch(actions.moveBlockGeneral(cur.fall(), type));
+        } else if (data.label === 'start') {
+          console.log(data);
+          states.start();
+          console.log('started!');
+        } else if (data.label === 'syncgame') {
+          if (data.attr === 'matrix') {
+            // console.log('matrix');
+            let newMatrix = List();
+            data.data.forEach((m) => {
+              newMatrix = newMatrix.push(List(m));
+            });
+            store.dispatch(actions.matrix(newMatrix));
+          } else if (data.attr === 'cur2') {
+            // console.log('cur2');
+            const newCur = data.data;
+            let newShape = List();
+            newCur.shape.forEach((m) => {
+              newShape = newShape.push(List(m));
+            });
+            const next = {
+              shape: newShape,
+              type: newCur.type,
+              xy: newCur.xy,
+              rotateIndex: newCur.rotateIndex,
+              timeStamp: newCur.timeStamp,
+            };
+            // console.log(next);
+            store.dispatch(actions.moveBlock2(next));
+          } else if (data.attr === 'cur') {
+            console.log('cur');
+            const newCur = data.data;
+            let newShape = List();
+            newCur.shape.forEach((m) => {
+              newShape = newShape.push(List(m));
+            });
+            const next = {
+              shape: newShape,
+              type: newCur.type,
+              xy: newCur.xy,
+              rotateIndex: newCur.rotateIndex,
+              timeStamp: newCur.timeStamp,
+            };
+            // console.log(next);
+            store.dispatch(actions.moveBlock(next));
           }
         }
       });
