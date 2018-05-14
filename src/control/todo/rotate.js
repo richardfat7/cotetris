@@ -69,6 +69,10 @@ const down = (store) => {
         let next;
         for (let i = 0; i < 5; i++) {
           next = cur.rotate(i);
+          console.log(next);
+          console.log(cur2);
+          const xy = next.xy;
+          const xy2 = cur2.xy;
           if (want(next, state.get('matrix'))) {
             let tMatrix = state.get(tmpMatrix);
             const tshape = cur2 && cur2.shape;
@@ -81,13 +85,19 @@ const down = (store) => {
               }
             });
             if (want(next, tMatrix)) {
-              // move cur2 also
               store.dispatch(actions.moveBlockGeneral(next, type));
               store.dispatch(actions.resetLockDelay());
             }
             if (!want(next, tMatrix)) {
-              store.dispatch(actions.moveBlockGeneral(cur2, type2));
-              console.log('not yet do rotate collision');
+              if (xy[1] < xy2.get(1) && want(cur2.right(), state.get(tmpMatrix))) {
+                store.dispatch(actions.moveBlockGeneral(cur2.right(), type2));
+                store.dispatch(actions.moveBlockGeneral(next, type));
+                store.dispatch(actions.resetLockDelay());
+              } else if (xy[1] > xy2.get(1) && want(cur2.left(), state.get(tmpMatrix))) {
+                store.dispatch(actions.moveBlockGeneral(cur2.left(), type2));
+                store.dispatch(actions.moveBlockGeneral(next, type));
+                store.dispatch(actions.resetLockDelay());
+              }
             }
             break;
           }

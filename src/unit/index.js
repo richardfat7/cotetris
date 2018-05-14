@@ -61,27 +61,21 @@ const unit = {
     const xy = cur && cur.xy;
     const shape2 = cur2 && cur2.shape;
     const xy2 = cur2 && cur2.xy;
-    shape2.forEach((m, k1) => (
-      m.forEach((n, k2) => {
-        if (n && xy2.get(0) + k1 >= 0) { // 竖坐标可以为负
-          let line = matrix.get(xy2.get(0) + k1);
-          line = line.set(xy2.get(1) + k2, 1);
-          matrix = matrix.set(xy2.get(0) + k1, line);
+    shape2.forEach((m) => {
+      if (xy2.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+        let line = matrix.get(xy2.get(0) + m.get(1));
+        line = line.set(xy2.get(1) + m.get(0), 1);
+        matrix = matrix.set(xy2.get(0) + m.get(1), line);
+      }
+    });
+    return shape.some((m) => {
+      for (let i = xy.get(0) + m.get(1); i < 20; i++) {
+        if (matrix.get(i).get(xy.get(1) + m.get(0))) {
+          return true;
         }
-      })
-    ));
-    return shape.some((m, k1) => (
-      m.some((n, k2) => {
-        if (n) {
-          for (let i = xy.get(0) + k1; i < 20; i++) {
-            if (matrix.get(i).get(xy.get(1) + k2)) {
-              return true;
-            }
-          }
-        }
-        return false;
-      })
-    ));
+      }
+      return false;
+    });
   },
   isClear(matrix) { // 是否达到消除状态
     const clearLines = [];

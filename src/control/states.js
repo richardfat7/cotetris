@@ -89,6 +89,8 @@ function addPenalty(linesCleared) {
     matrix = matrix.push(List(bottomLineHole));
   }
   store.dispatch(actions.matrix(matrix));
+  store.dispatch(actions.tempMatrix(matrix));
+  store.dispatch(actions.tempMatrix2(matrix));
 }
 
 function senddata(conn, data) {
@@ -170,38 +172,23 @@ const states = {
       // const myplayerid = state.get('myplayerid');
       const next = cur.fall();
       const next2 = cur2.fall();
-      let matrix;
       let s1 = false;
       let s2 = false;
       if (want(next, state.get('tempMatrix'))) {
-        store.dispatch(actions.moveBlock(next));
         store.dispatch(actions.resetLockDelay());
         s1 = true;
       }
       if (want(next2, state.get('tempMatrix'))) {
-        store.dispatch(actions.moveBlock2(next2));
         store.dispatch(actions.resetLockDelay());
         s2 = true;
       }
+      console.log(s1);
+      console.log(s2);
+      let matrix = state.get('matrix');
       if (!s1 && s2) {
-        matrix = state.get('matrix');
         const shape = cur && cur.shape;
         const xy = cur && cur.xy;
         const color = getColor(cur.type);
-        shape.forEach((m) => {
-          if (xy[0] + m.get(1) >= 0) { // 竖坐标可以为负
-            let line = matrix.get(xy[0] + m.get(1));
-            line = line.set(xy[1] + m.get(0), color);
-            matrix = matrix.set(xy[0] + m.get(1), line);
-          }
-        });
-        states.nextAround(matrix, null, 0); // NOTE: might have bugs
-        states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
-      } else if (s1 && !s2) {
-        matrix = state.get('matrix');
-        const shape = cur2 && cur2.shape;
-        const xy = cur2 && cur2.xy;
-        const color = getColor(cur2.type);
         shape.forEach((m) => {
           if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
             let line = matrix.get(xy.get(0) + m.get(1));
@@ -209,10 +196,50 @@ const states = {
             matrix = matrix.set(xy.get(0) + m.get(1), line);
           }
         });
-        states.nextAround(matrix, null, 1); // NOTE: might have bugs
-        states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
+        if (!want(next2, matrix)) {
+          const shape2 = cur2 && cur2.shape;
+          const xy2 = cur2 && cur2.xy;
+          const color2 = getColor(cur2.type);
+          shape2.forEach((m) => {
+            if (xy2.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+              let line = matrix.get(xy2.get(0) + m.get(1));
+              line = line.set(xy2.get(1) + m.get(0), color2);
+              matrix = matrix.set(xy2.get(0) + m.get(1), line);
+            }
+          });
+          states.nextAround2(matrix, null, 0);
+        } else {
+          store.dispatch(actions.moveBlock2(next2));
+          states.nextAround(matrix, null, 0); // NOTE: might have bugs
+        }
+      } else if (s1 && !s2) {
+        const shape2 = cur2 && cur2.shape;
+        const xy2 = cur2 && cur2.xy;
+        const color2 = getColor(cur2.type);
+        shape2.forEach((m) => {
+          if (xy2.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(xy2.get(0) + m.get(1));
+            line = line.set(xy2.get(1) + m.get(0), color2);
+            matrix = matrix.set(xy2.get(0) + m.get(1), line);
+          }
+        });
+        if (!want(next, matrix)) {
+          const shape = cur && cur.shape;
+          const xy = cur && cur.xy;
+          const color = getColor(cur.type);
+          shape.forEach((m) => {
+            if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+              let line = matrix.get(xy.get(0) + m.get(1));
+              line = line.set(xy.get(1) + m.get(0), color);
+              matrix = matrix.set(xy.get(0) + m.get(1), line);
+            }
+          });
+          states.nextAround2(matrix, null, 0);
+        } else {
+          store.dispatch(actions.moveBlock(next));
+          states.nextAround(matrix, null, 1); // NOTE: might have bugs
+        }
       } else if (!s1 && !s2) {
-        matrix = state.get('matrix');
         const shape = cur && cur.shape;
         const shape2 = cur2 && cur2.shape;
         const xy = cur && cur.xy;
@@ -220,22 +247,23 @@ const states = {
         const color = getColor(cur.type);
         const color2 = getColor(cur2.type);
         shape.forEach((m) => {
-          if (xy[0] + m.get(1) >= 0) { // 竖坐标可以为负
-            let line = matrix.get(xy[0] + m.get(1));
-            line = line.set(xy[1] + m.get(0), color);
-            matrix = matrix.set(xy[0] + m.get(1), line);
+          if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(xy.get(0) + m.get(1));
+            line = line.set(xy.get(1) + m.get(0), color);
+            matrix = matrix.set(xy.get(0) + m.get(1), line);
           }
         });
         shape2.forEach((m) => {
-          if (xy2[0] + m.get(1) >= 0) { // 竖坐标可以为负
-            let line = matrix.get(xy2[0] + m.get(1));
-            line = line.set(xy2[1] + m.get(0), color2);
-            matrix = matrix.set(xy2[0] + m.get(1), line);
+          if (xy2.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(xy2.get(0) + m.get(1));
+            line = line.set(xy2.get(1) + m.get(0), color2);
+            matrix = matrix.set(xy2.get(0) + m.get(1), line);
           }
         });
-        states.nextAround(matrix, null, 0);
-        states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
+        states.nextAround2(matrix, null, 0);
       } else {
+        store.dispatch(actions.moveBlock(next));
+        store.dispatch(actions.moveBlock2(next2));
         if (state.get('lockDelay').startTime !== null) {
           store.dispatch(actions.updateLockDelay());
         } else {
@@ -263,10 +291,9 @@ const states = {
               matrix = matrix.set(xy2[0] + m.get(1), line);
             }
           });
-          states.nextAround(matrix, null, 0);
-        } else {
-          states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
+          states.nextAround2(matrix, null, 0);
         }
+        states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       }
     };
     clearTimeout(states.fallInterval);
@@ -314,27 +341,84 @@ const states = {
       let option;
       if (character === 0) {
         option = states.getOffset(store.getState().get('next'),
-          store.getState().get('cur2'), store.getState().get('matrix'));
+          store.getState().get('cur2'), matrix);
         store.dispatch(actions.moveBlock({
           type: store.getState().get('next'), x: option.x, y: option.y }));
       } else if (character === 1) {
         option = states.getOffset(store.getState().get('next'),
-          store.getState().get('cur'), store.getState().get('matrix'));
+          store.getState().get('cur'), matrix);
         store.dispatch(actions.moveBlock2({
           type: store.getState().get('next'), x: option.x, y: option.y }));
       } else if (character === 2) {
         option = states.getOffset(store.getState().get('next'),
-          store.getState().get('cur2'), store.getState().get('matrixOppo'));
+          store.getState().get('cur2'), matrix);
         store.dispatch(actions.moveBlockOppo({
           type: store.getState().get('next'), x: option.x, y: option.y }));
       } else if (character === 3) {
         option = states.getOffset(store.getState().get('next'),
-          store.getState().get('cur'), store.getState().get('matrixOppo'));
+          store.getState().get('cur'), matrix);
         store.dispatch(actions.moveBlockOppo2({
           type: store.getState().get('next'), x: option.x, y: option.y }));
       }
       store.dispatch(actions.nextBlock(store.getState().get('bag').get(0)));
       store.dispatch(actions.shiftNextBlock());
+      store.dispatch(actions.canHold(true));
+      store.dispatch(actions.resetLockDelay());
+      addPenalty(0);
+      states.auto();
+    }, 100);
+  },
+
+  nextAround2: (matrix, stopDownTrigger, character = 0) => {
+    clearTimeout(states.fallInterval);
+    store.dispatch(actions.lock(true));
+    store.dispatch(actions.matrix(matrix));
+    if (character === 0 || character === 1) {
+      store.dispatch(actions.tempMatrix(matrix));
+    } else {
+      store.dispatch(actions.tempMatrix2(matrix));
+    }
+    if (typeof stopDownTrigger === 'function') {
+      stopDownTrigger();
+    }
+    const addPoints = (store.getState().get('points') + 10) +
+      ((store.getState().get('speedRun') - 1) * 2); // 速度越快, 得分越高
+
+    states.dispatchPoints(addPoints);
+
+    if (isClear(matrix)) {
+      let combo = store.getState().get('combo');
+      combo += 1;
+      store.dispatch(actions.combo(combo));
+      if (music.clear) {
+        music.clear();
+      }
+      return;
+    }
+    store.dispatch(actions.combo(-1));
+    if (isOver(matrix)) {
+      if (music.gameover) {
+        music.gameover();
+      }
+      states.overStart();
+    }
+    setTimeout(() => {
+      store.dispatch(actions.lock(false));
+      if (character === 0) {
+        store.dispatch(actions.moveBlock(
+          { type: store.getState().get('bag').get(0), x: 0, y: -2 }));
+        store.dispatch(actions.moveBlock2(
+          { type: store.getState().get('bag').get(1), x: 0, y: 2 }));
+        store.dispatch(actions.nextBlock(store.getState().get('bag').get(2)));
+        store.dispatch(actions.shiftTwice());
+      } else {
+        store.dispatch(actions.moveBlock(
+          { type: store.getState().get('bag').get(0), x: 0, y: -2 }));
+        store.dispatch(actions.moveBlock2(
+          { type: store.getState().get('bag').get(1), x: 0, y: 2 }));
+        store.dispatch(actions.nextBlock(store.getState().get('bag').get(2)));
+        store.dispatch(actions.shiftTwice());
+      }
       store.dispatch(actions.canHold(true));
       store.dispatch(actions.resetLockDelay());
       addPenalty(0);
@@ -374,6 +458,8 @@ const states = {
       newMatrix = newMatrix.unshift(List(blankLine));
     });
     store.dispatch(actions.matrix(newMatrix));
+    store.dispatch(actions.tempMatrix(newMatrix));
+    store.dispatch(actions.tempMatrix2(newMatrix));
     // addPenalty(lines.length);
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
     store.dispatch(actions.nextBlock(state.get('bag').get(0)));

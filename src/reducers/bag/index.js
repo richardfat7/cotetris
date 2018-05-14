@@ -1,24 +1,21 @@
 import { List } from 'immutable';
 import * as reducerType from '../../unit/reducerType';
-import { lastRecord, blockType } from '../../unit/const';
+import { blockType } from '../../unit/const';
 
 const initState = (() => {
-  if (!lastRecord || !lastRecord.bag) { // 无记录 或 有记录 但方块为空, 返回 new bag
-    let bigbag = List();
-    const len = blockType.length - 1;
-    for (let j = 0; j < 100; j++) {
-      let bag = List();
-      for (let i = 0; i < len; i++) {
-        bag = bag.push(blockType[i]);
-      }
-      bag = bag.sortBy(Math.random);
-      for (let i = 0; i < len; i++) {
-        bigbag = bigbag.push(bag[i]);
-      }
-    }
-    return bigbag;
+  let bigbag = List();
+  const len = blockType.length - 1;
+  let bag = List();
+  for (let i = 0; i < len; i++) {
+    bag = bag.push(blockType[i]);
   }
-  return List(lastRecord.bag);
+  for (let j = 0; j < 100; j++) {
+    bag = bag.sortBy(Math.random);
+    for (let i = 0; i < len; i++) {
+      bigbag = bigbag.push(bag[i]);
+    }
+  }
+  return bigbag;
 })();
 
 const bag = (state = initState, action) => {
