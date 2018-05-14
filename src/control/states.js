@@ -99,13 +99,21 @@ attributes.forEach((attr) => {
   currentValues[attr] = store.getState().get(attr);
 });
 function handleChange() {
+  if (store.getState().get('myplayerid') % 2 !== 0) {
+    return;
+  }
   const previousValues = Object.assign({}, currentValues);
   attributes.forEach((attr) => {
     currentValues[attr] = store.getState().get(attr);
     if (previousValues[attr] !== currentValues[attr]) {
       console.log(attr, 'changed from', previousValues[attr], 'to', currentValues[attr]);
       const peerState = store.getState().get('peerConnection');
-      senddata(peerState.conns, { label: 'syncgame', attr, data: currentValues[attr] });
+      senddata(peerState.conns, {
+        label: 'syncgame',
+        attr,
+        data: currentValues[attr],
+        team: store.getState().get('myplayerid') <= 1 ? 'LEFT' : 'RIGHT',
+      });
     }
   });
 }
@@ -150,7 +158,7 @@ const states = {
   // 自动下落
   auto: (timeout) => {
     const myplayerid = store.getState().get('myplayerid');
-    if (myplayerid === 0) {
+    if (myplayerid % 2 === 0) {
       const out = (timeout < 0 ? 0 : timeout);
       let state = store.getState();
       let cur = state.get('cur');
@@ -298,11 +306,6 @@ const states = {
     clearTimeout(states.fallInterval);
     store.dispatch(actions.lock(true));
     store.dispatch(actions.matrix(matrix));
-    if (character === 0 || character === 1) {
-      store.dispatch(actions.tempMatrix(matrix));
-    } else {
-      store.dispatch(actions.tempMatrix2(matrix));
-    }
     if (typeof stopDownTrigger === 'function') {
       stopDownTrigger();
     }
@@ -343,12 +346,12 @@ const states = {
       } else if (character === 2) {
         option = states.getOffset(store.getState().get('next'),
           store.getState().get('cur2'), matrix);
-        store.dispatch(actions.moveBlockOppo({
+        store.dispatch(actions.moveBlock({
           type: store.getState().get('next'), x: option.x, y: option.y }));
       } else if (character === 3) {
         option = states.getOffset(store.getState().get('next'),
           store.getState().get('cur'), matrix);
-        store.dispatch(actions.moveBlockOppo2({
+        store.dispatch(actions.moveBlock2({
           type: store.getState().get('next'), x: option.x, y: option.y }));
       }
       store.dispatch(actions.nextBlock(store.getState().get('bag').get(0)));
@@ -364,11 +367,6 @@ const states = {
     clearTimeout(states.fallInterval);
     store.dispatch(actions.lock(true));
     store.dispatch(actions.matrix(matrix));
-    if (character === 0 || character === 1) {
-      store.dispatch(actions.tempMatrix(matrix));
-    } else {
-      store.dispatch(actions.tempMatrix2(matrix));
-    }
     if (typeof stopDownTrigger === 'function') {
       stopDownTrigger();
     }

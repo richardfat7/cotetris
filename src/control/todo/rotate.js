@@ -37,17 +37,17 @@ const down = (store, id = null) => {
       type = reducerType.MOVE_BLOCK2;
       type2 = reducerType.MOVE_BLOCK;
     } else if (myplayerid === 2) {
-      curV = 'curOppo';
-      curV2 = 'curOppo2';
-      tmpMatrix = 'tempMatrix2';
-      type = reducerType.MOVE_BLOCK_OPPO;
-      type2 = reducerType.MOVE_BLOCK_OPPO2;
+      curV = 'cur';
+      curV2 = 'cur2';
+      tmpMatrix = 'tempMatrix';
+      type = reducerType.MOVE_BLOCK;
+      type2 = reducerType.MOVE_BLOCK2;
     } else if (myplayerid === 3) {
-      curV = 'curOppo2';
-      curV2 = 'curOppo';
-      tmpMatrix = 'tempMatrix2';
-      type = reducerType.MOVE_BLOCK_OPPO2;
-      type2 = reducerType.MOVE_BLOCK_OPPO;
+      curV = 'cur2';
+      curV2 = 'cur';
+      tmpMatrix = 'tempMatrix';
+      type = reducerType.MOVE_BLOCK2;
+      type2 = reducerType.MOVE_BLOCK;
     }
     if (store.getState().get(curV) !== null) {
       event.down({

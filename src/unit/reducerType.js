@@ -1,6 +1,7 @@
 export const PAUSE = 'PAUSE';
 export const MUSIC = 'MUSIC';
 export const MATRIX = 'MATRIX';
+export const MATRIX_OPPO = 'MATRIX_OPPO';
 export const TEMP_MATRIX = 'TEMP_MATRIX';
 export const TEMP_MATRIX2 = 'TEMP_MATRIX2';
 export const NEXT_BLOCK = 'NEXT_BLOCK';

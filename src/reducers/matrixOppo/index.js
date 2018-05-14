@@ -11,7 +11,7 @@ const initState = blankMatrix;
 
 const matrixOppo = (state = initState, action) => {
   switch (action.type) {
-    case reducerType.MATRIXOPPO:
+    case reducerType.MATRIX_OPPO:
       return action.data;
     default:
       return state;

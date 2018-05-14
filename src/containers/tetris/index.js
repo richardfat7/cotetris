@@ -127,7 +127,7 @@ class Tetris extends React.Component {
                 cur2={this.props.curOppo2}
                 reset={this.props.reset}
                 lock={this.props.lock}
-                myplayerid={null}
+                myplayerid={-1}
               />
               <LogoOPPO cur={!!this.props.cur} reset={this.props.reset} />
               <div className={style.state}>
