@@ -13,6 +13,15 @@ export default class Peer extends React.Component {
   constructor() {
     super();
     this.state = {
+      config: {
+        host: 'localhost',
+        port: 9000,
+        path: '/',
+
+        // Set highest debug level (log everything!).
+        debug: 3,
+      },
+      configString: '',
       currentplayerid: 0,
       id: '',
       fd: '',
@@ -27,6 +36,7 @@ export default class Peer extends React.Component {
     this.regClick = this.regClick.bind(this);
     this.connClick = this.connClick.bind(this);
     this.connClickOpp = this.connClickOpp.bind(this);
+    this.changeConfig = this.changeConfig.bind(this);
   }
   componentWillMount() {
     this.onChange(this.props);
@@ -42,14 +52,7 @@ export default class Peer extends React.Component {
     return a != null;
   }
   register(id) {
-    const peer = new Peerjs(id, {
-      host: 'localhost',
-      port: 9000,
-      path: '/',
-
-      // Set highest debug level (log everything!).
-      debug: 3,
-    });
+    const peer = new Peerjs(id, this.state.config);
     console.log('Peer', peer);
     store.dispatch(actions.peerSavePeer(peer));
     this.setState({
@@ -434,14 +437,30 @@ export default class Peer extends React.Component {
     }
   }
 
+  changeConfig() {
+    if (this.modal4 && this.modal4.value) {
+      this.setState({ config: JSON.parse(this.modal4.value) });
+    }
+  }
+
   render() {
     // console.log(JSON.stringify(this.state.conn));
     return (
       <div>
         <p>Peerjs in use</p>
+        <p>config: { JSON.stringify(this.state.config) }</p>
         <p>myid: { this.state.id }</p>
         <p>fdid: { this.state.fd }</p>
         <p>oppid: { this.state.opp }</p>
+        <p>Config:
+        <input
+          id="config"
+          type="text"
+          defaultValue={JSON.stringify(this.state.config)}
+          ref={(m) => { this.modal4 = m; }}
+        />
+          <button onClick={this.changeConfig}>Use this config</button>
+        </p>
         <p>Choose your ID:
           <input id="myid" type="text" ref={(m) => { this.modal = m; }} />
           <button onClick={this.regClick}>Register</button>
