@@ -142,7 +142,7 @@ class Tetris extends React.Component {
                   length={1}
                 />
                 <p>{i18n.next[lan]}</p>
-                <Next data={this.props.next} />
+                <Next data={this.props.nextOppo} />
               </div>
             </div>
           </div>
@@ -161,6 +161,7 @@ Tetris.propTypes = {
   matrix: propTypes.object.isRequired,
   matrixOppo: propTypes.object.isRequired,
   next: propTypes.string.isRequired,
+  nextOppo: propTypes.string.isRequired,
   cur: propTypes.object,
   cur2: propTypes.object,
   curOppo: propTypes.object,
@@ -186,6 +187,7 @@ const mapStateToProps = (state) => ({
   matrix: state.get('matrix'),
   matrixOppo: state.get('matrixOppo'),
   next: state.get('next'),
+  nextOppo: state.get('nextOppo'),
   cur: state.get('cur'),
   cur2: state.get('cur2'),
   curOppo: state.get('curOppo'),
