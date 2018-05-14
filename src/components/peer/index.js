@@ -103,6 +103,46 @@ export default class Peer extends React.Component {
               todo[data.key].up(store);
             } else if (data.label === 'syncgame') {
               if (data.team === 'RIGHT') {
+                if (data.attr === 'matrix') {
+                  // console.log('matrix');
+                  let newMatrix = List();
+                  data.data.forEach((m) => {
+                    newMatrix = newMatrix.push(List(m));
+                  });
+                  store.dispatch(actions.matrixOppo(newMatrix));
+                } else if (data.attr === 'cur2') {
+                  // console.log('cur2');
+                  const newCur = data.data;
+                  let newShape = List();
+                  newCur.shape.forEach((m) => {
+                    newShape = newShape.push(List(m));
+                  });
+                  const next = {
+                    shape: newShape,
+                    type: newCur.type,
+                    xy: newCur.xy,
+                    rotateIndex: newCur.rotateIndex,
+                    timeStamp: newCur.timeStamp,
+                  };
+                  // console.log(next);
+                  store.dispatch(actions.moveBlock4(next));
+                } else if (data.attr === 'cur') {
+                  console.log('cur');
+                  const newCur = data.data;
+                  let newShape = List();
+                  newCur.shape.forEach((m) => {
+                    newShape = newShape.push(List(m));
+                  });
+                  const next = {
+                    shape: newShape,
+                    type: newCur.type,
+                    xy: newCur.xy,
+                    rotateIndex: newCur.rotateIndex,
+                    timeStamp: newCur.timeStamp,
+                  };
+                  // console.log(next);
+                  store.dispatch(actions.moveBlock3(next));
+                }
                 store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
                   if (m === 'fd') {
                     store.getState().get('peerConnection').conns[k].send(res);
