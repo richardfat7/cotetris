@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import * as reducerType from '../../unit/reducerType';
-import { lastRecord, blockType } from '../../unit/const';
+import { blockType } from '../../unit/const';
 
 const initState = (() => {
   let bigbag = List();
