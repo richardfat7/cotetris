@@ -140,15 +140,15 @@ const states = {
       let s1 = false;
       let s2 = false;
       if (want(next, state.get('tempMatrix'))) {
-        store.dispatch(actions.moveBlock(next));
         store.dispatch(actions.resetLockDelay());
         s1 = true;
       }
       if (want(next2, state.get('tempMatrix'))) {
-        store.dispatch(actions.moveBlock2(next2));
         store.dispatch(actions.resetLockDelay());
         s2 = true;
       }
+      console.log(s1);
+      console.log(s2);
       let matrix = state.get('matrix');
       if (!s1 && s2) {
         const shape = cur && cur.shape;
@@ -161,7 +161,22 @@ const states = {
             matrix = matrix.set(xy.get(0) + m.get(1), line);
           }
         });
-        states.nextAround(matrix, null, 0); // NOTE: might have bugs
+        if (!want(next2, matrix)) {
+          const shape2 = cur2 && cur2.shape;
+          const xy2 = cur2 && cur2.xy;
+          const color2 = getColor(cur2.type);
+          shape2.forEach((m) => {
+            if (xy2.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+              let line = matrix.get(xy2.get(0) + m.get(1));
+              line = line.set(xy2.get(1) + m.get(0), color2);
+              matrix = matrix.set(xy2.get(0) + m.get(1), line);
+            }
+          });
+          states.nextAround2(matrix, null, 0);
+        } else {
+          store.dispatch(actions.moveBlock2(next2));
+          states.nextAround(matrix, null, 0); // NOTE: might have bugs
+        }
       } else if (s1 && !s2) {
         const shape2 = cur2 && cur2.shape;
         const xy2 = cur2 && cur2.xy;
@@ -173,7 +188,22 @@ const states = {
             matrix = matrix.set(xy2.get(0) + m.get(1), line);
           }
         });
-        states.nextAround(matrix, null, 1); // NOTE: might have bugs
+        if (!want(next, matrix)) {
+          const shape = cur && cur.shape;
+          const xy = cur && cur.xy;
+          const color = getColor(cur.type);
+          shape.forEach((m) => {
+            if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+              let line = matrix.get(xy.get(0) + m.get(1));
+              line = line.set(xy.get(1) + m.get(0), color);
+              matrix = matrix.set(xy.get(0) + m.get(1), line);
+            }
+          });
+          states.nextAround2(matrix, null, 0);
+        } else {
+          store.dispatch(actions.moveBlock(next));
+          states.nextAround(matrix, null, 1); // NOTE: might have bugs
+        }
       } else if (!s1 && !s2) {
         const shape = cur && cur.shape;
         const shape2 = cur2 && cur2.shape;
@@ -197,13 +227,14 @@ const states = {
         });
         states.nextAround2(matrix, null, 0);
       } else {
+        store.dispatch(actions.moveBlock(next));
+        store.dispatch(actions.moveBlock2(next2));
         if (state.get('lockDelay').startTime !== null) {
           store.dispatch(actions.updateLockDelay());
         } else {
           store.dispatch(actions.startLockDelay());
         }
         if (store.getState().get('lockDelay').shouldLock) {
-          console.log('shouldLock');
           matrix = state.get('matrix');
           const shape = cur && cur.shape;
           const shape2 = cur2 && cur2.shape;
@@ -225,10 +256,9 @@ const states = {
               matrix = matrix.set(xy2[0] + m.get(1), line);
             }
           });
-          states.nextAround(matrix, null, 0);
-        } else {
-          states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
+          states.nextAround2(matrix, null, 0);
         }
+        states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       }
     };
     clearTimeout(states.fallInterval);
