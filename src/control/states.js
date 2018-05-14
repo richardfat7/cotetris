@@ -465,7 +465,7 @@ const states = {
     store.dispatch(actions.matrix(newMatrix));
     store.dispatch(actions.tempMatrix(newMatrix));
     store.dispatch(actions.tempMatrix2(newMatrix));
-    // addPenalty(lines.length);
+    addPenalty(lines.length);
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
     store.dispatch(actions.nextBlock(state.get('bag').get(0)));
     store.dispatch(actions.shiftNextBlock());

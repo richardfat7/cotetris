@@ -204,10 +204,6 @@ export default class Peer extends React.Component {
           console.log(data);
           states.start();
           console.log('started!');
-        } else if (data.label === 'linesSent') {
-          if (data.team === ((this.state.mypid <= 1) ? 'LEFT' : 'RIGHT')) {
-            store.dispatch({ type: reducerType.LINES_RECEIVED, data: data.data });
-          }
         } else if (data.label === 'syncgame') {
           if (data.team === ((this.state.mypid <= 1) ? 'LEFT' : 'RIGHT')) {
             if (data.attr === 'matrix') {
