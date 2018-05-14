@@ -196,9 +196,15 @@ function setMyPlayerID(data) {
   };
 }
 
-function peerSaveConnection(data) {
+function peerSaveTeammate(data) {
   return {
-    type: reducerType.PEER_SAVE_CONNECTION,
+    type: reducerType.PEER_SAVE_TEAMMATE,
+    data,
+  };
+}
+function peerSaveOpponent(data) {
+  return {
+    type: reducerType.PEER_SAVE_OPPONENT,
     data,
   };
 }
@@ -231,6 +237,7 @@ export default {
   resetBag,
   combo,
   peerSavePeer,
-  peerSaveConnection,
+  peerSaveTeammate,
+  peerSaveOpponent,
   setMyPlayerID,
 };

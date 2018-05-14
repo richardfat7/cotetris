@@ -47,11 +47,11 @@ const down = (store) => {
         let timeStamp;
         if (want(next, state.get('matrix'))) {
           const lock = store.getState().get('lock');
-          if (peerState.conns && !lock) {
-            for (let i = 0; i < peerState.conns.length; i++) {
+          if (peerState.teamConns && !lock) {
+            for (let i = 0; i < peerState.teamConns.length; i++) {
               // later should a sequence number to reorder packet by us
-              const data = { label: 'movement', payload: 'left', playerid: myplayerid };
-              peerState.conns[i].send(JSON.stringify(data));
+              const data = { label: 'movement', payload: 'left', from: myplayerid };
+              peerState.teamConns[i].send(JSON.stringify(data));
             }
           }
           next.timeStamp += parseInt(delay, 10);

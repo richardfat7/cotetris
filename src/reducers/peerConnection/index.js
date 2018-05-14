@@ -1,14 +1,17 @@
 import * as reducerType from '../../unit/reducerType';
 
-const initState = { conns: [], peer: null };
+const initState = { teamConns: [], oppoConns: [], peer: null };
 const peerConnection = (state = initState, action) => {
-  const conns = state.conns;
+  const teamConns = state.teamConns;
   const peer = state.peer;
+  const oppoConns = state.oppoConns;
   switch (action.type) {
     case reducerType.PEER_SAVE_PEER:
-      return { conns, peer: action.data };
-    case reducerType.PEER_SAVE_CONNECTION:
-      return { peer, conns: action.data };
+      return { teamConns, oppoConns, peer: action.data };
+    case reducerType.PEER_SAVE_TEAMMATE:
+      return { peer, oppoConns, teamConns: action.data };
+    case reducerType.PEER_SAVE_OPPONENT:
+      return { peer, teamConns, oppoConns: action.data };
     default:
       return state;
   }

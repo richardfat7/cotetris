@@ -23,11 +23,11 @@ const down = (store) => {
     type = reducerType.MOVE_BLOCK_OPPO2;
   }
   const lock = store.getState().get('lock');
-  if (peerState.conns && !lock) {
-    for (let i = 0; i < peerState.conns.length; i++) {
+  if (peerState.teamConns && !lock) {
+    for (let i = 0; i < peerState.teamConns.length; i++) {
       // later should a sequence number to reorder packet by us
-      const data = { label: 'movement', payload: 'rotate', playerid: myplayerid };
-      peerState.conns[i].send(JSON.stringify(data));
+      const data = { label: 'movement', payload: 'rotate', from: myplayerid };
+      peerState.teamConns[i].send(JSON.stringify(data));
     }
   }
   store.dispatch(actions.keyboard.rotate(true));

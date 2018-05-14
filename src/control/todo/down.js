@@ -30,11 +30,11 @@ const down = (store) => {
       interval: 40,
       callback: (stopDownTrigger) => {
         const lock = store.getState().get('lock');
-        if (peerState.conns && !lock) {
-          for (let i = 0; i < peerState.conns.length; i++) {
+        if (peerState.teamConns && !lock) {
+          for (let i = 0; i < peerState.teamConns.length; i++) {
             // later should a sequence number to reorder packet by us
-            const data = { label: 'movement', payload: 'down', playerid: myplayerid };
-            peerState.conns[i].send(JSON.stringify(data));
+            const data = { label: 'movement', payload: 'down', from: myplayerid };
+            peerState.teamConns[i].send(JSON.stringify(data));
           }
         }
         const state = store.getState();
