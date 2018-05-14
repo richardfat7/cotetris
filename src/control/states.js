@@ -306,6 +306,7 @@ const states = {
     clearTimeout(states.fallInterval);
     store.dispatch(actions.lock(true));
     store.dispatch(actions.matrix(matrix));
+    store.dispatch(actions.tempMatrix(matrix));
     if (typeof stopDownTrigger === 'function') {
       stopDownTrigger();
     }
@@ -367,6 +368,7 @@ const states = {
     clearTimeout(states.fallInterval);
     store.dispatch(actions.lock(true));
     store.dispatch(actions.matrix(matrix));
+    store.dispatch(actions.tempMatrix(matrix));
     if (typeof stopDownTrigger === 'function') {
       stopDownTrigger();
     }
