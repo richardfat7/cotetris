@@ -169,30 +169,12 @@ export default class Matrix extends React.Component {
       }
 
       if (cur2 && shape2) {
-        shape2.forEach((m, k1) => (
-          m.forEach((n, k2) => {
-            if (n && xy2.get(0) + k1 >= 0) { // 竖坐标可以为负
-              let line = matrix.get(xy2.get(0) + k1);
-              let color;
-              if (line.get(xy2.get(1) + k2) === 1 && !clearLines) { // 矩阵与方块重合
-                if (cur2.type === 'I') {
-                  color = 3;
-                } else if (cur2.type === 'O') {
-                  color = 4;
-                } else if (cur2.type === 'T') {
-                  color = 5;
-                } else if (cur2.type === 'S') {
-                  color = 6;
-                } else if (cur2.type === 'Z') {
-                  color = 7;
-                } else if (cur2.type === 'J') {
-                  color = 8;
-                } else if (cur2.type === 'L') {
-                  color = 9;
-                } else {
-                  color = 2;
-                }
-              } else if (cur2.type === 'I') {
+        shape2.forEach((m) => {
+          if (xy2.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(xy2.get(0) + m.get(1));
+            let color;
+            if (line.get(xy2.get(1) + m.get(0)) === 1 && !clearLines) { // 矩阵与方块重合
+              if (cur2.type === 'I') {
                 color = 3;
               } else if (cur2.type === 'O') {
                 color = 4;
@@ -209,11 +191,27 @@ export default class Matrix extends React.Component {
               } else {
                 color = 2;
               }
-              line = line.set(xy2.get(1) + k2, color);
-              matrix = matrix.set(xy2.get(0) + k1, line);
+            } else if (cur2.type === 'I') {
+              color = 3;
+            } else if (cur2.type === 'O') {
+              color = 4;
+            } else if (cur2.type === 'T') {
+              color = 5;
+            } else if (cur2.type === 'S') {
+              color = 6;
+            } else if (cur2.type === 'Z') {
+              color = 7;
+            } else if (cur2.type === 'J') {
+              color = 8;
+            } else if (cur2.type === 'L') {
+              color = 9;
+            } else {
+              color = 2;
             }
-          })
-        ));
+            line = line.set(xy2.get(1) + m.get(0), color);
+            matrix = matrix.set(xy2.get(0) + m.get(1), line);
+          }
+        });
       }
     }
     return matrix;

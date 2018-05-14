@@ -73,15 +73,13 @@ const down = (store) => {
           let tMatrix = state.get(tmpMatrix);
           const tshape = cur2 && cur2.shape;
           const txy = cur2 && cur2.xy;
-          tshape.forEach((m, k1) => (
-            m.forEach((n, k2) => {
-              if (n && txy.get(0) + k1 >= 0) { // 竖坐标可以为负
-                let line = tMatrix.get(txy.get(0) + k1);
-                line = line.set(txy.get(1) + k2, 1);
-                tMatrix = tMatrix.set(txy.get(0) + k1, line);
-              }
-            })
-          ));
+          tshape.forEach((m) => {
+            if (txy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+              let line = tMatrix.get(txy.get(0) + m.get(1));
+              line = line.set(txy.get(1) + m.get(0), 1);
+              tMatrix = tMatrix.set(txy.get(0) + m.get(1), line);
+            }
+          });
           if (want(next, tMatrix)) {
             store.dispatch(actions.moveBlockGeneral(next, type));
             states.auto();
@@ -95,6 +93,8 @@ const down = (store) => {
               let matrix = state.get('matrix');
               const shape = cur.shape;
               const xy = cur.xy;
+              const shape2 = cur2.shape;
+              const xy2 = cur2.xy;
               let color;
               if (cur.type === 'I') {
                 color = 3;
@@ -113,11 +113,36 @@ const down = (store) => {
               } else {
                 color = 1;
               }
+              let color2;
+              if (cur2.type === 'I') {
+                color2 = 3;
+              } else if (cur2.type === 'O') {
+                color2 = 4;
+              } else if (cur2.type === 'T') {
+                color2 = 5;
+              } else if (cur2.type === 'S') {
+                color2 = 6;
+              } else if (cur2.type === 'Z') {
+                color2 = 7;
+              } else if (cur2.type === 'J') {
+                color2 = 8;
+              } else if (cur2.type === 'L') {
+                color2 = 9;
+              } else {
+                color2 = 1;
+              }
               shape.forEach((m) => {
                 if (xy[0] + m.get(1) >= 0) { // 竖坐标可以为负
                   let line = matrix.get(xy[0] + m.get(1));
                   line = line.set(xy[1] + m.get(0), color);
                   matrix = matrix.set(xy[0] + m.get(1), line);
+                }
+              });
+              shape2.forEach((m) => {
+                if (xy2[0] + m.get(1) >= 0) { // 竖坐标可以为负
+                  let line = matrix.get(xy2[0] + m.get(1));
+                  line = line.set(xy2[1] + m.get(0), color2);
+                  matrix = matrix.set(xy2[0] + m.get(1), line);
                 }
               });
               if (myplayerid === 0) {

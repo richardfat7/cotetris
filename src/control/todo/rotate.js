@@ -73,22 +73,20 @@ const down = (store) => {
             let tMatrix = state.get(tmpMatrix);
             const tshape = cur2 && cur2.shape;
             const txy = cur2 && cur2.xy;
-            tshape.forEach((m, k1) => (
-              m.forEach((n, k2) => {
-                if (n && txy.get(0) + k1 >= 0) { // 竖坐标可以为负
-                  let line = tMatrix.get(txy.get(0) + k1);
-                  line = line.set(txy.get(1) + k2, 1);
-                  tMatrix = tMatrix.set(txy.get(0) + k1, line);
-                }
-              })
-            ));
+            tshape.forEach((m) => {
+              if (txy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+                let line = tMatrix.get(txy.get(0) + m.get(1));
+                line = line.set(txy.get(1) + m.get(0), 1);
+                tMatrix = tMatrix.set(txy.get(0) + m.get(1), line);
+              }
+            });
             if (want(next, tMatrix)) {
               // move cur2 also
               store.dispatch(actions.moveBlockGeneral(next, type));
               store.dispatch(actions.resetLockDelay());
             }
             if (!want(next, tMatrix)) {
-
+              store.dispatch(actions.moveBlockGeneral(cur2, type2));
               console.log('not yet do rotate collision');
             }
             break;

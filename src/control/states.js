@@ -167,15 +167,13 @@ const states = {
         const shape = cur2 && cur2.shape;
         const xy = cur2 && cur2.xy;
         const color = getColor(cur2.type);
-        shape.forEach((m, k1) => (
-          m.forEach((n, k2) => {
-            if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
-              let line = matrix.get(xy.get(0) + k1);
-              line = line.set(xy.get(1) + k2, color);
-              matrix = matrix.set(xy.get(0) + k1, line);
-            }
-          })
-        ));
+        shape.forEach((m) => {
+          if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(xy.get(0) + m.get(1));
+            line = line.set(xy.get(1) + m.get(0), color);
+            matrix = matrix.set(xy.get(0) + m.get(1), line);
+          }
+        });
         states.nextAround(matrix, null, 1); // NOTE: might have bugs
         states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       } else if (!s1 && !s2) {
@@ -395,15 +393,13 @@ const states = {
     let tMatrix = matrix;
     const tshape = cur && cur.shape;
     const txy = cur && cur.xy;
-    tshape.forEach((m, k1) => (
-      m.forEach((n, k2) => {
-        if (n && txy.get(0) + k1 >= 0) { // 竖坐标可以为负
-          let line = tMatrix.get(txy.get(0) + k1);
-          line = line.set(txy.get(1) + k2, 1);
-          tMatrix = tMatrix.set(txy.get(0) + k1, line);
-        }
-      })
-    ));
+    tshape.forEach((m) => {
+      if (txy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+        let line = tMatrix.get(txy.get(0) + m.get(1));
+        line = line.set(txy.get(1) + m.get(0), 1);
+        tMatrix = tMatrix.set(txy.get(0) + m.get(1), line);
+      }
+    });
     if (cur === undefined || cur === null) return { x: 0, y: 0 };
     let tmp;
     for (let i = 0; i < 5; i++) {
