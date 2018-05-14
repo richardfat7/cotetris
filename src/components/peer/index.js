@@ -121,7 +121,7 @@ export default class Peer extends React.Component {
               console.log('syncgame');
               let newMatrix = List();
               data.matrix.forEach((m) => {
-                newMatrix = newMatrix.push(m);
+                newMatrix = newMatrix.push(List(m));
               });
               console.log(newMatrix);
               store.dispatch(actions.matrix(newMatrix));
