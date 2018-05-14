@@ -74,7 +74,7 @@ export default class Peer extends React.Component {
                   this.props.history.push('/tetris');
                 }
               }
-			}
+            }
           });
           c.on('close', () => {
             c.close();
