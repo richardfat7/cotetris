@@ -90,6 +90,7 @@ const down = (store) => {
               store.dispatch(actions.moveBlockGeneral(next, type));
               states.auto();
             } else {
+              console.log('3');
               let matrix = state.get('matrix');
               const shape = cur.shape;
               const xy = cur.xy;
@@ -132,17 +133,17 @@ const down = (store) => {
                 color2 = 1;
               }
               shape.forEach((m) => {
-                if (xy[0] + m.get(1) >= 0) { // 竖坐标可以为负
-                  let line = matrix.get(xy[0] + m.get(1));
-                  line = line.set(xy[1] + m.get(0), color);
-                  matrix = matrix.set(xy[0] + m.get(1), line);
+                if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+                  let line = matrix.get(xy.get(0) + m.get(1));
+                  line = line.set(xy.get(1) + m.get(0), color);
+                  matrix = matrix.set(xy.get(0) + m.get(1), line);
                 }
               });
               shape2.forEach((m) => {
-                if (xy2[0] + m.get(1) >= 0) { // 竖坐标可以为负
-                  let line = matrix.get(xy2[0] + m.get(1));
-                  line = line.set(xy2[1] + m.get(0), color2);
-                  matrix = matrix.set(xy2[0] + m.get(1), line);
+                if (xy2.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+                  let line = matrix.get(xy2.get(0) + m.get(1));
+                  line = line.set(xy2.get(1) + m.get(0), color2);
+                  matrix = matrix.set(xy2.get(0) + m.get(1), line);
                 }
               });
               if (myplayerid === 0) {
@@ -186,10 +187,10 @@ const down = (store) => {
               color = 1;
             }
             shape.forEach((m) => {
-              if (xy[0] + m.get(1) >= 0) { // 竖坐标可以为负
-                let line = matrix.get(xy[0] + m.get(1));
-                line = line.set(xy[1] + m.get(0), color);
-                matrix = matrix.set(xy[0] + m.get(1), line);
+              if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+                let line = matrix.get(xy.get(0) + m.get(1));
+                line = line.set(xy.get(1) + m.get(0), color);
+                matrix = matrix.set(xy.get(0) + m.get(1), line);
               }
             });
           }

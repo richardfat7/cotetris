@@ -87,13 +87,11 @@ const down = (store) => {
               store.dispatch(actions.resetLockDelay());
             }
             if (!want(next, tMatrix)) {
-              console.log(xy.get(1));
-              console.log(xy2.get(1));
-              if (xy.get(1) < xy2.get(1) && want(cur2.right(), state.get(tmpMatrix))) {
+              if (xy[1] < xy2.get(1) && want(cur2.right(), state.get(tmpMatrix))) {
                 store.dispatch(actions.moveBlockGeneral(cur2.right(), type2));
                 store.dispatch(actions.moveBlockGeneral(next, type));
                 store.dispatch(actions.resetLockDelay());
-              } else if (xy.get(1) > xy2.get(1) && want(cur2.left(), state.get(tmpMatrix))) {
+              } else if (xy[1] > xy2.get(1) && want(cur2.left(), state.get(tmpMatrix))) {
                 store.dispatch(actions.moveBlockGeneral(cur2.left(), type2));
                 store.dispatch(actions.moveBlockGeneral(next, type));
                 store.dispatch(actions.resetLockDelay());
