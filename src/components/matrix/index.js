@@ -145,12 +145,7 @@ export default class Matrix extends React.Component {
           m.forEach((n, k2) => {
             if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
               let line = matrix.get(xy.get(0) + k1);
-              let color;
-              if (line.get(xy.get(1) + k2) === 1 && !clearLines) { // 矩阵与方块重合
-                color = getColor(cur.type);
-              } else {
-                color = getColor(cur.type);
-              }
+              const color = getColor(cur.type);
               line = line.set(xy.get(1) + k2, color);
               matrix = matrix.set(xy.get(0) + k1, line);
             }
@@ -162,12 +157,7 @@ export default class Matrix extends React.Component {
           m.forEach((n, k2) => {
             if (n && xy2.get(0) + k1 >= 0) { // 竖坐标可以为负
               let line = matrix.get(xy2.get(0) + k1);
-              let color;
-              if (line.get(xy2.get(1) + k2) === 1 && !clearLines) { // 矩阵与方块重合
-                color = getColor(cur2.type);
-              } else {
-                color = getColor(cur2.type);
-              }
+              const color = getColor(cur.type);
               line = line.set(xy2.get(1) + k2, color);
               matrix = matrix.set(xy2.get(0) + k1, line);
             }

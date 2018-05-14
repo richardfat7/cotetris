@@ -6,7 +6,6 @@ import propTypes from 'prop-types';
 import style from './index.less';
 
 import Matrix from '../../components/matrix';
-import MatrixOPPO from '../../components/matrixOPPO';
 import Decorate from '../../components/decorate';
 import Number from '../../components/number';
 import Next from '../../components/next';
@@ -122,7 +121,7 @@ class Tetris extends React.Component {
                 myplayerid={this.props.myplayerid}
               />
               <Logo cur={!!this.props.cur} reset={this.props.reset} />
-              <MatrixOPPO
+              <Matrix
                 matrix={this.props.matrixOppo}
                 cur={this.props.curOppo}
                 cur2={this.props.curOppo2}
