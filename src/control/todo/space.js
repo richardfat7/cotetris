@@ -56,6 +56,7 @@ const down = (store) => {
       }
       const cur = state.get(curV);
       const cur2 = state.get(curV2);
+      let collide = false;
       if (cur !== null) { // 置底
         if (state.get('pause')) {
           states.pause(false);
@@ -103,6 +104,7 @@ const down = (store) => {
               matrix = matrix.set(xy[0] + m.get(1), line);
             }
           });
+          collide = true;
         }
         index = 0;
         bottom = cur.fall(index);
@@ -144,14 +146,23 @@ const down = (store) => {
           store.dispatch(actions.drop(false));
         }, 100);
         store.dispatch(actions.canHold(true));
-        if (myplayerid === 0) { // NOTE might have bugs
-          states.nextAround(matrix, null, myplayerid);
-        } else if (myplayerid === 1) {
-          states.nextAround(matrix, null, myplayerid);
-        } else if (myplayerid === 2) {
-          states.nextAround(matrix, null, myplayerid);
-        } else if (myplayerid === 3) {
-          states.nextAround(matrix, null, myplayerid);
+        if (collide === false) {
+          if (myplayerid === 0) { // NOTE might have bugs
+            states.nextAround(matrix, null, myplayerid);
+          } else if (myplayerid === 1) {
+            states.nextAround(matrix, null, myplayerid);
+          } else if (myplayerid === 2) {
+            states.nextAround(matrix, null, myplayerid);
+          } else if (myplayerid === 3) {
+            states.nextAround(matrix, null, myplayerid);
+          }
+        }
+        if (collide === true) {
+          if (myplayerid < 2) {
+            states.nextAround2(matrix, null, 0);
+          } else {
+            states.nextAround2(matrix, null, 1);
+          }
         }
       } else {
         states.start();
