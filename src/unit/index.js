@@ -122,6 +122,17 @@ const unit = {
       localStorage.setItem(StorageHold, data);
     });
   },
+  senddata(conn, data) {
+    if (conn) {
+      for (let i = 0; i < conn.length; i++) {
+        // later should a sequence number to reorder packet by us
+        if (conn[i] !== undefined) {
+          console.log('Sent data', data);
+          conn[i].send(JSON.stringify(data));
+        }
+      }
+    }
+  },
   isMobile() { // 判断是否为移动端
     const ua = navigator.userAgent;
     const android = /Android (\d+\.\d+)/.test(ua);

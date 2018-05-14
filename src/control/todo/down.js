@@ -1,4 +1,4 @@
-import { want } from '../../unit/';
+import { want, senddata } from '../../unit/';
 import event from '../../unit/event';
 import actions from '../../actions';
 import states from '../states';
@@ -6,7 +6,6 @@ import { music } from '../../unit/music';
 import * as reducerType from '../../unit/reducerType';
 
 const down = (store) => {
-  store.dispatch(actions.keyboard.down(true));
   const peerState = store.getState().get('peerConnection');
   const myplayerid = store.getState().get('myplayerid');
   if (peerState.conns) {
@@ -18,6 +17,8 @@ const down = (store) => {
       }
     }
   }
+  senddata(peerState.conns, { label: 'syncmove', key: 'down' });
+  store.dispatch(actions.keyboard.down(true));
   let curV;
   let curV2;
   let tmpMatrix;
