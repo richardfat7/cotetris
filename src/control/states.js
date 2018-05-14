@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import store from '../store';
-import { want, isClear, isOver } from '../unit/';
+import { want, isClear, isOver, senddata } from '../unit/';
 import Block from '../unit/block';
 import actions from '../actions';
 import { speeds,
@@ -91,18 +91,6 @@ function addPenalty(linesCleared) {
   store.dispatch(actions.matrix(matrix));
   store.dispatch(actions.tempMatrix(matrix));
   store.dispatch(actions.tempMatrix2(matrix));
-}
-
-function senddata(conn, data) {
-  if (conn) {
-    for (let i = 0; i < conn.length; i++) {
-      // later should a sequence number to reorder packet by us
-      if (conn[i] !== undefined) {
-        console.log('Sent data', data);
-        conn[i].send(JSON.stringify(data));
-      }
-    }
-  }
 }
 
 const attributes = ['matrix', 'cur2'];

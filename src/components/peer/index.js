@@ -142,6 +142,8 @@ export default class Peer extends React.Component {
                 console.log(next);
                 store.dispatch(actions.moveBlock2(next));
               }
+            } else if (data.label === 'syncmove') {
+              console.log(data.key);
             }
           });
           c.on('close', () => {
