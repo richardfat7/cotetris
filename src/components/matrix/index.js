@@ -10,6 +10,27 @@ import states from '../../control/states';
 import store from '../../store';
 
 const t = setTimeout;
+const getColor = (type) => {
+  let color;
+  if (type === 'I') {
+    color = 3;
+  } else if (type === 'O') {
+    color = 4;
+  } else if (type === 'T') {
+    color = 5;
+  } else if (type === 'S') {
+    color = 6;
+  } else if (type === 'Z') {
+    color = 7;
+  } else if (type === 'J') {
+    color = 8;
+  } else if (type === 'L') {
+    color = 9;
+  } else {
+    color = 2;
+  }
+  return color;
+};
 
 export default class Matrix extends React.Component {
   constructor() {
@@ -70,9 +91,12 @@ export default class Matrix extends React.Component {
     let tmpcur;
     if (myplayerid === 0) {
       tmpcur = store.getState().get('cur');
-    }
-    if (myplayerid === 1) {
+    } else if (myplayerid === 1) {
       tmpcur = store.getState().get('cur2');
+    } else if (myplayerid === 2) {
+      tmpcur = store.getState().get('curOppo');
+    } else if (myplayerid === 3) {
+      tmpcur = store.getState().get('curOppo2');
     }
     let ghost;
     if (tmpcur) {
@@ -124,42 +148,7 @@ export default class Matrix extends React.Component {
         shape.forEach((m) => {
           if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
             let line = matrix.get(xy.get(0) + m.get(1));
-            let color;
-            if (line.get(xy.get(1) + m.get(0)) === 1 && !clearLines) { // 矩阵与方块重合
-              if (cur.type === 'I') {
-                color = 3;
-              } else if (cur.type === 'O') {
-                color = 4;
-              } else if (cur.type === 'T') {
-                color = 5;
-              } else if (cur.type === 'S') {
-                color = 6;
-              } else if (cur.type === 'Z') {
-                color = 7;
-              } else if (cur.type === 'J') {
-                color = 8;
-              } else if (cur.type === 'L') {
-                color = 9;
-              } else {
-                color = 2;
-              }
-            } else if (cur.type === 'I') {
-              color = 3;
-            } else if (cur.type === 'O') {
-              color = 4;
-            } else if (cur.type === 'T') {
-              color = 5;
-            } else if (cur.type === 'S') {
-              color = 6;
-            } else if (cur.type === 'Z') {
-              color = 7;
-            } else if (cur.type === 'J') {
-              color = 8;
-            } else if (cur.type === 'L') {
-              color = 9;
-            } else {
-              color = 2;
-            }
+            const color = getColor(cur.type);
             // Center as black
             /*
             if (m.get(0) === 0 && m.get(1) === 0) {
@@ -176,42 +165,7 @@ export default class Matrix extends React.Component {
         shape2.forEach((m) => {
           if (xy2.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
             let line = matrix.get(xy2.get(0) + m.get(1));
-            let color;
-            if (line.get(xy2.get(1) + m.get(0)) === 1 && !clearLines) { // 矩阵与方块重合
-              if (cur2.type === 'I') {
-                color = 3;
-              } else if (cur2.type === 'O') {
-                color = 4;
-              } else if (cur2.type === 'T') {
-                color = 5;
-              } else if (cur2.type === 'S') {
-                color = 6;
-              } else if (cur2.type === 'Z') {
-                color = 7;
-              } else if (cur2.type === 'J') {
-                color = 8;
-              } else if (cur2.type === 'L') {
-                color = 9;
-              } else {
-                color = 2;
-              }
-            } else if (cur2.type === 'I') {
-              color = 3;
-            } else if (cur2.type === 'O') {
-              color = 4;
-            } else if (cur2.type === 'T') {
-              color = 5;
-            } else if (cur2.type === 'S') {
-              color = 6;
-            } else if (cur2.type === 'Z') {
-              color = 7;
-            } else if (cur2.type === 'J') {
-              color = 8;
-            } else if (cur2.type === 'L') {
-              color = 9;
-            } else {
-              color = 2;
-            }
+            const color = getColor(cur2.type);
             line = line.set(xy2.get(1) + m.get(0), color);
             matrix = matrix.set(xy2.get(0) + m.get(1), line);
           }

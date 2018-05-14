@@ -175,6 +175,24 @@ function resetBag() {
   };
 }
 
+function shiftTwiceOppo() {
+  return {
+    type: reducerType.SHIFT_TWICE,
+  };
+}
+
+function shiftNextBlockOppo() {
+  return {
+    type: reducerType.SHIFT_NEXT_BLOCK,
+  };
+}
+
+function resetBagOppo() {
+  return {
+    type: reducerType.RESET_BAG,
+  };
+}
+
 function combo(data) {
   return {
     type: reducerType.COMBO,
@@ -261,6 +279,9 @@ export default {
   shiftTwice,
   shiftNextBlock,
   resetBag,
+  shiftTwiceOppo,
+  shiftNextBlockOppo,
+  resetBagOppo,
   combo,
   peerSavePeer,
   peerSaveConnection,

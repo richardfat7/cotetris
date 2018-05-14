@@ -24,6 +24,7 @@ import focus from './focus';
 import holdType from './holdType';
 import canHold from './canHold';
 import bag from './bag';
+import bagOppo from './bagOppo';
 import combo from './combo';
 import peerConnection from './peerConnection';
 import myplayerid from './myplayerid';
@@ -53,6 +54,7 @@ const rootReducer = combineReducers({
   holdType,
   canHold,
   bag,
+  bagOppo,
   combo,
   myplayerid,
   tempMatrix,
