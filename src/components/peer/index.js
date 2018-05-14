@@ -15,14 +15,18 @@ export default class Peer extends React.Component {
     this.state = {
       currentplayerid: 0,
       id: '',
+      fd: '',
       opp: '',
       conns: [],
       peer: null,
+      mypid: 0,
     };
     this.register = this.register.bind(this);
     this.connect = this.connect.bind(this);
+    this.connectOpp = this.connectOpp.bind(this);
     this.regClick = this.regClick.bind(this);
     this.connClick = this.connClick.bind(this);
+    this.connClickOpp = this.connClickOpp.bind(this);
   }
   componentWillMount() {
     this.onChange(this.props);
@@ -52,25 +56,44 @@ export default class Peer extends React.Component {
       id,
       peer,
     }, () => {
-      const stateConns = store.getState().get('peerConnection').conns;
-      const connsCopy = stateConns.slice();
       this.state.peer.on('connection', (c) => {
-        connsCopy.push(c);
-        store.dispatch(actions.peerSaveConnection(connsCopy));
-        this.setState({ conns: [...this.state.conns, c] });
         c.on('open', () => {
           console.log('someone opened connection.');
           this.setState({ conns: [...this.state.conns, c] });
           // payload is player's id
           const lastPlayer = this.state.currentplayerid + 1;
           this.setState({ lastPlayer });
-          c.send(JSON.stringify({ label: 'header', flag: 'ACK', payload: lastPlayer }));
           c.on('data', (res) => {
             const data = JSON.parse(res);
             console.log('RECIEVE data', data);
             if (data.label === 'header') {
-              if (data.flag === 'ACK') {
-                console.log('someone connected.');
+              const stateConns = store.getState().get('peerConnection').conns;
+              const connsCopy = stateConns.slice();
+              connsCopy.push(c);
+              const stateConnsT = store.getState().get('peerConnection').connsTarget;
+              const connsTCopy = stateConnsT.slice();
+              if (data.flag === 'CLI') {
+                console.log('someone as client.');
+                connsTCopy.push('fd');
+              } else if (data.flag === 'OPP') {
+                console.log('someone as opp.');
+                connsTCopy.push('opp');
+              }
+              store.dispatch(actions.peerSaveConnection({ conn: connsCopy, target: connsTCopy }));
+              if (connsTCopy.length === 2) {
+                connsTCopy.forEach((m, k) => {
+                  if (m === 'fd') {
+                    connsCopy[k].send(JSON.stringify({ label: 'header', flag: 'ACK', payload: 1 }));
+                  } else if (m === 'opp') {
+                    connsCopy[k].send(JSON.stringify({
+                      label: 'header',
+                      flag: 'ACK_OPP',
+                      payload: 2,
+                    }));
+                  } else {
+                    console.log('ERROR UNEXPECTED VALUE IN CONNS TARGET');
+                  }
+                });
                 if (this.props.history) {
                   this.props.history.push('/tetris');
                 }
@@ -78,6 +101,14 @@ export default class Peer extends React.Component {
             } else if (data.label === 'syncmove') {
               todo[data.key].down(store, data.id);
               todo[data.key].up(store);
+            } else if (data.label === 'syncgame') {
+              if (data.team === 'RIGHT') {
+                store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
+                  if (m === 'fd') {
+                    store.getState().get('peerConnection').conns[k].send(res);
+                  }
+                });
+              }
             }
           });
           c.on('close', () => {
@@ -91,7 +122,7 @@ export default class Peer extends React.Component {
 
   connect(id) {
     this.setState({
-      opp: id,
+      fd: id,
     });
     const con = this.state.peer.connect(id, {
       label: 'chat',
@@ -103,10 +134,11 @@ export default class Peer extends React.Component {
     const stateConns = store.getState().get('peerConnection').conns;
     const connsCopy = stateConns.slice();
     connsCopy.push(con);
-    store.dispatch(actions.peerSaveConnection(connsCopy));
+    store.dispatch(actions.peerSaveConnection({ conn: connsCopy, target: ['fd'] }));
     this.setState({ conns: [...this.state.conns, con] });
     con.on('open', () => {
       console.log('connection opened.');
+      con.send(JSON.stringify({ label: 'header', flag: 'CLI' }));
       con.on('data', (res) => {
         console.log(res);
         const data = JSON.parse(res);
@@ -115,8 +147,8 @@ export default class Peer extends React.Component {
           if (data.flag === 'ACK') {
             const myplayerid = data.payload;
             store.dispatch(actions.setMyPlayerID(myplayerid));
+            this.setState({ mypid: myplayerid });
             console.log('connect success.');
-            con.send(JSON.stringify({ label: 'header', flag: 'ACK' }));
             if (this.props.history) {
               this.props.history.push('/tetris');
             }
@@ -126,13 +158,54 @@ export default class Peer extends React.Component {
           states.start();
           console.log('started!');
         } else if (data.label === 'syncgame') {
-          if (data.attr === 'matrix') {
+          if (data.team === ((this.state.mypid <= 1) ? 'LEFT' : 'RIGHT')) {
+            if (data.attr === 'matrix') {
+              // console.log('matrix');
+              let newMatrix = List();
+              data.data.forEach((m) => {
+                newMatrix = newMatrix.push(List(m));
+              });
+              store.dispatch(actions.matrix(newMatrix));
+            } else if (data.attr === 'cur2') {
+              // console.log('cur2');
+              const newCur = data.data;
+              let newShape = List();
+              newCur.shape.forEach((m) => {
+                newShape = newShape.push(List(m));
+              });
+              const next = {
+                shape: newShape,
+                type: newCur.type,
+                xy: newCur.xy,
+                rotateIndex: newCur.rotateIndex,
+                timeStamp: newCur.timeStamp,
+              };
+              // console.log(next);
+              store.dispatch(actions.moveBlock2(next));
+            } else if (data.attr === 'cur') {
+              console.log('cur');
+              const newCur = data.data;
+              let newShape = List();
+              newCur.shape.forEach((m) => {
+                newShape = newShape.push(List(m));
+              });
+              const next = {
+                shape: newShape,
+                type: newCur.type,
+                xy: newCur.xy,
+                rotateIndex: newCur.rotateIndex,
+                timeStamp: newCur.timeStamp,
+              };
+              // console.log(next);
+              store.dispatch(actions.moveBlock(next));
+            }
+          } else if (data.attr === 'matrix') {
             // console.log('matrix');
             let newMatrix = List();
             data.data.forEach((m) => {
               newMatrix = newMatrix.push(List(m));
             });
-            store.dispatch(actions.matrix(newMatrix));
+            store.dispatch(actions.matrixOppo(newMatrix));
           } else if (data.attr === 'cur2') {
             // console.log('cur2');
             const newCur = data.data;
@@ -148,7 +221,7 @@ export default class Peer extends React.Component {
               timeStamp: newCur.timeStamp,
             };
             // console.log(next);
-            store.dispatch(actions.moveBlock2(next));
+            store.dispatch(actions.moveBlock4(next));
           } else if (data.attr === 'cur') {
             console.log('cur');
             const newCur = data.data;
@@ -164,7 +237,119 @@ export default class Peer extends React.Component {
               timeStamp: newCur.timeStamp,
             };
             // console.log(next);
-            store.dispatch(actions.moveBlock(next));
+            store.dispatch(actions.moveBlock3(next));
+          }
+        }
+      });
+      con.on('close', () => {
+        con.close();
+        console.log(`${con.peer} has left the chat.`);
+      });
+    });
+    con.on('error', (err) => {
+      console.log(err);
+    });
+  }
+
+  connectOpp(id) {
+    this.setState({
+      opp: id,
+    });
+    const con = this.state.peer.connect(id, {
+      label: 'chat',
+      serialization: 'none',
+      metadata: {
+        message: 'hi i want to chat with you!',
+      },
+    });
+    const stateConns = store.getState().get('peerConnection').conns;
+    const connsCopy = stateConns.slice();
+    connsCopy.push(con);
+    const stateConnsT = store.getState().get('peerConnection').connsTarget;
+    const connsTCopy = stateConnsT.slice();
+    connsTCopy.push('opp');
+    store.dispatch(actions.peerSaveConnection({ conn: connsCopy, target: connsTCopy }));
+    this.setState({ conns: [...this.state.conns, con] });
+    con.on('open', () => {
+      console.log('connection opened.');
+      con.send(JSON.stringify({ label: 'header', flag: 'OPP' }));
+      con.on('data', (res) => {
+        console.log(res);
+        const data = JSON.parse(res);
+        console.log('RECIEVE data', data);
+        if (data.label === 'header') {
+          if (data.flag === 'ACK_OPP') {
+            const myplayerid = data.payload;
+            store.dispatch(actions.setMyPlayerID(myplayerid));
+            this.setState({ mypid: myplayerid });
+            console.log('connect success.');
+            stateConnsT.forEach((m, k) => {
+              if (m === 'fd') {
+                stateConns[k].send(JSON.stringify({
+                  label: 'header',
+                  flag: 'ACK',
+                  payload: 3,
+                }));
+              }
+            });
+            if (this.props.history) {
+              this.props.history.push('/tetris');
+            }
+          }
+        } else if (data.label === 'start') {
+          console.log(data);
+          states.start();
+          console.log('started!');
+        } else if (data.label === 'syncmove') {
+          todo[data.key].down(store, data.id);
+          todo[data.key].up(store);
+        } else if (data.label === 'syncgame') {
+          if (data.team === 'LEFT') {
+            if (data.attr === 'matrix') {
+              // console.log('matrix');
+              let newMatrix = List();
+              data.data.forEach((m) => {
+                newMatrix = newMatrix.push(List(m));
+              });
+              store.dispatch(actions.matrixOppo(newMatrix));
+            } else if (data.attr === 'cur2') {
+              // console.log('cur2');
+              const newCur = data.data;
+              let newShape = List();
+              newCur.shape.forEach((m) => {
+                newShape = newShape.push(List(m));
+              });
+              const next = {
+                shape: newShape,
+                type: newCur.type,
+                xy: newCur.xy,
+                rotateIndex: newCur.rotateIndex,
+                timeStamp: newCur.timeStamp,
+              };
+              // console.log(next);
+              store.dispatch(actions.moveBlock4(next));
+            } else if (data.attr === 'cur') {
+              console.log('cur');
+              const newCur = data.data;
+              let newShape = List();
+              newCur.shape.forEach((m) => {
+                newShape = newShape.push(List(m));
+              });
+              const next = {
+                shape: newShape,
+                type: newCur.type,
+                xy: newCur.xy,
+                rotateIndex: newCur.rotateIndex,
+                timeStamp: newCur.timeStamp,
+              };
+              // console.log(next);
+              store.dispatch(actions.moveBlock3(next));
+            }
+            store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
+              if (m === 'fd') {
+                store.getState().get('peerConnection').conns[k].send(res);
+              }
+            });
           }
         }
       });
@@ -191,20 +376,31 @@ export default class Peer extends React.Component {
     }
   }
 
+  connClickOpp() {
+    if (this.modal3 && this.modal3.value) {
+      this.connectOpp(this.modal3.value);
+    }
+  }
+
   render() {
     // console.log(JSON.stringify(this.state.conn));
     return (
       <div>
         <p>Peerjs in use</p>
         <p>myid: { this.state.id }</p>
+        <p>fdid: { this.state.fd }</p>
         <p>oppid: { this.state.opp }</p>
-        <p>Choose an ID:
+        <p>Choose your ID:
           <input id="myid" type="text" ref={(m) => { this.modal = m; }} />
           <button onClick={this.regClick}>Register</button>
         </p>
-        <p>Connect to an ID:
-          <input id="oppid" type="text" ref={(m) => { this.modal2 = m; }} />
+        <p>Connect to a friend:
+          <input id="fdid" type="text" ref={(m) => { this.modal2 = m; }} />
           <button onClick={this.connClick}>Connect</button>
+        </p>
+        <p>Connect to an opponent:
+          <input id="oppid" type="text" ref={(m) => { this.modal3 = m; }} />
+          <button onClick={this.connClickOpp}>Connect Opp</button>
         </p>
         <Link
           to={{

@@ -105,7 +105,12 @@ function handleChange() {
     if (previousValues[attr] !== currentValues[attr]) {
       console.log(attr, 'changed from', previousValues[attr], 'to', currentValues[attr]);
       const peerState = store.getState().get('peerConnection');
-      senddata(peerState.conns, { label: 'syncgame', attr, data: currentValues[attr] });
+      senddata(peerState.conns, {
+        label: 'syncgame',
+        attr,
+        data: currentValues[attr],
+        team: store.getState().get('myplayerid') <= 1 ? 'LEFT' : 'RIGHT',
+      });
     }
   });
 }

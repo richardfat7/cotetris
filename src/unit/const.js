@@ -101,7 +101,8 @@ const lastRecord = (() => { // 上一把的状态
     }
     return false;
   }
-  return data;
+  // return data;
+  return false;
 })();
 
 const StorageHold = 'HOLD_TILE';

@@ -79,6 +79,13 @@ function matrix(data) {
   };
 }
 
+function matrixOppo(data) {
+  return {
+    type: reducerType.MATRIX_OPPO,
+    data,
+  };
+}
+
 function lock(data) {
   return {
     type: reducerType.LOCK,
@@ -246,6 +253,7 @@ export default {
   speedRun,
   startLines,
   matrix,
+  matrixOppo,
   lock,
   clearLines,
   points,
