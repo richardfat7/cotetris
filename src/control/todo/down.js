@@ -29,7 +29,8 @@ const down = (store) => {
       begin: 40,
       interval: 40,
       callback: (stopDownTrigger) => {
-        if (peerState.conns) {
+        const lock = store.getState().get('lock');
+        if (peerState.conns && !lock) {
           for (let i = 0; i < peerState.conns.length; i++) {
             // later should a sequence number to reorder packet by us
             const data = { label: 'movement', payload: 'down', playerid: myplayerid };

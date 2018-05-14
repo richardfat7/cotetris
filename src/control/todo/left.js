@@ -46,7 +46,8 @@ const down = (store) => {
         const delay = delays[state.get('speedRun') - 1];
         let timeStamp;
         if (want(next, state.get('matrix'))) {
-          if (peerState.conns) {
+          const lock = store.getState().get('lock');
+          if (peerState.conns && !lock) {
             for (let i = 0; i < peerState.conns.length; i++) {
               // later should a sequence number to reorder packet by us
               const data = { label: 'movement', payload: 'left', playerid: myplayerid };

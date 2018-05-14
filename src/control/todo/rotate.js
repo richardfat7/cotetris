@@ -22,7 +22,8 @@ const down = (store) => {
     curV = 'curOppo2';
     type = reducerType.MOVE_BLOCK_OPPO2;
   }
-  if (peerState.conns) {
+  const lock = store.getState().get('lock');
+  if (peerState.conns && !lock) {
     for (let i = 0; i < peerState.conns.length; i++) {
       // later should a sequence number to reorder packet by us
       const data = { label: 'movement', payload: 'rotate', playerid: myplayerid };
