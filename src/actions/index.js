@@ -16,6 +16,19 @@ function nextBlock(data) {
   };
 }
 
+function nextBlockOppo(data) {
+  let next;
+  if (data) {
+    next = data;
+  } else {
+    next = null;
+  }
+  return {
+    type: reducerType.NEXT_BLOCK_OPPO,
+    data: next,
+  };
+}
+
 function moveBlockGeneral(option, type) {
   return {
     type,
@@ -255,6 +268,7 @@ function resetLockDelay() {
 
 export default {
   nextBlock,
+  nextBlockOppo,
   moveBlock,
   moveBlock2,
   moveBlockOppo,

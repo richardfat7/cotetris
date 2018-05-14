@@ -6,6 +6,7 @@ import matrixOppo from './matrixOppo';
 import tempMatrix from './tempMatrix';
 import tempMatrix2 from './tempMatrix2';
 import next from './next';
+import nextOppo from './nextOppo';
 import cur from './cur';
 import cur2 from './cur2';
 import curOppo from './curOppo';
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   matrix,
   matrixOppo,
   next,
+  nextOppo,
   cur,
   cur2,
   curOppo,

@@ -135,10 +135,16 @@ const states = {
     store.dispatch(actions.tempMatrix2(startMatrix));
     store.dispatch(actions.matrix(startMatrix));
     store.dispatch(actions.resetBag());
+    store.dispatch(actions.resetBagOppo());
     store.dispatch(actions.moveBlock(
       { type: store.getState().get('bag').get(0), x: 0, y: -2 }));
     store.dispatch(actions.moveBlock2(
       { type: store.getState().get('bag').get(1), x: 0, y: 2 }));
+    store.dispatch(actions.nextBlock(store.getState().get('bag').get(2)));
+    store.dispatch(actions.moveBlockOppo(
+      { type: store.getState().get('bagOppo').get(0), x: 0, y: -2 }));
+    store.dispatch(actions.moveBlockOppo2(
+      { type: store.getState().get('bagOppo').get(1), x: 0, y: 2 }));
     store.dispatch(actions.nextBlock(store.getState().get('bag').get(2)));
     store.dispatch(actions.shiftTwice());
     store.dispatch(actions.holdType(blockType.length - 1));
