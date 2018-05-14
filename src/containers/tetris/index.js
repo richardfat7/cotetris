@@ -97,13 +97,8 @@ class Tetris extends React.Component {
                 <p>{i18n.hold[lan]}</p>
                 <Hold data={this.props.holdType} />
                 <Point cur={!!this.props.cur} point={this.props.points} max={this.props.max} />
-                <p>{ this.props.cur ? i18n.cleans[lan] : i18n.startLine[lan] }</p>
-                <Number number={this.props.cur ? this.props.clearLines : this.props.startLines} />
-                <p>{i18n.level[lan]}</p>
-                <Number
-                  number={this.props.cur ? this.props.speedRun : this.props.speedStart}
-                  length={1}
-                />
+                <p>{ this.props.cur ? i18n.cleans[lan] : '' }</p>
+                <Number number={this.props.cur ? this.props.clearLines : 0} />
                 <p>{i18n.next[lan]}</p>
                 <Next data={this.props.next} />
                 <div className={style.bottom}>
@@ -134,13 +129,8 @@ class Tetris extends React.Component {
                 <p>{i18n.hold[lan]}</p>
                 <Hold data={this.props.holdType} />
                 <Point cur={!!this.props.cur} point={this.props.points} max={this.props.max} />
-                <p>{ this.props.cur ? i18n.cleans[lan] : i18n.startLine[lan] }</p>
-                <Number number={this.props.cur ? this.props.clearLines : this.props.startLines} />
-                <p>{i18n.level[lan]}</p>
-                <Number
-                  number={this.props.cur ? this.props.speedRun : this.props.speedStart}
-                  length={1}
-                />
+                <p>{ this.props.cur ? i18n.cleans[lan] : '' }</p>
+                <Number number={this.props.cur ? this.props.clearLines : 0} />
                 <p>{i18n.next[lan]}</p>
                 <Next data={this.props.next} />
               </div>
