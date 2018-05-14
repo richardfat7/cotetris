@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Peerjs from 'peerjs';
 import store from '../../store';
 import states from '../../control/states';
+import todo from '../../control/todo';
 import actions from '../../actions';
 
 
@@ -74,6 +75,9 @@ export default class Peer extends React.Component {
                   this.props.history.push('/tetris');
                 }
               }
+            } else if (data.label === 'syncmove') {
+              todo[data.key].down(store, data.id);
+              todo[data.key].up(store);
             }
           });
           c.on('close', () => {

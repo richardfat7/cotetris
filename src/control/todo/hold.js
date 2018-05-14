@@ -1,4 +1,4 @@
-import { subscribeTile, senddata } from '../../unit';
+import { subscribeTile } from '../../unit';
 import event from '../../unit/event';
 import { blockType } from '../../unit/const';
 import actions from '../../actions';
@@ -18,7 +18,6 @@ const down = (store) => {
       }
     }
   }
-  senddata(peerState.conns, { label: 'syncmove', key: 'hold' });
   store.dispatch(actions.keyboard.hold(true));
   if (store.getState().get('cur') !== null && store.getState().get('canHold') === true) {
     event.down({
