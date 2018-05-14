@@ -4,13 +4,19 @@ import { lastRecord, blockType } from '../../unit/const';
 
 const initState = (() => {
   if (!lastRecord || !lastRecord.bag) { // 无记录 或 有记录 但方块为空, 返回 new bag
-    let bag = List();
+    let bigbag = List();
     const len = blockType.length - 1;
-    for (let i = 0; i < len; i++) {
-      bag = bag.push(blockType[i]);
+    for (let j = 0; j < 100; j++) {
+      let bag = List();
+      for (let i = 0; i < len; i++) {
+        bag = bag.push(blockType[i]);
+      }
+      bag = bag.sortBy(Math.random);
+      for (let i = 0; i < len; i++) {
+        bigbag = bigbag.push(bag[i]);
+      }
     }
-    bag = bag.sortBy(Math.random);
-    return bag;
+    return bigbag;
   }
   return List(lastRecord.bag);
 })();

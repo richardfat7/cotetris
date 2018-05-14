@@ -12,8 +12,10 @@ const down = (store) => {
   if (peerState.conns) {
     for (let i = 0; i < peerState.conns.length; i++) {
       // later should a sequence number to reorder packet by us
-      const data = { label: 'movement', payload: 'down', playerid: myplayerid };
-      peerState.conns[i].send(JSON.stringify(data));
+      if (peerState.conns[i] !== undefined) {
+        const data = { label: 'movement', payload: 'down', playerid: myplayerid };
+        peerState.conns[i].send(JSON.stringify(data));
+      }
     }
   }
   let curV;

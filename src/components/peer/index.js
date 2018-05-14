@@ -1,9 +1,11 @@
+import { List } from 'immutable';
 import React from 'react';
 import propTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Peerjs from 'peerjs';
 import { want } from '../../unit';
 import store from '../../store';
+import states from '../../control/states';
 import actions from '../../actions';
 import * as reducerType from '../../unit/reducerType';
 
@@ -111,6 +113,18 @@ export default class Peer extends React.Component {
               } else if (cur && direction === 'down') {
                 store.dispatch(actions.moveBlockGeneral(cur.fall(), type));
               }
+            } else if (data.label === 'start') {
+              console.log(data);
+              states.start();
+              console.log('started!');
+            } else if (data.label === 'syncgame') {
+              console.log('syncgame');
+              let newMatrix = List();
+              data.matrix.forEach((m) => {
+                newMatrix = newMatrix.push(m);
+              });
+              console.log(newMatrix);
+              store.dispatch(actions.matrix(newMatrix));
             }
           });
           c.on('close', () => {

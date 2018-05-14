@@ -91,12 +91,47 @@ function addPenalty(linesCleared) {
   store.dispatch(actions.matrix(matrix));
 }
 
+function senddata(conn, data) {
+  if (conn) {
+    for (let i = 0; i < conn.length; i++) {
+      // later should a sequence number to reorder packet by us
+      if (conn[i] !== undefined) {
+        console.log('Sent: ');
+        console.log(data);
+        conn[i].send(JSON.stringify(data));
+      }
+    }
+  }
+}
+
+let currentValue = store.getState().get('matrix');
+function handleChange() {
+  const previousValue = currentValue;
+  currentValue = store.getState().get('matrix');
+  if (previousValue !== currentValue) {
+    console.log(
+      'matrix changed from',
+      previousValue,
+      'to',
+      currentValue.toString()
+    );
+    const peerState = store.getState().get('peerConnection');
+    senddata(peerState.conns, { label: 'syncgame', matrix: currentValue });
+  }
+}
+
 const states = {
   // 自动下落setTimeout变量
   fallInterval: null,
 
   // 游戏开始
   start: () => {
+    const peerState = store.getState().get('peerConnection');
+    const myplayerid = store.getState().get('myplayerid');
+    console.log(peerState);
+    senddata(peerState.conns, { label: 'start', playerid: myplayerid });
+    store.subscribe(handleChange);
+
     if (music.start) {
       music.start();
     }
