@@ -67,8 +67,8 @@ export default class Peer extends React.Component {
           this.setState({ lastPlayer });
           c.send(JSON.stringify({ label: 'header', flag: 'ACK', payload: lastPlayer }));
           c.on('data', (res) => {
-            console.log(res);
             const data = JSON.parse(res);
+            console.log('RECIEVE data', data);
             const storeStates = store.getState();
             if (data.label === 'header') {
               if (data.flag === 'ACK') {
@@ -125,6 +125,22 @@ export default class Peer extends React.Component {
                   newMatrix = newMatrix.push(List(m));
                 });
                 store.dispatch(actions.matrix(newMatrix));
+              } else if (data.attr === 'cur2') {
+                console.log('cur2');
+                const newCur = data.data;
+                let newShape = List();
+                newCur.shape.forEach((m) => {
+                  newShape = newShape.push(List(m));
+                });
+                const next = {
+                  shape: newShape,
+                  type: newCur.type,
+                  xy: newCur.xy,
+                  rotateIndex: newCur.rotateIndex,
+                  timeStamp: newCur.timeStamp,
+                };
+                console.log(next);
+                store.dispatch(actions.moveBlock2(next));
               }
             }
           });

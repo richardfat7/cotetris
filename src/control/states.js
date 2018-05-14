@@ -96,15 +96,14 @@ function senddata(conn, data) {
     for (let i = 0; i < conn.length; i++) {
       // later should a sequence number to reorder packet by us
       if (conn[i] !== undefined) {
-        console.log('Sent: ');
-        console.log(data);
+        console.log('Sent data', data);
         conn[i].send(JSON.stringify(data));
       }
     }
   }
 }
 
-const attributes = ['matrix'];
+const attributes = ['matrix', 'cur2'];
 const currentValues = {};
 attributes.forEach((attr) => {
   currentValues[attr] = store.getState().get(attr);
