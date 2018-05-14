@@ -132,7 +132,7 @@ export default class Peer extends React.Component {
                     timeStamp: newCur.timeStamp,
                   };
                   // console.log(next);
-                  store.dispatch(actions.moveBlock4(next));
+                  store.dispatch(actions.moveBlockOppo2(next));
                 } else if (data.attr === 'cur') {
                   console.log('cur');
                   const newCur = data.data;
@@ -148,7 +148,7 @@ export default class Peer extends React.Component {
                     timeStamp: newCur.timeStamp,
                   };
                   // console.log(next);
-                  store.dispatch(actions.moveBlock3(next));
+                  store.dispatch(actions.moveBlockOppo(next));
                 }
                 store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
                   if (m === 'fd') {
@@ -268,7 +268,7 @@ export default class Peer extends React.Component {
               timeStamp: newCur.timeStamp,
             };
             // console.log(next);
-            store.dispatch(actions.moveBlock4(next));
+            store.dispatch(actions.moveBlockOppo2(next));
           } else if (data.attr === 'cur') {
             console.log('cur');
             const newCur = data.data;
@@ -284,7 +284,7 @@ export default class Peer extends React.Component {
               timeStamp: newCur.timeStamp,
             };
             // console.log(next);
-            store.dispatch(actions.moveBlock3(next));
+            store.dispatch(actions.moveBlockOppo(next));
           }
         }
       });
@@ -378,7 +378,7 @@ export default class Peer extends React.Component {
                 timeStamp: newCur.timeStamp,
               };
               // console.log(next);
-              store.dispatch(actions.moveBlock4(next));
+              store.dispatch(actions.moveBlockOppo2(next));
             } else if (data.attr === 'cur') {
               console.log('cur');
               const newCur = data.data;
@@ -394,7 +394,7 @@ export default class Peer extends React.Component {
                 timeStamp: newCur.timeStamp,
               };
               // console.log(next);
-              store.dispatch(actions.moveBlock3(next));
+              store.dispatch(actions.moveBlockOppo(next));
             }
             store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
               if (m === 'fd') {
