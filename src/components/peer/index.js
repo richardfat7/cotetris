@@ -3,12 +3,29 @@ import React from 'react';
 import propTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Peerjs from 'peerjs';
-import { want } from '../../unit';
+// import { want } from '../../unit';
 import store from '../../store';
 import states from '../../control/states';
 import actions from '../../actions';
-import * as reducerType from '../../unit/reducerType';
+// import * as reducerType from '../../unit/reducerType';
 
+// function getTypeCur(storeStates, playerid) {
+//   let type; let cur;
+//   if (playerid === 0) {
+//     type = reducerType.MOVE_BLOCK;
+//     cur = storeStates.cur;
+//   } else if (playerid === 1) {
+//     type = reducerType.MOVE_BLOCK2;
+//     cur = storeStates.cur2;
+//   } else if (playerid === 2) {
+//     type = reducerType.MOVE_BLOCK_OPPO;
+//     cur = storeStates.curOppo;
+//   } else if (playerid === 3) {
+//     type = reducerType.MOVE_BLOCK_OPPO2;
+//     cur = storeStates.curOppo2;
+//   }
+//   return { type, cur };
+// }
 
 export default class Peer extends React.Component {
   constructor() {
@@ -19,11 +36,13 @@ export default class Peer extends React.Component {
       opp: '',
       conns: [],
       peer: null,
+      identity: 0,
     };
     this.register = this.register.bind(this);
     this.connect = this.connect.bind(this);
     this.regClick = this.regClick.bind(this);
-    this.connClick = this.connClick.bind(this);
+    this.connClickTeam = this.connClickTeam.bind(this);
+    this.connClickOppo = this.connClickOppo.bind(this);
   }
   componentWillMount() {
     this.onChange(this.props);
@@ -43,7 +62,7 @@ export default class Peer extends React.Component {
       host: 'localhost',
       port: 9000,
       path: '/',
-
+      identity: 0, // decides if you propagate your packet
       // Set highest debug level (log everything!).
       debug: 3,
     });
@@ -52,67 +71,106 @@ export default class Peer extends React.Component {
     this.setState({
       id,
       peer,
+      identity: 0,
     }, () => {
-      const stateConns = store.getState().get('peerConnection').conns;
-      const connsCopy = stateConns.slice();
+      let myplayerid = store.getState().get('myplayerid');
       this.state.peer.on('connection', (c) => {
+        const stateConns = store.getState().get('peerConnection').conns;
+        const connsCopy = stateConns.slice();
         connsCopy.push(c);
         store.dispatch(actions.peerSaveConnection(connsCopy));
-        this.setState({ conns: [...this.state.conns, c] });
         c.on('open', () => {
           console.log('someone opened connection.');
-          this.setState({ conns: [...this.state.conns, c] });
-          // payload is player's id
-          const lastPlayer = this.state.currentplayerid + 1;
-          this.setState({ lastPlayer });
-          c.send(JSON.stringify({ label: 'header', flag: 'ACK', payload: lastPlayer }));
+          myplayerid = store.getState().get('myplayerid');
+          if (c.metadata.type === 'team_req') {
+            const setPacket = JSON.stringify({
+              label: 'header',
+              flag: 'SET',
+              payload: 1,
+              from: myplayerid,
+            });
+            c.send(setPacket);
+          } else if (c.metadata.type === 'oppo_req') {
+            const setPacket = JSON.stringify({
+              label: 'header',
+              flag: 'SET',
+              payload: 2,
+              from: myplayerid,
+            });
+            c.send(setPacket);
+          } else {
+            console.log('cannot understand metadata ', c);
+          }
           c.on('data', (res) => {
             const data = JSON.parse(res);
             console.log('RECIEVE data', data);
             const storeStates = store.getState();
+            const conns = storeStates.get('peerConnection').conns;
+            myplayerid = storeStates.get('myplayerid');
+            // propagate to teammate if I am one of the host: 0
+            if (this.state.identity === 0 && data.flag === 'STA') {
+              for (let i = 0; i < conns.length; i++) {
+                if (conns[i].metadata.type === 'team_req') {
+                  conns[i].send(res);
+                } else if (conns[i].metadata.type === 'oppo_req') {
+                  // no need to propagate to opponent's host :o)
+                } else {
+                  console.log('Cannot understand metadata ', res);
+                }
+              }
+            }
             if (data.label === 'header') {
-              if (data.flag === 'ACK') {
-                console.log('someone connected.');
+              if (data.flag === 'SET') {
+                myplayerid = data.payload;
+                store.dispatch(actions.setMyPlayerID(myplayerid));
+                const ackPacket = JSON.stringify({
+                  label: 'header',
+                  flag: 'ACK',
+                  from: myplayerid,
+                });
+                for (let i = 0; i < conns.length; i++) {
+                  conns[i].send(ackPacket);
+                }
+              } else if (data.flag === 'ACK' && data.from === 2) {
+                const staPacket = JSON.stringify({
+                  label: 'header',
+                  flag: 'STA',
+                  from: myplayerid,
+                });
+                for (let i = 0; i < conns.length; i++) {
+                  conns[i].send(staPacket);
+                }
+                if (this.props.history) {
+                  this.props.history.push('/tetris');
+                }
+              } else if (data.flag === 'STA') {
                 if (this.props.history) {
                   this.props.history.push('/tetris');
                 }
               }
-            } else if (data.label === 'movement') {
-              const playerid = data.playerid;
-              let type; let cur;
-              if (playerid === 0) {
-                type = reducerType.MOVE_BLOCK;
-                cur = storeStates.cur;
-              } else if (playerid === 1) {
-                type = reducerType.MOVE_BLOCK2;
-                cur = storeStates.cur2;
-              } else if (playerid === 2) {
-                type = reducerType.MOVE_BLOCK_OPPO;
-                cur = storeStates.curOppo;
-              } else if (playerid === 3) {
-                type = reducerType.MOVE_BLOCK_OPPO2;
-                cur = storeStates.curOppo2;
-              }
-              console.log(type, cur);
-              const direction = data.payload;
-              if (cur && direction === 'left') {
-                store.dispatch(actions.moveBlockGeneral(cur.left(), type));
-              } else if (cur && direction === 'right') {
-                store.dispatch(actions.moveBlockGeneral(cur.right(), type));
-              } else if (cur && direction === 'rotate') {
-                store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
-              } else if (cur && direction === 'space') {
-                let index = 0;
-                let bottom = cur.fall(index);
-                while (want(bottom, store.getState().get('matrix'))) {
-                  bottom = cur.fall(index);
-                  index++;
-                }
-                bottom = cur.fall(index - 2);
-                store.dispatch(actions.moveBlockGeneral(bottom, type));
-              } else if (cur && direction === 'down') {
-                store.dispatch(actions.moveBlockGeneral(cur.fall(), type));
-              }
+            } else if (data.label === 'movement') { // deprecated
+              // const playerid = data.playerid;
+              // const { type, cur } = getTypeCur(storeStates, playerid)
+              // console.log(type, cur);
+              // const direction = data.payload;
+              // if (cur && direction === 'left') {
+              //   store.dispatch(actions.moveBlockGeneral(cur.left(), type));
+              // } else if (cur && direction === 'right') {
+              //   store.dispatch(actions.moveBlockGeneral(cur.right(), type));
+              // } else if (cur && direction === 'rotate') {
+              //   store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
+              // } else if (cur && direction === 'space') {
+              //   let index = 0;
+              //   let bottom = cur.fall(index);
+              //   while (want(bottom, store.getState().get('matrix'))) {
+              //     bottom = cur.fall(index);
+              //     index++;
+              //   }
+              //   bottom = cur.fall(index - 2);
+              //   store.dispatch(actions.moveBlockGeneral(bottom, type));
+              // } else if (cur && direction === 'down') {
+              //   store.dispatch(actions.moveBlockGeneral(cur.fall(), type));
+              // }
             } else if (data.label === 'start') {
               console.log(data);
               states.start();
@@ -155,82 +213,133 @@ export default class Peer extends React.Component {
     });
   }
 
-  connect(id) {
+  connect(id, isOpponent) {
     this.setState({
       opp: id,
+      identity: isOpponent ? 0 : 1,
     });
-    const con = this.state.peer.connect(id, {
+    const c = this.state.peer.connect(id, {
       label: 'chat',
-      serialization: 'none',
       metadata: {
-        message: 'hi i want to chat with you!',
+        type: isOpponent ? 'oppo_req' : 'team_req',
       },
     });
+    console.log('Connection', c);
     const stateConns = store.getState().get('peerConnection').conns;
     const connsCopy = stateConns.slice();
-    connsCopy.push(con);
+    connsCopy.push(c);
     store.dispatch(actions.peerSaveConnection(connsCopy));
-    this.setState({ conns: [...this.state.conns, con] });
-    con.on('open', () => {
+    if (isOpponent) { // other host is id 2
+      const myplayerid = 2;
+      store.dispatch(actions.setMyPlayerID(myplayerid));
+      const conns = store.getState().get('peerConnection').conns;
+      const setPacket = JSON.stringify({
+        label: 'header',
+        flag: 'SET',
+        payload: 3,
+        from: myplayerid,
+      });
+      for (let i = 0; i < conns.length; i++) {
+        if (conns[i].metadata.type === 'team_req') {
+          conns[i].send(setPacket);
+        }
+      }
+    } else {
+      const myplayerid = 1;
+      store.dispatch(actions.setMyPlayerID(myplayerid));
+    }
+    c.on('open', () => {
       console.log('connection opened.');
-      con.on('data', (res) => {
+      c.on('data', (res) => {
         console.log(res);
         const data = JSON.parse(res);
         const storeStates = store.getState();
+        const conns = storeStates.get('peerConnection').conns;
+        let myplayerid = storeStates.get('myplayerid');
+        // propagate to teammate if I am one of the host: 0
+        if (this.state.identity === 0 && data.flag === 'STA') {
+          for (let i = 0; i < conns.length; i++) {
+            if (conns[i].metadata.type === 'team_req') {
+              conns[i].send(res);
+            } else if (conns[i].metadata.type === 'oppo_req') {
+              // no need to propagate to opponent's host :o)
+            } else {
+              console.log('Cannot understand metadata ', res);
+            }
+          }
+        }
         if (data.label === 'header') {
-          if (data.flag === 'ACK') {
-            const myplayerid = data.payload;
+          if (data.flag === 'SET') {
+            myplayerid = data.payload;
             store.dispatch(actions.setMyPlayerID(myplayerid));
-            console.log('connect success.');
-            con.send(JSON.stringify({ label: 'header', flag: 'ACK' }));
+            const ackPacket = JSON.stringify({
+              label: 'header',
+              flag: 'ACK',
+              from: myplayerid,
+            });
+            for (let i = 0; i < conns.length; i++) {
+              conns[i].send(ackPacket);
+            }
+          } else if (data.flag === 'ACK' && data.from === 2) {
+            const staPacket = JSON.stringify({
+              label: 'header',
+              flag: 'STA',
+              from: myplayerid,
+            });
+            for (let i = 0; i < conns.length; i++) {
+              conns[i].send(staPacket);
+            }
+            if (this.props.history) {
+              this.props.history.push('/tetris');
+            }
+          } else if (data.flag === 'STA') {
             if (this.props.history) {
               this.props.history.push('/tetris');
             }
           }
-        } else if (data.label === 'movement') {
-          const playerid = data.playerid;
-          let type; let cur;
-          if (playerid === 0) {
-            type = reducerType.MOVE_BLOCK;
-            cur = storeStates.cur;
-          } else if (playerid === 1) {
-            type = reducerType.MOVE_BLOCK2;
-            cur = storeStates.cur2;
-          } else if (playerid === 2) {
-            type = reducerType.MOVE_BLOCK_OPPO;
-            cur = storeStates.curOppo;
-          } else if (playerid === 3) {
-            type = reducerType.MOVE_BLOCK_OPPO2;
-            cur = storeStates.curOppo2;
-          }
-          console.log(type, cur);
-          const direction = data.payload;
-          if (cur && direction === 'left') {
-            store.dispatch(actions.moveBlockGeneral(cur.left(), type));
-          } else if (cur && direction === 'right') {
-            store.dispatch(actions.moveBlockGeneral(cur.right(), type));
-          } else if (cur && direction === 'rotate') {
-            store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
-          } else if (cur && direction === 'space') {
-            let index = 0;
-            let bottom = cur.fall(index);
-            while (want(bottom, store.getState().get('matrix'))) {
-              bottom = cur.fall(index);
-              index++;
-            }
-            bottom = cur.fall(index - 2);
-            store.dispatch(actions.moveBlockGeneral(bottom, type));
-          } else if (cur && direction === 'down') {
-            store.dispatch(actions.moveBlockGeneral(cur.fall(), type));
-          }
-        }
+        } else if (data.label === 'movement') { // deprecated
+          // const playerid = data.playerid;
+          // const { type, cur } = getTypeCur(storeStates, playerid)
+          // console.log(type, cur);
+          // const direction = data.payload;
+          // if (cur && direction === 'left') {
+          //   store.dispatch(actions.moveBlockGeneral(cur.left(), type));
+          // } else if (cur && direction === 'right') {
+          //   store.dispatch(actions.moveBlockGeneral(cur.right(), type));
+          // } else if (cur && direction === 'rotate') {
+          //   store.dispatch(actions.moveBlockGeneral(cur.rotate(), type));
+          // } else if (cur && direction === 'space') {
+          //   let index = 0;
+          //   let bottom = cur.fall(index);
+          //   while (want(bottom, store.getState().get('matrix'))) {
+          //     bottom = cur.fall(index);
+          //     index++;
+          //   }
+          //   bottom = cur.fall(index - 2);
+          //   store.dispatch(actions.moveBlockGeneral(bottom, type));
+          // } else if (cur && direction === 'down') {
+          //   store.dispatch(actions.moveBlockGeneral(cur.fall(), type));
+          // }
+        } else if (data.label === 'start') {
+          console.log(data);
+          states.start();
+          console.log('started!');
+        } /* else if (data.label === 'syncgame') {
+          console.log('syncgame');
+          let newMatrix = List();
+          data.matrix.forEach((m) => {
+            newMatrix = newMatrix.push(List(m));
+          });
+          console.log(newMatrix);
+          store.dispatch(actions.matrix(newMatrix));
+        } */
       });
-      con.on('close', () => {
-        con.close();
-        console.log(`${con.peer} has left the chat.`);
+      c.on('close', () => {
+        c.close();
+        console.log(`${c.peer} has left the chat.`);
       });
     });
-    con.on('error', (err) => {
+    c.on('error', (err) => {
       console.log(err);
     });
   }
@@ -242,9 +351,15 @@ export default class Peer extends React.Component {
     // console.log(this.state.peer, this.state.conns);
   }
 
-  connClick() {
+  connClickOppo() {
     if (this.modal2 && this.modal2.value) {
-      this.connect(this.modal2.value);
+      this.connect(this.modal2.value, true);
+    }
+  }
+
+  connClickTeam() {
+    if (this.modal2 && this.modal2.value) {
+      this.connect(this.modal2.value, false);
     }
   }
 
@@ -257,11 +372,18 @@ export default class Peer extends React.Component {
         <p>oppid: { this.state.opp }</p>
         <p>Choose an ID:
           <input id="myid" type="text" ref={(m) => { this.modal = m; }} />
-          <button onClick={this.regClick}>Register</button>
+          <button onClick={this.regClick} style={{ marginLeft: 8 }}>
+            Register
+          </button>
         </p>
         <p>Connect to an ID:
           <input id="oppid" type="text" ref={(m) => { this.modal2 = m; }} />
-          <button onClick={this.connClick}>Connect</button>
+          <button onClick={this.connClickTeam} style={{ marginLeft: 8 }}>
+            Connect as teammate
+          </button>
+          <button onClick={this.connClickOppo} style={{ marginLeft: 8 }}>
+            Connect as opponent
+          </button>
         </p>
         <Link
           to={{

@@ -117,8 +117,8 @@ class Tetris extends React.Component {
                 cur={this.props.cur}
                 cur2={this.props.cur2}
                 reset={this.props.reset}
-                myplayerid={this.props.myplayerid}
                 lock={this.props.lock}
+                myplayerid={this.props.myplayerid}
               />
               <Logo cur={!!this.props.cur} reset={this.props.reset} />
               <Matrix
