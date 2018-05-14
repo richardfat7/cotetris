@@ -6,12 +6,10 @@ import propTypes from 'prop-types';
 import style from './index.less';
 
 import Matrix from '../../components/matrix';
-import MatrixOPPO from '../../components/matrixOPPO';
 import Decorate from '../../components/decorate';
 import Number from '../../components/number';
 import Next from '../../components/next';
 import Hold from '../../components/hold';
-import HoldOPPO from '../../components/holdOPPO';
 import Music from '../../components/music';
 import Pause from '../../components/pause';
 import Point from '../../components/point';
@@ -120,19 +118,21 @@ class Tetris extends React.Component {
                 cur2={this.props.cur2}
                 reset={this.props.reset}
                 myplayerid={this.props.myplayerid}
+                lock={this.props.lock}
               />
               <Logo cur={!!this.props.cur} reset={this.props.reset} />
-              <MatrixOPPO
+              <Matrix
                 matrix={this.props.matrixOppo}
                 cur={this.props.curOppo}
                 cur2={this.props.curOppo2}
                 reset={this.props.reset}
+                lock={this.props.lock}
                 myplayerid={null}
               />
               <LogoOPPO cur={!!this.props.cur} reset={this.props.reset} />
               <div className={style.state}>
                 <p>{i18n.hold[lan]}</p>
-                <HoldOPPO data={this.props.holdType} />
+                <Hold data={this.props.holdType} />
                 <Point cur={!!this.props.cur} point={this.props.points} max={this.props.max} />
                 <p>{ this.props.cur ? i18n.cleans[lan] : i18n.startLine[lan] }</p>
                 <Number number={this.props.cur ? this.props.clearLines : this.props.startLines} />
@@ -176,6 +176,7 @@ Tetris.propTypes = {
   reset: propTypes.bool.isRequired,
   drop: propTypes.bool.isRequired,
   keyboard: propTypes.object.isRequired,
+  lock: propTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -199,6 +200,7 @@ const mapStateToProps = (state) => ({
   reset: state.get('reset'),
   drop: state.get('drop'),
   keyboard: state.get('keyboard'),
+  lock: state.get('lock'),
 });
 
 // export default connect(mapStateToProps)(App);

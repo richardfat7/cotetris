@@ -11,6 +11,7 @@ const keyboard = {
   82: 'r',
   80: 'p',
   90: 'z',
+  88: 'rotate',
   16: 'hold',
 };
 

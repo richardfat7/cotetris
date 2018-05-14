@@ -217,6 +217,24 @@ function tempMatrix2(data) {
   };
 }
 
+function startLockDelay() {
+  return {
+    type: reducerType.LOCK_DELAY_START,
+  };
+}
+
+function updateLockDelay() {
+  return {
+    type: reducerType.LOCK_DELAY_UPDATE,
+  };
+}
+
+function resetLockDelay() {
+  return {
+    type: reducerType.LOCK_DELAY_RESET,
+  };
+}
+
 export default {
   nextBlock,
   moveBlock,
@@ -249,4 +267,7 @@ export default {
   setMyPlayerID,
   tempMatrix,
   tempMatrix2,
+  startLockDelay,
+  updateLockDelay,
+  resetLockDelay,
 };

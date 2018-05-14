@@ -106,43 +106,23 @@ export default class Matrix extends React.Component {
         ]));
       });
     } else {
-      if (tmpcur && gshape) {
-        gshape.forEach((m, k1) => (
-          m.forEach((n, k2) => {
-            if (n && gxy.get(0) + k1 >= 0) { // 竖坐标可以为负
-              let line = matrix.get(gxy.get(0) + k1);
-              const color = 10;
-              line = line.set(gxy.get(1) + k2, color);
-              matrix = matrix.set(gxy.get(0) + k1, line);
-            }
-          })
-        ));
+      if (cur && !this.props.lock && gshape) {
+        gshape.forEach((m) => {
+          if (gxy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(gxy.get(0) + m.get(1));
+            const color = 10;
+            line = line.set(gxy.get(1) + m.get(0), color);
+            matrix = matrix.set(gxy.get(0) + m.get(1), line);
+          }
+        });
       }
       if (shape) {
-        shape.forEach((m, k1) => (
-          m.forEach((n, k2) => {
-            if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
-              let line = matrix.get(xy.get(0) + k1);
-              let color;
-              if (line.get(xy.get(1) + k2) === 1 && !clearLines) { // 矩阵与方块重合
-                if (cur.type === 'I') {
-                  color = 3;
-                } else if (cur.type === 'O') {
-                  color = 4;
-                } else if (cur.type === 'T') {
-                  color = 5;
-                } else if (cur.type === 'S') {
-                  color = 6;
-                } else if (cur.type === 'Z') {
-                  color = 7;
-                } else if (cur.type === 'J') {
-                  color = 8;
-                } else if (cur.type === 'L') {
-                  color = 9;
-                } else {
-                  color = 2;
-                }
-              } else if (cur.type === 'I') {
+        shape.forEach((m) => {
+          if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(xy.get(0) + m.get(1));
+            let color;
+            if (line.get(xy.get(1) + m.get(0)) === 1 && !clearLines) { // 矩阵与方块重合
+              if (cur.type === 'I') {
                 color = 3;
               } else if (cur.type === 'O') {
                 color = 4;
@@ -159,11 +139,33 @@ export default class Matrix extends React.Component {
               } else {
                 color = 2;
               }
-              line = line.set(xy.get(1) + k2, color);
-              matrix = matrix.set(xy.get(0) + k1, line);
+            } else if (cur.type === 'I') {
+              color = 3;
+            } else if (cur.type === 'O') {
+              color = 4;
+            } else if (cur.type === 'T') {
+              color = 5;
+            } else if (cur.type === 'S') {
+              color = 6;
+            } else if (cur.type === 'Z') {
+              color = 7;
+            } else if (cur.type === 'J') {
+              color = 8;
+            } else if (cur.type === 'L') {
+              color = 9;
+            } else {
+              color = 2;
             }
-          })
-        ));
+            // Center as black
+            /*
+            if (m.get(0) === 0 && m.get(1) === 0) {
+              color = 1;
+            }
+            */
+            line = line.set(xy.get(1) + m.get(0), color);
+            matrix = matrix.set(xy.get(0) + m.get(1), line);
+          }
+        });
       }
 
       if (cur2 && shape2) {
@@ -306,4 +308,5 @@ Matrix.propTypes = {
   cur: propTypes.object,
   cur2: propTypes.object,
   reset: propTypes.bool.isRequired,
+  lock: propTypes.bool.isRequired,
 };

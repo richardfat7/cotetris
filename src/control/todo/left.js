@@ -86,11 +86,13 @@ const down = (store) => {
             next.timeStamp += parseInt(delay, 10);
             store.dispatch(actions.moveBlockGeneral(next, type));
             timeStamp = next.timeStamp;
+            store.dispatch(actions.resetLockDelay());
           }
           if (!want(next, tMatrix)) {
             if (want(cur2.left(), state.get(tmpMatrix))) {
               store.dispatch(actions.moveBlockGeneral(cur2.left(), type2));
               store.dispatch(actions.moveBlockGeneral(next, type));
+              store.dispatch(actions.resetLockDelay());
             } else {
               cur.timeStamp += parseInt(parseInt(delay, 10) / 1.5, 10); // 真实移动delay多一点，碰壁delay少一点
               store.dispatch(actions.moveBlockGeneral(cur, type));
@@ -101,6 +103,7 @@ const down = (store) => {
           cur.timeStamp += parseInt(parseInt(delay, 10) / 1.5, 10); // 真实移动delay多一点，碰壁delay少一点
           store.dispatch(actions.moveBlockGeneral(cur, type));
           timeStamp = cur.timeStamp;
+          store.dispatch(actions.resetLockDelay());
         }
         const remain = speeds[state.get('speedRun') - 1] - (Date.now() - timeStamp);
         states.auto(remain);

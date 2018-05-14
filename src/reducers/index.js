@@ -25,8 +25,13 @@ import holdType from './holdType';
 import canHold from './canHold';
 import bag from './bag';
 import combo from './combo';
+<<<<<<< HEAD
 import peerConnection from './peerConnection';
 import myplayerid from './myplayerid';
+=======
+import lockDelay from './lockDelay';
+
+>>>>>>> f39f4cef3484f98edad1c76bc24e32bcc5c39b3e
 
 const rootReducer = combineReducers({
   pause,
@@ -53,10 +58,14 @@ const rootReducer = combineReducers({
   canHold,
   bag,
   combo,
+<<<<<<< HEAD
   myplayerid,
   tempMatrix,
   tempMatrix2,
   peerConnection,
+=======
+  lockDelay,
+>>>>>>> f39f4cef3484f98edad1c76bc24e32bcc5c39b3e
 });
 
 export default rootReducer;

@@ -66,26 +66,32 @@ const down = (store) => {
         if (music.rotate) {
           music.rotate();
         }
-        const next = cur.rotate();
-        if (want(next, state.get('matrix'))) {
-          let tMatrix = state.get(tmpMatrix);
-          const tshape = cur2 && cur2.shape;
-          const txy = cur2 && cur2.xy;
-          tshape.forEach((m, k1) => (
-            m.forEach((n, k2) => {
-              if (n && txy.get(0) + k1 >= 0) { // 竖坐标可以为负
-                let line = tMatrix.get(txy.get(0) + k1);
-                line = line.set(txy.get(1) + k2, 1);
-                tMatrix = tMatrix.set(txy.get(0) + k1, line);
-              }
-            })
-          ));
-          if (want(next, tMatrix)) {
-            store.dispatch(actions.moveBlockGeneral(next, type));
-          }
-          if (!want(next, tMatrix)) {
-            store.dispatch(actions.moveBlockGeneral(next, type2));
-            console.log('not yet do rotate collision');
+        let next;
+        for (let i = 0; i < 5; i++) {
+          next = cur.rotate(i);
+          if (want(next, state.get('matrix'))) {
+            let tMatrix = state.get(tmpMatrix);
+            const tshape = cur2 && cur2.shape;
+            const txy = cur2 && cur2.xy;
+            tshape.forEach((m, k1) => (
+              m.forEach((n, k2) => {
+                if (n && txy.get(0) + k1 >= 0) { // 竖坐标可以为负
+                  let line = tMatrix.get(txy.get(0) + k1);
+                  line = line.set(txy.get(1) + k2, 1);
+                  tMatrix = tMatrix.set(txy.get(0) + k1, line);
+                }
+              })
+            ));
+            if (want(next, tMatrix)) {
+              // move cur2 also
+              store.dispatch(actions.moveBlockGeneral(next, type));
+              store.dispatch(actions.resetLockDelay());
+            }
+            if (!want(next, tMatrix)) {
+
+              console.log('not yet do rotate collision');
+            }
+            break;
           }
         }
       },

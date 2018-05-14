@@ -96,15 +96,13 @@ const down = (store) => {
           } else {
             color = 1;
           }
-          shape.forEach((m, k1) => (
-            m.forEach((n, k2) => {
-              if (n && xy[0] + k1 >= 0) { // 竖坐标可以为负
-                let line = matrix.get(xy[0] + k1);
-                line = line.set(xy[1] + k2, color);
-                matrix = matrix.set(xy[0] + k1, line);
-              }
-            })
-          ));
+          shape.forEach((m) => {
+            if (xy[0] + m.get(1) >= 0) { // 竖坐标可以为负
+              let line = matrix.get(xy[0] + m.get(1));
+              line = line.set(xy[1] + m.get(0), color);
+              matrix = matrix.set(xy[0] + m.get(1), line);
+            }
+          });
         }
         index = 0;
         bottom = cur.fall(index);
@@ -134,15 +132,13 @@ const down = (store) => {
         } else {
           color = 1;
         }
-        shape.forEach((m, k1) => (
-          m.forEach((n, k2) => {
-            if (n && xy[0] + k1 >= 0) { // 竖坐标可以为负
-              let line = matrix.get(xy[0] + k1);
-              line = line.set(xy[1] + k2, color);
-              matrix = matrix.set(xy[0] + k1, line);
-            }
-          })
-        ));
+        shape.forEach((m) => {
+          if (xy[0] + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(xy[0] + m.get(1));
+            line = line.set(xy[1] + m.get(0), color);
+            matrix = matrix.set(xy[0] + m.get(1), line);
+          }
+        });
         store.dispatch(actions.drop(true));
         setTimeout(() => {
           store.dispatch(actions.drop(false));

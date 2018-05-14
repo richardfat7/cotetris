@@ -85,12 +85,14 @@ const down = (store) => {
           if (want(next, tMatrix)) {
             next.timeStamp += parseInt(delay, 10);
             store.dispatch(actions.moveBlockGeneral(next, type));
-            timeStamp = next.timeStamp;
+            timeStamp = next.timeStamp
+            store.dispatch(actions.resetLockDelay());
           }
           if (!want(next, tMatrix)) {
             if (want(cur2.right(), state.get(tmpMatrix))) {
               store.dispatch(actions.moveBlockGeneral(cur2.right(), type2));
               store.dispatch(actions.moveBlockGeneral(next, type));
+              store.dispatch(actions.resetLockDelay());
             } else {
               cur.timeStamp += parseInt(parseInt(delay, 10) / 1.5, 10); // 真实移动delay多一点，碰壁delay少一点
               store.dispatch(actions.moveBlockGeneral(cur, type));

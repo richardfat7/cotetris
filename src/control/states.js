@@ -118,6 +118,7 @@ const states = {
     store.dispatch(actions.shiftTwice());
     store.dispatch(actions.holdType(blockType.length - 1));
     store.dispatch(actions.canHold(true));
+    store.dispatch(actions.resetLockDelay());
     states.auto();
   },
 
@@ -139,10 +140,12 @@ const states = {
       let s2 = false;
       if (want(next, state.get('tempMatrix'))) {
         store.dispatch(actions.moveBlock(next));
+        store.dispatch(actions.resetLockDelay());
         s1 = true;
       }
       if (want(next2, state.get('tempMatrix'))) {
         store.dispatch(actions.moveBlock2(next2));
+        store.dispatch(actions.resetLockDelay());
         s2 = true;
       }
       if (!s1 && s2) {
@@ -150,16 +153,15 @@ const states = {
         const shape = cur && cur.shape;
         const xy = cur && cur.xy;
         const color = getColor(cur.type);
-        shape.forEach((m, k1) => (
-          m.forEach((n, k2) => {
-            if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
-              let line = matrix.get(xy.get(0) + k1);
-              line = line.set(xy.get(1) + k2, color);
-              matrix = matrix.set(xy.get(0) + k1, line);
-            }
-          })
-        ));
+        shape.forEach((m) => {
+          if (xy[0] + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(xy[0] + m.get(1));
+            line = line.set(xy[1] + m.get(0), color);
+            matrix = matrix.set(xy[0] + m.get(1), line);
+          }
+        });
         states.nextAround(matrix, null, 0); // NOTE: might have bugs
+        states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       } else if (s1 && !s2) {
         matrix = state.get('matrix');
         const shape = cur2 && cur2.shape;
@@ -175,6 +177,7 @@ const states = {
           })
         ));
         states.nextAround(matrix, null, 1); // NOTE: might have bugs
+        states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       } else if (!s1 && !s2) {
         matrix = state.get('matrix');
         const shape = cur && cur.shape;
@@ -183,27 +186,54 @@ const states = {
         const xy2 = cur2 && cur2.xy;
         const color = getColor(cur.type);
         const color2 = getColor(cur2.type);
-        shape.forEach((m, k1) => (
-          m.forEach((n, k2) => {
-            if (n && xy.get(0) + k1 >= 0) { // 竖坐标可以为负
-              let line = matrix.get(xy.get(0) + k1);
-              line = line.set(xy.get(1) + k2, color);
-              matrix = matrix.set(xy.get(0) + k1, line);
-            }
-          })
-        ));
-        shape2.forEach((m, k1) => (
-          m.forEach((n, k2) => {
-            if (n && xy2.get(0) + k1 >= 0) { // 竖坐标可以为负
-              let line = matrix.get(xy2.get(0) + k1);
-              line = line.set(xy2.get(1) + k2, color2);
-              matrix = matrix.set(xy2.get(0) + k1, line);
-            }
-          })
-        ));
+        shape.forEach((m) => {
+          if (xy[0] + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(xy[0] + m.get(1));
+            line = line.set(xy[1] + m.get(0), color);
+            matrix = matrix.set(xy[0] + m.get(1), line);
+          }
+        });
+        shape2.forEach((m) => {
+          if (xy2[0] + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(xy2[0] + m.get(1));
+            line = line.set(xy2[1] + m.get(0), color2);
+            matrix = matrix.set(xy2[0] + m.get(1), line);
+          }
+        });
         states.nextAround(matrix, null, 0);
-      } else {
         states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
+      } else {
+        if (state.get('lockDelay').startTime !== null) {
+          store.dispatch(actions.updateLockDelay());
+        } else {
+          store.dispatch(actions.startLockDelay());
+        }
+        if (store.getState().get('lockDelay').shouldLock) {
+          matrix = state.get('matrix');
+          const shape = cur && cur.shape;
+          const shape2 = cur2 && cur2.shape;
+          const xy = cur && cur.xy;
+          const xy2 = cur2 && cur2.xy;
+          const color = getColor(cur.type);
+          const color2 = getColor(cur2.type);
+          shape.forEach((m) => {
+            if (xy[0] + m.get(1) >= 0) { // 竖坐标可以为负
+              let line = matrix.get(xy[0] + m.get(1));
+              line = line.set(xy[1] + m.get(0), color);
+              matrix = matrix.set(xy[0] + m.get(1), line);
+            }
+          });
+          shape2.forEach((m) => {
+            if (xy2[0] + m.get(1) >= 0) { // 竖坐标可以为负
+              let line = matrix.get(xy2[0] + m.get(1));
+              line = line.set(xy2[1] + m.get(0), color2);
+              matrix = matrix.set(xy2[0] + m.get(1), line);
+            }
+          });
+          states.nextAround(matrix, null, 0);
+        } else {
+          states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
+        }
       }
     };
     clearTimeout(states.fallInterval);
@@ -273,6 +303,7 @@ const states = {
       store.dispatch(actions.nextBlock(store.getState().get('bag').get(0)));
       store.dispatch(actions.shiftNextBlock());
       store.dispatch(actions.canHold(true));
+      store.dispatch(actions.resetLockDelay());
       addPenalty(0);
       states.auto();
     }, 100);
@@ -310,7 +341,7 @@ const states = {
       newMatrix = newMatrix.unshift(List(blankLine));
     });
     store.dispatch(actions.matrix(newMatrix));
-    addPenalty(lines.length);
+    // addPenalty(lines.length);
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
     store.dispatch(actions.nextBlock(state.get('bag').get(0)));
     store.dispatch(actions.shiftNextBlock());
