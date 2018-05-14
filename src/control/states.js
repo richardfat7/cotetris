@@ -89,6 +89,8 @@ function addPenalty(linesCleared) {
     matrix = matrix.push(List(bottomLineHole));
   }
   store.dispatch(actions.matrix(matrix));
+  store.dispatch(actions.tempMatrix(matrix));
+  store.dispatch(actions.tempMatrix2(matrix));
 }
 
 const states = {
@@ -135,7 +137,7 @@ const states = {
       // const myplayerid = state.get('myplayerid');
       const next = cur.fall();
       const next2 = cur2.fall();
-      let matrix;
+      let matrix = state.get('matrix');
       let s1 = false;
       let s2 = false;
       if (want(next, state.get('tempMatrix'))) {
@@ -149,7 +151,6 @@ const states = {
         s2 = true;
       }
       if (!s1 && s2) {
-        matrix = state.get('matrix');
         const shape = cur && cur.shape;
         const xy = cur && cur.xy;
         const color = getColor(cur.type);
@@ -161,9 +162,7 @@ const states = {
           }
         });
         states.nextAround(matrix, null, 0); // NOTE: might have bugs
-        states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       } else if (s1 && !s2) {
-        matrix = state.get('matrix');
         const shape = cur2 && cur2.shape;
         const xy = cur2 && cur2.xy;
         const color = getColor(cur2.type);
@@ -175,9 +174,7 @@ const states = {
           }
         });
         states.nextAround(matrix, null, 1); // NOTE: might have bugs
-        states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       } else if (!s1 && !s2) {
-        matrix = state.get('matrix');
         const shape = cur && cur.shape;
         const shape2 = cur2 && cur2.shape;
         const xy = cur && cur.xy;
@@ -199,7 +196,6 @@ const states = {
           }
         });
         states.nextAround(matrix, null, 0);
-        states.fallInterval = setTimeout(fall, speeds[state.get('speedRun') - 1]);
       } else {
         if (state.get('lockDelay').startTime !== null) {
           store.dispatch(actions.updateLockDelay());
@@ -339,6 +335,8 @@ const states = {
       newMatrix = newMatrix.unshift(List(blankLine));
     });
     store.dispatch(actions.matrix(newMatrix));
+    store.dispatch(actions.tempMatrix(newMatrix));
+    store.dispatch(actions.tempMatrix2(newMatrix));
     // addPenalty(lines.length);
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
     store.dispatch(actions.nextBlock(state.get('bag').get(0)));
