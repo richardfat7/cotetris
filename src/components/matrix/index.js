@@ -117,9 +117,6 @@ export default class Matrix extends React.Component {
         });
       }
 
-      console.log(xy);
-      console.log(xy2);
-
       if (shape) {
         shape.forEach((m) => {
           if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负

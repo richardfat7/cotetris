@@ -127,7 +127,6 @@ const unit = {
       for (let i = 0; i < conn.length; i++) {
         // later should a sequence number to reorder packet by us
         if (conn[i] !== undefined) {
-          console.log('Sent data', data);
           conn[i].send(JSON.stringify(data));
         }
       }

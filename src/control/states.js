@@ -120,7 +120,6 @@ function handleChange() {
   attributes.forEach((attr) => {
     currentValues[attr] = store.getState().get(attr);
     if (previousValues[attr] !== currentValues[attr]) {
-      console.log(attr, 'changed from', previousValues[attr], 'to', currentValues[attr]);
       const peerState = store.getState().get('peerConnection');
       senddata(peerState.conns, {
         label: 'syncgame',
@@ -140,7 +139,6 @@ const states = {
   start: () => {
     const peerState = store.getState().get('peerConnection');
     const myplayerid = store.getState().get('myplayerid');
-    console.log(peerState);
     senddata(peerState.conns, { label: 'start', playerid: myplayerid });
     store.subscribe(handleChange);
 
@@ -194,8 +192,6 @@ const states = {
           store.dispatch(actions.resetLockDelay());
           s2 = true;
         }
-        console.log(s1);
-        console.log(s2);
         let matrix = state.get('matrix');
         if (!s1 && s2) {
           const shape = cur && cur.shape;

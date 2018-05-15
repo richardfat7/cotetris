@@ -8,13 +8,6 @@ import * as reducerType from '../../unit/reducerType';
 const down = (store, id = null) => {
   const peerState = store.getState().get('peerConnection');
   const myplayerid = id === null ? store.getState().get('myplayerid') : id;
-  if (peerState.conns) {
-    for (let i = 0; i < peerState.conns.length; i++) {
-      // later should a sequence number to reorder packet by us
-      const data = { label: 'movement', payload: 'rotate', playerid: myplayerid };
-      peerState.conns[i].send(JSON.stringify(data));
-    }
-  }
   if (myplayerid % 2 === 1 && id === null) {
     senddata(peerState.conns, { label: 'syncmove', key: 'rotate', id: myplayerid });
   } else {
@@ -72,8 +65,6 @@ const down = (store, id = null) => {
           let next;
           for (let i = 0; i < 5; i++) {
             next = cur.rotate(i);
-            console.log(next);
-            console.log(cur2);
             const xy = next.xy;
             const xy2 = cur2.xy;
             if (want(next, state.get('matrix'))) {
