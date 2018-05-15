@@ -100,7 +100,6 @@ function addPenalty(linesCleared) {
   }
   store.dispatch(actions.matrix(matrix));
   store.dispatch(actions.tempMatrix(matrix));
-  store.dispatch(actions.tempMatrix2(matrix));
   store.dispatch({
     type: reducerType.LINES_RECEIVED,
     data: -1,
@@ -152,7 +151,6 @@ const states = {
     const startLines = state.get('startLines');
     const startMatrix = getStartMatrix(startLines);
     store.dispatch(actions.tempMatrix(startMatrix));
-    store.dispatch(actions.tempMatrix2(startMatrix));
     store.dispatch(actions.matrix(startMatrix));
     store.dispatch(actions.resetBag());
     store.dispatch(actions.moveBlock(
@@ -429,15 +427,8 @@ const states = {
 
   // 页面焦点变换
   focus: (isFocus) => {
-    store.dispatch(actions.focus(isFocus));
-    if (!isFocus) {
-      clearTimeout(states.fallInterval);
-      return;
-    }
-    const state = store.getState();
-    if (state.get('cur') && state.get('cur2') && !state.get('reset') && !state.get('pause')) {
-      states.auto();
-    }
+    clearTimeout(states.fallInterval);
+    return isFocus;
   },
 
   // 暂停
@@ -460,8 +451,7 @@ const states = {
     });
     store.dispatch(actions.matrix(newMatrix));
     store.dispatch(actions.tempMatrix(newMatrix));
-    store.dispatch(actions.tempMatrix2(newMatrix));
-    // addPenalty(lines.length);
+    addPenalty(lines.length);
     store.dispatch(actions.moveBlock({ type: state.get('next') }));
     store.dispatch(actions.nextBlock(state.get('bag').get(0)));
     store.dispatch(actions.shiftNextBlock());
@@ -492,7 +482,6 @@ const states = {
   // 游戏结束动画完成
   overEnd: () => {
     store.dispatch(actions.tempMatrix(blankMatrix));
-    store.dispatch(actions.tempMatrix2(blankMatrix));
     store.dispatch(actions.matrix(blankMatrix));
     store.dispatch(actions.moveBlock({ reset: true }));
     store.dispatch(actions.moveBlock2({ reset: true }));

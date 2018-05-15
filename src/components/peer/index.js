@@ -14,7 +14,7 @@ export default class Peer extends React.Component {
     super();
     this.state = {
       config: {
-        host: '192.168.0.104',
+        host: 'localhost',
         port: 9000,
         path: '/',
 
@@ -125,7 +125,7 @@ export default class Peer extends React.Component {
                     timeStamp: newCur.timeStamp,
                   };
                   // console.log(next);
-                  store.dispatch(actions.moveBlock4(next));
+                  store.dispatch(actions.moveBlockOppo2(next));
                 } else if (data.attr === 'cur') {
                   const newCur = data.data;
                   let newShape = List();
@@ -140,7 +140,7 @@ export default class Peer extends React.Component {
                     timeStamp: newCur.timeStamp,
                   };
                   // console.log(next);
-                  store.dispatch(actions.moveBlock3(next));
+                  store.dispatch(actions.moveBlockOppo(next));
                 }
                 store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
                   if (m === 'fd') {
@@ -256,7 +256,7 @@ export default class Peer extends React.Component {
               timeStamp: newCur.timeStamp,
             };
             // console.log(next);
-            store.dispatch(actions.moveBlock4(next));
+            store.dispatch(actions.moveBlockOppo2(next));
           } else if (data.attr === 'cur') {
             const newCur = data.data;
             let newShape = List();
@@ -271,7 +271,7 @@ export default class Peer extends React.Component {
               timeStamp: newCur.timeStamp,
             };
             // console.log(next);
-            store.dispatch(actions.moveBlock3(next));
+            store.dispatch(actions.moveBlockOppo(next));
           }
         }
       });
@@ -324,6 +324,11 @@ export default class Peer extends React.Component {
           }
         } else if (data.label === 'start') {
           states.start();
+          store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
+            if (m === 'fd') {
+              store.getState().get('peerConnection').conns[k].send(res);
+            }
+          });
         } else if (data.label === 'linesSent') {
           if (data.team === 'RIGHT') {
             store.dispatch({ type: reducerType.LINES_RECEIVED, data: data.data });
@@ -355,7 +360,7 @@ export default class Peer extends React.Component {
                 timeStamp: newCur.timeStamp,
               };
               // console.log(next);
-              store.dispatch(actions.moveBlock4(next));
+              store.dispatch(actions.moveBlockOppo2(next));
             } else if (data.attr === 'cur') {
               const newCur = data.data;
               let newShape = List();
@@ -370,7 +375,7 @@ export default class Peer extends React.Component {
                 timeStamp: newCur.timeStamp,
               };
               // console.log(next);
-              store.dispatch(actions.moveBlock3(next));
+              store.dispatch(actions.moveBlockOppo(next));
             }
             store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
               if (m === 'fd') {
