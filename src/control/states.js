@@ -100,7 +100,6 @@ function addPenalty(linesCleared) {
   }
   store.dispatch(actions.matrix(matrix));
   store.dispatch(actions.tempMatrix(matrix));
-  store.dispatch(actions.tempMatrix2(matrix));
   store.dispatch({
     type: reducerType.LINES_RECEIVED,
     data: -1,
@@ -433,14 +432,15 @@ const states = {
 
   // 页面焦点变换
   focus: (isFocus) => {
-    store.dispatch(actions.focus(isFocus));
+    // store.dispatch(actions.focus(isFocus));
     if (!isFocus) {
-      clearTimeout(states.fallInterval);
+      // clearTimeout(states.fallInterval);
       return;
     }
     const state = store.getState();
     if (state.get('cur') && state.get('cur2') && !state.get('reset') && !state.get('pause')) {
-      states.auto();
+      // states.auto();
+      return;
     }
   },
 
@@ -500,6 +500,8 @@ const states = {
     store.dispatch(actions.matrix(blankMatrix));
     store.dispatch(actions.moveBlock({ reset: true }));
     store.dispatch(actions.moveBlock2({ reset: true }));
+    store.dispatch(actions.moveBlockOppo({ reset: true }));
+    store.dispatch(actions.moveBlockOppo2({ reset: true }));
     store.dispatch(actions.holdType(blockType.length - 1));
     store.dispatch(actions.reset(false));
     store.dispatch(actions.lock(false));

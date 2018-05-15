@@ -119,36 +119,43 @@ export default class Peer extends React.Component {
                   store.dispatch(actions.matrixOppo(newMatrix));
                 } else if (data.attr === 'cur2') {
                   // console.log('cur2');
-                  const newCur = data.data;
-                  let newShape = List();
-                  newCur.shape.forEach((m) => {
-                    newShape = newShape.push(List(m));
-                  });
-                  const next = {
-                    shape: newShape,
-                    type: newCur.type,
-                    xy: newCur.xy,
-                    rotateIndex: newCur.rotateIndex,
-                    timeStamp: newCur.timeStamp,
-                  };
-                  // console.log(next);
-                  store.dispatch(actions.moveBlockOppo2(next));
+                  if (data.data === null) {
+                    const newCur = data.data;
+                    let newShape = List();
+                    newCur.shape.forEach((m) => {
+                      newShape = newShape.push(List(m));
+                    });
+                    const next = {
+                      shape: newShape,
+                      type: newCur.type,
+                      xy: newCur.xy,
+                      rotateIndex: newCur.rotateIndex,
+                      timeStamp: newCur.timeStamp,
+                    };
+                    // console.log(next);
+                    store.dispatch(actions.moveBlockOppo2(next));
+                  } else {
+                    store.dispatch(actions.moveBlockOppo2({ reset: true }));
+                  }
                 } else if (data.attr === 'cur') {
-                  console.log('cur');
-                  const newCur = data.data;
-                  let newShape = List();
-                  newCur.shape.forEach((m) => {
-                    newShape = newShape.push(List(m));
-                  });
-                  const next = {
-                    shape: newShape,
-                    type: newCur.type,
-                    xy: newCur.xy,
-                    rotateIndex: newCur.rotateIndex,
-                    timeStamp: newCur.timeStamp,
-                  };
-                  // console.log(next);
-                  store.dispatch(actions.moveBlockOppo(next));
+                  if (data.data === null) {
+                    const newCur = data.data;
+                    let newShape = List();
+                    newCur.shape.forEach((m) => {
+                      newShape = newShape.push(List(m));
+                    });
+                    const next = {
+                      shape: newShape,
+                      type: newCur.type,
+                      xy: newCur.xy,
+                      rotateIndex: newCur.rotateIndex,
+                      timeStamp: newCur.timeStamp,
+                    };
+                    // console.log(next);
+                    store.dispatch(actions.moveBlockOppo(next));
+                  } else {
+                    store.dispatch(actions.moveBlockOppo({ reset: true }));
+                  }
                 }
                 store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
                   if (m === 'fd') {
@@ -214,37 +221,43 @@ export default class Peer extends React.Component {
               });
               store.dispatch(actions.matrix(newMatrix));
             } else if (data.attr === 'cur2') {
-              // console.log('cur2');
-              const newCur = data.data;
-              let newShape = List();
-              newCur.shape.forEach((m) => {
-                newShape = newShape.push(List(m));
-              });
-              const next = {
-                shape: newShape,
-                type: newCur.type,
-                xy: newCur.xy,
-                rotateIndex: newCur.rotateIndex,
-                timeStamp: newCur.timeStamp,
-              };
-              // console.log(next);
-              store.dispatch(actions.moveBlock2(next));
+              if (data.data === null) {
+                const newCur = data.data;
+                let newShape = List();
+                newCur.shape.forEach((m) => {
+                  newShape = newShape.push(List(m));
+                });
+                const next = {
+                  shape: newShape,
+                  type: newCur.type,
+                  xy: newCur.xy,
+                  rotateIndex: newCur.rotateIndex,
+                  timeStamp: newCur.timeStamp,
+                };
+                // console.log(next);
+                store.dispatch(actions.moveBlock2(next));
+              } else {
+                store.dispatch(actions.moveBlock2({ reset: true }));
+              }
             } else if (data.attr === 'cur') {
-              console.log('cur');
-              const newCur = data.data;
-              let newShape = List();
-              newCur.shape.forEach((m) => {
-                newShape = newShape.push(List(m));
-              });
-              const next = {
-                shape: newShape,
-                type: newCur.type,
-                xy: newCur.xy,
-                rotateIndex: newCur.rotateIndex,
-                timeStamp: newCur.timeStamp,
-              };
-              // console.log(next);
-              store.dispatch(actions.moveBlock(next));
+              if (data.data === null) {
+                const newCur = data.data;
+                let newShape = List();
+                newCur.shape.forEach((m) => {
+                  newShape = newShape.push(List(m));
+                });
+                const next = {
+                  shape: newShape,
+                  type: newCur.type,
+                  xy: newCur.xy,
+                  rotateIndex: newCur.rotateIndex,
+                  timeStamp: newCur.timeStamp,
+                };
+                // console.log(next);
+                store.dispatch(actions.moveBlock(next));
+              } else {
+                store.dispatch(actions.moveBlock({ reset: true }));
+              }
             }
           } else if (data.attr === 'matrix') {
             // console.log('matrix');
@@ -255,36 +268,43 @@ export default class Peer extends React.Component {
             store.dispatch(actions.matrixOppo(newMatrix));
           } else if (data.attr === 'cur2') {
             // console.log('cur2');
-            const newCur = data.data;
-            let newShape = List();
-            newCur.shape.forEach((m) => {
-              newShape = newShape.push(List(m));
-            });
-            const next = {
-              shape: newShape,
-              type: newCur.type,
-              xy: newCur.xy,
-              rotateIndex: newCur.rotateIndex,
-              timeStamp: newCur.timeStamp,
-            };
-            // console.log(next);
-            store.dispatch(actions.moveBlockOppo2(next));
+            if (data.data === null) {
+              const newCur = data.data;
+              let newShape = List();
+              newCur.shape.forEach((m) => {
+                newShape = newShape.push(List(m));
+              });
+              const next = {
+                shape: newShape,
+                type: newCur.type,
+                xy: newCur.xy,
+                rotateIndex: newCur.rotateIndex,
+                timeStamp: newCur.timeStamp,
+              };
+              // console.log(next);
+              store.dispatch(actions.moveBlockOppo2(next));
+            } else {
+              store.dispatch(actions.moveBlockOppo2({ reset: true }));
+            }
           } else if (data.attr === 'cur') {
-            console.log('cur');
-            const newCur = data.data;
-            let newShape = List();
-            newCur.shape.forEach((m) => {
-              newShape = newShape.push(List(m));
-            });
-            const next = {
-              shape: newShape,
-              type: newCur.type,
-              xy: newCur.xy,
-              rotateIndex: newCur.rotateIndex,
-              timeStamp: newCur.timeStamp,
-            };
-            // console.log(next);
-            store.dispatch(actions.moveBlockOppo(next));
+            if (data.data === null) {
+              const newCur = data.data;
+              let newShape = List();
+              newCur.shape.forEach((m) => {
+                newShape = newShape.push(List(m));
+              });
+              const next = {
+                shape: newShape,
+                type: newCur.type,
+                xy: newCur.xy,
+                rotateIndex: newCur.rotateIndex,
+                timeStamp: newCur.timeStamp,
+              };
+              // console.log(next);
+              store.dispatch(actions.moveBlockOppo(next));
+            } else {
+              store.dispatch(actions.moveBlockOppo({ reset: true }));
+            }
           }
         }
       });
@@ -365,36 +385,43 @@ export default class Peer extends React.Component {
               store.dispatch(actions.matrixOppo(newMatrix));
             } else if (data.attr === 'cur2') {
               // console.log('cur2');
-              const newCur = data.data;
-              let newShape = List();
-              newCur.shape.forEach((m) => {
-                newShape = newShape.push(List(m));
-              });
-              const next = {
-                shape: newShape,
-                type: newCur.type,
-                xy: newCur.xy,
-                rotateIndex: newCur.rotateIndex,
-                timeStamp: newCur.timeStamp,
-              };
-              // console.log(next);
-              store.dispatch(actions.moveBlockOppo2(next));
+              if (data.data === null) {
+                const newCur = data.data;
+                let newShape = List();
+                newCur.shape.forEach((m) => {
+                  newShape = newShape.push(List(m));
+                });
+                const next = {
+                  shape: newShape,
+                  type: newCur.type,
+                  xy: newCur.xy,
+                  rotateIndex: newCur.rotateIndex,
+                  timeStamp: newCur.timeStamp,
+                };
+                // console.log(next);
+                store.dispatch(actions.moveBlockOppo2(next));
+              } else {
+                store.dispatch(actions.moveBlockOppo2({ reset: true }));
+              }
             } else if (data.attr === 'cur') {
-              console.log('cur');
-              const newCur = data.data;
-              let newShape = List();
-              newCur.shape.forEach((m) => {
-                newShape = newShape.push(List(m));
-              });
-              const next = {
-                shape: newShape,
-                type: newCur.type,
-                xy: newCur.xy,
-                rotateIndex: newCur.rotateIndex,
-                timeStamp: newCur.timeStamp,
-              };
-              // console.log(next);
-              store.dispatch(actions.moveBlockOppo(next));
+              if (data.data === null) {
+                const newCur = data.data;
+                let newShape = List();
+                newCur.shape.forEach((m) => {
+                  newShape = newShape.push(List(m));
+                });
+                const next = {
+                  shape: newShape,
+                  type: newCur.type,
+                  xy: newCur.xy,
+                  rotateIndex: newCur.rotateIndex,
+                  timeStamp: newCur.timeStamp,
+                };
+                // console.log(next);
+                store.dispatch(actions.moveBlockOppo(next));
+              } else {
+                store.dispatch(actions.moveBlockOppo({ reset: true }));
+              }
             }
             store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
               if (m === 'fd') {
