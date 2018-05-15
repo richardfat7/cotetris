@@ -9,13 +9,6 @@ import * as reducerType from '../../unit/reducerType';
 const down = (store, id = null) => {
   const peerState = store.getState().get('peerConnection');
   const myplayerid = id === null ? store.getState().get('myplayerid') : id;
-  if (peerState.conns) {
-    for (let i = 0; i < peerState.conns.length; i++) {
-      // later should a sequence number to reorder packet by us
-      const data = { label: 'movement', payload: 'left', playerid: myplayerid };
-      peerState.conns[i].send(JSON.stringify(data));
-    }
-  }
   if (myplayerid % 2 === 1 && id === null) {
     senddata(peerState.conns, { label: 'syncmove', key: 'left', id: myplayerid });
   } else {

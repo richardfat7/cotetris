@@ -14,7 +14,7 @@ export default class Peer extends React.Component {
     super();
     this.state = {
       config: {
-        host: 'localhost',
+        host: '192.168.0.104',
         port: 9000,
         path: '/',
 
