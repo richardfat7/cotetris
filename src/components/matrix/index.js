@@ -68,10 +68,10 @@ export default class Matrix extends React.Component {
     let matrix = props.matrix;
     const myplayerid = this.props.myplayerid;
     let tmpcur;
-    if (myplayerid === 0) {
+    if (myplayerid === 0 || myplayerid === 2) {
       tmpcur = store.getState().get('cur');
     }
-    if (myplayerid === 1) {
+    if (myplayerid === 1 || myplayerid === 3) {
       tmpcur = store.getState().get('cur2');
     }
     let ghost;
@@ -106,7 +106,7 @@ export default class Matrix extends React.Component {
         ]));
       });
     } else {
-      if (cur && !this.props.lock && gshape) {
+      if (tmpcur && !this.props.lock && gshape) {
         gshape.forEach((m) => {
           if (gxy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
             let line = matrix.get(gxy.get(0) + m.get(1));

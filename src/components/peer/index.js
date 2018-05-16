@@ -66,6 +66,7 @@ export default class Peer extends React.Component {
           this.setState({ lastPlayer });
           c.on('data', (res) => {
             const data = JSON.parse(res);
+            const myplayerid = store.getState().get('myplayerid');
             if (data.label === 'header') {
               const stateConns = store.getState().get('peerConnection').conns;
               const connsCopy = stateConns.slice();
@@ -98,11 +99,51 @@ export default class Peer extends React.Component {
               todo[data.key].down(store, data.id);
               todo[data.key].up(store);
             } else if (data.label === 'linesSent') {
-              if (data.team === 'LEFT') {
+              if (data.team === ((myplayerid <= 1) ? 'LEFT' : 'RIGHT')) {
                 store.dispatch({ type: reducerType.LINES_RECEIVED, data: data.data });
               }
             } else if (data.label === 'syncgame') {
-              if (data.team === 'RIGHT') {
+              if (data.team === ((myplayerid <= 1) ? 'LEFT' : 'RIGHT')) {
+                if (data.attr === 'matrix') {
+                  // console.log('matrix');
+                  let newMatrix = List();
+                  data.data.forEach((m) => {
+                    newMatrix = newMatrix.push(List(m));
+                  });
+                  store.dispatch(actions.matrix(newMatrix));
+                } else if (data.attr === 'cur2') {
+                  // console.log('cur2');
+                  const newCur = data.data;
+                  let newShape = List();
+                  newCur.shape.forEach((m) => {
+                    newShape = newShape.push(List(m));
+                  });
+                  const next = {
+                    shape: newShape,
+                    type: newCur.type,
+                    xy: newCur.xy,
+                    rotateIndex: newCur.rotateIndex,
+                    timeStamp: newCur.timeStamp,
+                  };
+                  // console.log(next);
+                  store.dispatch(actions.moveBlock2(next));
+                } else if (data.attr === 'cur') {
+                  const newCur = data.data;
+                  let newShape = List();
+                  newCur.shape.forEach((m) => {
+                    newShape = newShape.push(List(m));
+                  });
+                  const next = {
+                    shape: newShape,
+                    type: newCur.type,
+                    xy: newCur.xy,
+                    rotateIndex: newCur.rotateIndex,
+                    timeStamp: newCur.timeStamp,
+                  };
+                  // console.log(next);
+                  store.dispatch(actions.moveBlock(next));
+                }
+              } else if (data.team !== ((myplayerid <= 1) ? 'LEFT' : 'RIGHT')) {
                 if (data.attr === 'matrix') {
                   // console.log('matrix');
                   let newMatrix = List();
@@ -142,11 +183,6 @@ export default class Peer extends React.Component {
                   // console.log(next);
                   store.dispatch(actions.moveBlockOppo(next));
                 }
-                store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
-                  if (m === 'fd') {
-                    store.getState().get('peerConnection').conns[k].send(res);
-                  }
-                });
               }
             }
           });
@@ -178,9 +214,10 @@ export default class Peer extends React.Component {
       con.send(JSON.stringify({ label: 'header', flag: 'CLI' }));
       con.on('data', (res) => {
         const data = JSON.parse(res);
+        let myplayerid = store.getState().get('myplayerid');
         if (data.label === 'header') {
           if (data.flag === 'ACK') {
-            const myplayerid = data.payload;
+            myplayerid = data.payload;
             store.dispatch(actions.setMyPlayerID(myplayerid));
             this.setState({ mypid: myplayerid });
             if (this.props.history) {
@@ -190,11 +227,11 @@ export default class Peer extends React.Component {
         } else if (data.label === 'start') {
           states.start();
         } else if (data.label === 'linesSent') {
-          if (data.team === ((this.state.mypid <= 1) ? 'LEFT' : 'RIGHT')) {
+          if (data.team === ((myplayerid <= 1) ? 'LEFT' : 'RIGHT')) {
             store.dispatch({ type: reducerType.LINES_RECEIVED, data: data.data });
           }
         } else if (data.label === 'syncgame') {
-          if (data.team === ((this.state.mypid <= 1) ? 'LEFT' : 'RIGHT')) {
+          if (data.team === ((myplayerid <= 1) ? 'LEFT' : 'RIGHT')) {
             if (data.attr === 'matrix') {
               // console.log('matrix');
               let newMatrix = List();
@@ -234,7 +271,7 @@ export default class Peer extends React.Component {
               // console.log(next);
               store.dispatch(actions.moveBlock(next));
             }
-          } else if (data.team !== ((this.state.mypid <= 1) ? 'LEFT' : 'RIGHT')) {
+          } else if (data.team !== ((myplayerid <= 1) ? 'LEFT' : 'RIGHT')) {
             if (data.attr === 'matrix') {
               // console.log('matrix');
               let newMatrix = List();
@@ -304,11 +341,12 @@ export default class Peer extends React.Component {
     this.setState({ conns: [...this.state.conns, con] });
     con.on('open', () => {
       con.send(JSON.stringify({ label: 'header', flag: 'OPP' }));
+      let myplayerid = store.getState().get('myplayerid');
       con.on('data', (res) => {
         const data = JSON.parse(res);
         if (data.label === 'header') {
           if (data.flag === 'ACK_OPP') {
-            const myplayerid = data.payload;
+            myplayerid = data.payload;
             store.dispatch(actions.setMyPlayerID(myplayerid));
             this.setState({ mypid: myplayerid });
             stateConnsT.forEach((m, k) => {
@@ -332,14 +370,59 @@ export default class Peer extends React.Component {
             }
           });
         } else if (data.label === 'linesSent') {
-          if (data.team === 'RIGHT') {
+          if (data.team === ((myplayerid <= 1) ? 'LEFT' : 'RIGHT')) {
             store.dispatch({ type: reducerType.LINES_RECEIVED, data: data.data });
           }
         } else if (data.label === 'syncmove') {
           todo[data.key].down(store, data.id);
           todo[data.key].up(store);
         } else if (data.label === 'syncgame') {
-          if (data.team === 'LEFT') {
+          if (data.team === ((myplayerid <= 1) ? 'LEFT' : 'RIGHT')) {
+            if (data.attr === 'matrix') {
+              // console.log('matrix');
+              let newMatrix = List();
+              data.data.forEach((m) => {
+                newMatrix = newMatrix.push(List(m));
+              });
+              store.dispatch(actions.matrix(newMatrix));
+            } else if (data.attr === 'cur2') {
+              // console.log('cur2');
+              const newCur = data.data;
+              let newShape = List();
+              newCur.shape.forEach((m) => {
+                newShape = newShape.push(List(m));
+              });
+              const next = {
+                shape: newShape,
+                type: newCur.type,
+                xy: newCur.xy,
+                rotateIndex: newCur.rotateIndex,
+                timeStamp: newCur.timeStamp,
+              };
+              // console.log(next);
+              store.dispatch(actions.moveBlock2(next));
+            } else if (data.attr === 'cur') {
+              const newCur = data.data;
+              let newShape = List();
+              newCur.shape.forEach((m) => {
+                newShape = newShape.push(List(m));
+              });
+              const next = {
+                shape: newShape,
+                type: newCur.type,
+                xy: newCur.xy,
+                rotateIndex: newCur.rotateIndex,
+                timeStamp: newCur.timeStamp,
+              };
+              // console.log(next);
+              store.dispatch(actions.moveBlock(next));
+            }
+            store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
+              if (m === 'fd') {
+                store.getState().get('peerConnection').conns[k].send(res);
+              }
+            });
+          } else if (data.team !== ((myplayerid <= 1) ? 'LEFT' : 'RIGHT')) {
             if (data.attr === 'matrix') {
               // console.log('matrix');
               let newMatrix = List();
@@ -379,11 +462,6 @@ export default class Peer extends React.Component {
               // console.log(next);
               store.dispatch(actions.moveBlockOppo(next));
             }
-            store.getState().get('peerConnection').connsTarget.forEach((m, k) => {
-              if (m === 'fd') {
-                store.getState().get('peerConnection').conns[k].send(res);
-              }
-            });
           }
         }
       });
