@@ -1,3 +1,4 @@
+// pause
 import event from '../../unit/event';
 import states from '../states';
 import actions from '../../actions';

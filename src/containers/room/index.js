@@ -2,9 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import propTypes from 'prop-types';
-import {
-  Link,
-} from 'react-router-dom';
 import style from './room.less';
 
 import Decorate from '../../components/decorate';
@@ -21,8 +18,6 @@ class Room extends React.Component {
       w: document.documentElement.clientWidth,
       h: document.documentElement.clientHeight,
     };
-    this.regClick = this.regClick.bind(this);
-    this.connClick = this.connClick.bind(this);
   }
   componentWillMount() {
     window.addEventListener('resize', this.resize.bind(this), true);
@@ -47,20 +42,6 @@ class Room extends React.Component {
     });
   }
 
-  regClick() {
-    if (this.modal && this.modal.value) {
-      alert(this.modal.value);
-      console.log(Peer);
-      Peer.register(this.modal.value);
-    }
-  }
-
-  connClick() {
-    if (this.modal2 && this.modal2.value) {
-      Peer.connect(this.modal2.value);
-    }
-  }
-
   render() {
     let filling = 0;
     const size = (() => {
@@ -69,10 +50,10 @@ class Room extends React.Component {
       const ratio = h / w;
       let scale;
       let css = {};
-      if (ratio < 1.5) {
+      if (ratio < 0.93) {
         scale = h / 960;
       } else {
-        scale = w / 640;
+        scale = w / 1040;
         filling = (h - (960 * scale)) / scale / 3;
         css = {
           paddingTop: Math.floor(filling) + 42,
@@ -91,8 +72,7 @@ class Room extends React.Component {
       >
         <div className={classnames({ [style.rect]: true })}>
           <Decorate />
-          <Peer />
-          <Link to={'/tetris'}>Home</Link>
+          <Peer history={this.props.history} />
         </div>
       </div>
     );
@@ -100,6 +80,7 @@ class Room extends React.Component {
 }
 
 Room.propTypes = {
+  history: propTypes.object,
   nth: propTypes.bool,
 };
 

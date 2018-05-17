@@ -57,6 +57,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "immutable": "^3.8.1",
+    "peer": "^0.2.8",
     "peerjs": "^0.3.14",
     "prop-types": "^15.5.10",
     "qrcode": "^1.2.0",

@@ -16,9 +16,37 @@ function nextBlock(data) {
   };
 }
 
+function moveBlockGeneral(option, type) {
+  return {
+    type,
+    data: option.reset === true ? null : new Block(option),
+  };
+}
+
 function moveBlock(option) {
   return {
     type: reducerType.MOVE_BLOCK,
+    data: option.reset === true ? null : new Block(option),
+  };
+}
+
+function moveBlock2(option) {
+  return {
+    type: reducerType.MOVE_BLOCK2,
+    data: option.reset === true ? null : new Block(option),
+  };
+}
+
+function moveBlockOppo(option) {
+  return {
+    type: reducerType.MOVE_BLOCK_OPPO,
+    data: option.reset === true ? null : new Block(option),
+  };
+}
+
+function moveBlockOppo2(option) {
+  return {
+    type: reducerType.MOVE_BLOCK_OPPO2,
     data: option.reset === true ? null : new Block(option),
   };
 }
@@ -47,6 +75,13 @@ function startLines(n) {
 function matrix(data) {
   return {
     type: reducerType.MATRIX,
+    data,
+  };
+}
+
+function matrixOppo(data) {
+  return {
+    type: reducerType.MATRIX_OPPO,
     data,
   };
 }
@@ -129,6 +164,12 @@ function focus(data) {
   };
 }
 
+function shiftTwice() {
+  return {
+    type: reducerType.SHIFT_TWICE,
+  };
+}
+
 function shiftNextBlock() {
   return {
     type: reducerType.SHIFT_NEXT_BLOCK,
@@ -144,6 +185,41 @@ function resetBag() {
 function combo(data) {
   return {
     type: reducerType.COMBO,
+    data,
+  };
+}
+
+function peerSavePeer(data) {
+  return {
+    type: reducerType.PEER_SAVE_PEER,
+    data,
+  };
+}
+
+function setMyPlayerID(data) {
+  return {
+    type: reducerType.MYPLAYERID,
+    data,
+  };
+}
+
+function peerSaveConnection(data) {
+  return {
+    type: reducerType.PEER_SAVE_CONNECTION,
+    data,
+  };
+}
+
+function tempMatrix(data) {
+  return {
+    type: reducerType.TEMP_MATRIX,
+    data,
+  };
+}
+
+function tempMatrix2(data) {
+  return {
+    type: reducerType.TEMP_MATRIX2,
     data,
   };
 }
@@ -169,10 +245,15 @@ function resetLockDelay() {
 export default {
   nextBlock,
   moveBlock,
+  moveBlock2,
+  moveBlockOppo,
+  moveBlockOppo2,
+  moveBlockGeneral,
   speedStart,
   speedRun,
   startLines,
   matrix,
+  matrixOppo,
   lock,
   clearLines,
   points,
@@ -185,9 +266,15 @@ export default {
   keyboard,
   music,
   focus,
+  shiftTwice,
   shiftNextBlock,
   resetBag,
   combo,
+  peerSavePeer,
+  peerSaveConnection,
+  setMyPlayerID,
+  tempMatrix,
+  tempMatrix2,
   startLockDelay,
   updateLockDelay,
   resetLockDelay,

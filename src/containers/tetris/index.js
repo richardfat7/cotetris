@@ -97,13 +97,8 @@ class Tetris extends React.Component {
                 <p>{i18n.hold[lan]}</p>
                 <Hold data={this.props.holdType} />
                 <Point cur={!!this.props.cur} point={this.props.points} max={this.props.max} />
-                <p>{ this.props.cur ? i18n.cleans[lan] : i18n.startLine[lan] }</p>
-                <Number number={this.props.cur ? this.props.clearLines : this.props.startLines} />
-                <p>{i18n.level[lan]}</p>
-                <Number
-                  number={this.props.cur ? this.props.speedRun : this.props.speedStart}
-                  length={1}
-                />
+                <p>{ this.props.cur ? i18n.cleans[lan] : '' }</p>
+                <Number number={this.props.cur ? this.props.clearLines : 0} />
                 <p>{i18n.next[lan]}</p>
                 <Next data={this.props.next} />
                 <div className={style.bottom}>
@@ -115,28 +110,27 @@ class Tetris extends React.Component {
               <Matrix
                 matrix={this.props.matrix}
                 cur={this.props.cur}
+                cur2={this.props.cur2}
                 reset={this.props.reset}
+                myplayerid={this.props.myplayerid}
                 lock={this.props.lock}
               />
               <Logo cur={!!this.props.cur} reset={this.props.reset} />
               <Matrix
-                matrix={this.props.matrix}
-                cur={this.props.cur}
+                matrix={this.props.matrixOppo}
+                cur={this.props.curOppo}
+                cur2={this.props.curOppo2}
                 reset={this.props.reset}
                 lock={this.props.lock}
+                myplayerid={-1}
               />
               <LogoOPPO cur={!!this.props.cur} reset={this.props.reset} />
               <div className={style.state}>
                 <p>{i18n.hold[lan]}</p>
                 <Hold data={this.props.holdType} />
                 <Point cur={!!this.props.cur} point={this.props.points} max={this.props.max} />
-                <p>{ this.props.cur ? i18n.cleans[lan] : i18n.startLine[lan] }</p>
-                <Number number={this.props.cur ? this.props.clearLines : this.props.startLines} />
-                <p>{i18n.level[lan]}</p>
-                <Number
-                  number={this.props.cur ? this.props.speedRun : this.props.speedStart}
-                  length={1}
-                />
+                <p>{ this.props.cur ? i18n.cleans[lan] : '' }</p>
+                <Number number={this.props.cur ? this.props.clearLines : 0} />
                 <p>{i18n.next[lan]}</p>
                 <Next data={this.props.next} />
               </div>
@@ -151,11 +145,16 @@ class Tetris extends React.Component {
 }
 
 Tetris.propTypes = {
+  myplayerid: propTypes.number.isRequired,
   music: propTypes.bool.isRequired,
   pause: propTypes.bool.isRequired,
   matrix: propTypes.object.isRequired,
+  matrixOppo: propTypes.object.isRequired,
   next: propTypes.string.isRequired,
   cur: propTypes.object,
+  cur2: propTypes.object,
+  curOppo: propTypes.object,
+  curOppo2: propTypes.object,
   holdType: propTypes.string.isRequired,
   dispatch: propTypes.func.isRequired,
   speedStart: propTypes.number.isRequired,
@@ -171,11 +170,16 @@ Tetris.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
+  myplayerid: state.get('myplayerid'),
   pause: state.get('pause'),
   music: state.get('music'),
   matrix: state.get('matrix'),
+  matrixOppo: state.get('matrixOppo'),
   next: state.get('next'),
   cur: state.get('cur'),
+  cur2: state.get('cur2'),
+  curOppo: state.get('curOppo'),
+  curOppo2: state.get('curOppo2'),
   holdType: state.get('holdType'),
   speedStart: state.get('speedStart'),
   speedRun: state.get('speedRun'),

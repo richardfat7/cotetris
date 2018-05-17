@@ -5,17 +5,17 @@ import {
   // lastRecord,
 } from '../../unit/const';
 
-// const initState = lastRecord && Array.isArray(lastRecord.matrix) ?
-//   List(lastRecord.matrix.map(e => List(e))) : blankMatrix;
+// const initState = lastRecord && Array.isArray(lastRecord.matrixOppo) ?
+//   List(lastRecord.matrixOppo.map(e => List(e))) : blankMatrix;
 const initState = blankMatrix;
 
-const matrix = (state = initState, action) => {
+const matrixOppo = (state = initState, action) => {
   switch (action.type) {
-    case reducerType.MATRIX:
+    case reducerType.MATRIX_OPPO:
       return action.data;
     default:
       return state;
   }
 };
 
-export default matrix;
+export default matrixOppo;

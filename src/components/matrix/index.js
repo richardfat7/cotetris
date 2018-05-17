@@ -7,6 +7,7 @@ import style from './index.less';
 import { isClear, want } from '../../unit/';
 import { fillLine, blankLine } from '../../unit/const';
 import states from '../../control/states';
+import store from '../../store';
 
 const t = setTimeout;
 
@@ -43,32 +44,49 @@ export default class Matrix extends React.Component {
         (props.cur && props.cur.shape)
       ) &&
       immutable.is(
+        (nextProps.cur2 && nextProps.cur2.shape),
+        (props.cur2 && props.cur2.shape)
+      ) &&
+      immutable.is(
         (nextProps.cur && nextProps.cur.xy),
         (props.cur && props.cur.xy)
+      ) &&
+      immutable.is(
+        (nextProps.cur2 && nextProps.cur2.xy),
+        (props.cur2 && props.cur2.xy)
       )
     ) || this.state.clearLines
     || this.state.isOver;
   }
   getResult(props = this.props) {
     const cur = props.cur;
+    const cur2 = props.cur2;
     const shape = cur && cur.shape;
+    const shape2 = cur2 && cur2.shape;
     const xy = cur && cur.xy;
-
+    const xy2 = cur2 && cur2.xy;
     let matrix = props.matrix;
-
+    const myplayerid = this.props.myplayerid;
+    let tmpcur;
+    if (myplayerid === 0 || myplayerid === 2) {
+      tmpcur = store.getState().get('cur');
+    }
+    if (myplayerid === 1 || myplayerid === 3) {
+      tmpcur = store.getState().get('cur2');
+    }
     let ghost;
-    if (cur) {
+    if (tmpcur) {
       // calc ghost
       let index = 0;
-      ghost = cur.fall(index);
+      ghost = tmpcur.fall(index);
       while (want(ghost, matrix)) {
-        ghost = cur.fall(index);
+        ghost = tmpcur.fall(index);
         index++;
       }
-      ghost = cur.fall(index - 2);
+      ghost = tmpcur.fall(index - 2);
     }
-    const gshape = cur && ghost && ghost.shape;
-    const gxy = cur && ghost && List(ghost.xy);
+    const gshape = tmpcur && ghost && ghost.shape;
+    const gxy = tmpcur && ghost && List(ghost.xy);
 
     const clearLines = this.state.clearLines;
     if (clearLines) {
@@ -88,7 +106,7 @@ export default class Matrix extends React.Component {
         ]));
       });
     } else {
-      if (cur && !this.props.lock && gshape) {
+      if (tmpcur && !this.props.lock && gshape) {
         gshape.forEach((m) => {
           if (gxy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
             let line = matrix.get(gxy.get(0) + m.get(1));
@@ -98,6 +116,7 @@ export default class Matrix extends React.Component {
           }
         });
       }
+
       if (shape) {
         shape.forEach((m) => {
           if (xy.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
@@ -146,6 +165,52 @@ export default class Matrix extends React.Component {
             */
             line = line.set(xy.get(1) + m.get(0), color);
             matrix = matrix.set(xy.get(0) + m.get(1), line);
+          }
+        });
+      }
+
+      if (cur2 && shape2) {
+        shape2.forEach((m) => {
+          if (xy2.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+            let line = matrix.get(xy2.get(0) + m.get(1));
+            let color;
+            if (line.get(xy2.get(1) + m.get(0)) === 1 && !clearLines) { // 矩阵与方块重合
+              if (cur2.type === 'I') {
+                color = 3;
+              } else if (cur2.type === 'O') {
+                color = 4;
+              } else if (cur2.type === 'T') {
+                color = 5;
+              } else if (cur2.type === 'S') {
+                color = 6;
+              } else if (cur2.type === 'Z') {
+                color = 7;
+              } else if (cur2.type === 'J') {
+                color = 8;
+              } else if (cur2.type === 'L') {
+                color = 9;
+              } else {
+                color = 2;
+              }
+            } else if (cur2.type === 'I') {
+              color = 3;
+            } else if (cur2.type === 'O') {
+              color = 4;
+            } else if (cur2.type === 'T') {
+              color = 5;
+            } else if (cur2.type === 'S') {
+              color = 6;
+            } else if (cur2.type === 'Z') {
+              color = 7;
+            } else if (cur2.type === 'J') {
+              color = 8;
+            } else if (cur2.type === 'L') {
+              color = 9;
+            } else {
+              color = 2;
+            }
+            line = line.set(xy2.get(1) + m.get(0), color);
+            matrix = matrix.set(xy2.get(0) + m.get(1), line);
           }
         });
       }
@@ -237,8 +302,10 @@ export default class Matrix extends React.Component {
 }
 
 Matrix.propTypes = {
+  myplayerid: propTypes.number.isRequired,
   matrix: propTypes.object.isRequired,
   cur: propTypes.object,
+  cur2: propTypes.object,
   reset: propTypes.bool.isRequired,
   lock: propTypes.bool.isRequired,
 };

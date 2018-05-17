@@ -1,4 +1,4 @@
-import { blockType, StorageKey, StorageHold } from './const';
+import { blockType, StorageKey, StorageHold, blankMatrix } from './const';
 
 const hiddenProperty = (() => { // document[hiddenProperty] 可以判断页面是否失焦
   let names = [
@@ -55,6 +55,28 @@ const unit = {
       return true;
     });
   },
+  wantHardDrop(cur, cur2) {
+    let matrix = blankMatrix;
+    const shape = cur && cur.shape;
+    const xy = cur && cur.xy;
+    const shape2 = cur2 && cur2.shape;
+    const xy2 = cur2 && cur2.xy;
+    shape2.forEach((m) => {
+      if (xy2.get(0) + m.get(1) >= 0) { // 竖坐标可以为负
+        let line = matrix.get(xy2.get(0) + m.get(1));
+        line = line.set(xy2.get(1) + m.get(0), 1);
+        matrix = matrix.set(xy2.get(0) + m.get(1), line);
+      }
+    });
+    return shape.some((m) => {
+      for (let i = xy.get(0) + m.get(1); i < 20; i++) {
+        if (matrix.get(i).get(xy.get(1) + m.get(0))) {
+          return true;
+        }
+      }
+      return false;
+    });
+  },
   isClear(matrix) { // 是否达到消除状态
     const clearLines = [];
     matrix.forEach((m, k) => {
@@ -73,6 +95,7 @@ const unit = {
   subscribeRecord(store) { // 将状态记录到 localStorage
     store.subscribe(() => {
       let data = store.getState().toJS();
+      data.peerConnection = null; // no need to preserve on a already closed connection
       if (data.lock) { // 当状态为锁定, 不记录
         return;
       }
@@ -87,6 +110,7 @@ const unit = {
   subscribeTile(store) { // 将状态记录到 localStorage
     store.subscribe(() => {
       let data = store.getState().toJS();
+      data.peerConnection = null;
       if (data.lock) {
         return;
       }
@@ -97,6 +121,16 @@ const unit = {
       }
       localStorage.setItem(StorageHold, data);
     });
+  },
+  senddata(conn, data) {
+    if (conn) {
+      for (let i = 0; i < conn.length; i++) {
+        // later should a sequence number to reorder packet by us
+        if (conn[i] !== undefined) {
+          conn[i].send(JSON.stringify(data));
+        }
+      }
+    }
   },
   isMobile() { // 判断是否为移动端
     const ua = navigator.userAgent;
