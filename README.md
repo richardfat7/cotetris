@@ -1,7 +1,38 @@
-### 中文介绍
-请查看 [README.md](https://github.com/chvin/react-tetris/blob/master/README.md)
+## Fork from https://github.com/chvin/react-tetris
 
-----
+## Development
+### Install
+Install peerjs-server first:    
+Follow instruction in https://github.com/peers/peerjs-server
+```
+npm install
+```
+### Run
+```
+peerjs --port 9000 --key peerjs
+npm start
+```
+The browser will go to [http://127.0.0.1:8080/](http://127.0.0.1:8080/)
+
+To connect four player, developer should follow the following sequence:
+1. A register / B register / C register / D register
+1. B connect to A
+1. D connect to C
+1. C connect to A or A connect to C
+
+A will become host of A-B team and C will become host of C-D team
+
+### multi-language
+In the [i18n.json](https://github.com/chvin/react-tetris/blob/master/i18n.json) is the configuration for the multi-language environment. You can change the language by passing the url parameter `lan` like this: `https://chvin.github.io/react-tetris/?lan=en`
+### Build
+```
+npm run build
+```
+
+Will build the application in the build folder.
+
+
+
 ## Use React, Redux, Immutable to code Tetris.
 
 ----
@@ -221,26 +252,4 @@ Web Audio Api learning materials:
 ----
 ## 7. Flowchart
 ![Flowchart](https://img.alicdn.com/tfs/TB1B6ODRXXXXXXHaFXXXXXXXXXX-1920-1080.png)
-
-----
-## 8. Development
-### Install
-```
-npm install
-```
-### Run
-```
-npm start
-```
-The browser will go to [http://127.0.0.1:8080/](http://127.0.0.1:8080/)
-### multi-language
-In the [i18n.json](https://github.com/chvin/react-tetris/blob/master/i18n.json) is the configuration for the multi-language environment. You can change the language by passing the url parameter `lan` like this: `https://chvin.github.io/react-tetris/?lan=en`
-### Build
-```
-npm run build
-```
-
-Will build the application in the build folder.
-
-
 
