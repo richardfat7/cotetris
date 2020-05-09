@@ -10,9 +10,9 @@ import { subscribeRecord } from './unit';
 subscribeRecord(store); // 将更新的状态记录到localStorage
 
 render(
-  <Provider store={store}>
-    <Tetris />
-  </Provider>
+    <Provider store={store}>
+        <Tetris />
+    </Provider>
     , document.getElementById('root')
 );
 

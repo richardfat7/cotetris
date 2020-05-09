@@ -1,8 +1,13 @@
 ## Fork from https://github.com/chvin/react-tetris
 
+## Deployment
+1. yarn watch (build static file into ./server)
+2. yarn dev (serve static file, i know it is not the best solution)
+(we need a peer server for playing this)
+
 ## Development
 ### Install
-Install peerjs-server first:    
+Install peerjs-server first:
 Follow instruction in https://github.com/peers/peerjs-server
 ```
 npm install

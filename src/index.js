@@ -14,14 +14,14 @@ subscribeRecord(store); // 将更新的状态记录到localStorage
 // Dont change the order of route, otherwise god will punish you
 
 render(
-  <Router history={browserHistory} >
-    <Provider store={store}>
-      <Switch>
-        <Route exact path={'/'} component={Room} history={browserHistory} />
-        <Route exact path={'/tetris'} component={Tetris} />
-      </Switch>
-    </Provider>
-  </Router>
+    <Router history={browserHistory} >
+        <Provider store={store}>
+            <Switch>
+                <Route exact path={'/'} component={Room} history={browserHistory} />
+                <Route exact path={'/tetris'} component={Tetris} />
+            </Switch>
+        </Provider>
+    </Router>
     , document.getElementById('root')
 );
 

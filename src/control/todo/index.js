@@ -10,14 +10,14 @@ import z from './z';
 import hold from './hold';
 
 export default {
-  left,
-  down,
-  rotate,
-  right,
-  space,
-  r,
-  p,
-  s,
-  z,
-  hold,
+    left,
+    down,
+    rotate,
+    right,
+    space,
+    r,
+    p,
+    s,
+    z,
+    hold,
 };

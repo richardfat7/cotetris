@@ -11,16 +11,16 @@ import pause from './pause';
 import hold from './hold';
 
 const keyboardReducer = combineReducers({
-  drop,
-  down,
-  left,
-  right,
-  rotate,
-  z,
-  reset,
-  music,
-  pause,
-  hold,
+    drop,
+    down,
+    left,
+    right,
+    rotate,
+    z,
+    reset,
+    music,
+    pause,
+    hold,
 });
 
 export default keyboardReducer;

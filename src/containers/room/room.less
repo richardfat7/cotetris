@@ -45,9 +45,11 @@ body{
   box-shadow: 0 0 10px #fff inset;
   border-radius: 20px;
   position: absolute;
-  top: 50%;
   left: 50%;
-  margin: -490px 0 0 -520px;
+  // transform: translate(-50%); // in file dynamically generated
+  transform-origin: 0 0 0;
+
+  // margin: -490px 0 0 -520px;
   background: #efcc19;
   :global{
     b {
