@@ -27,6 +27,7 @@ module.exports = {
         'babel',
     ],
     'rules': {
+        "no-console": "off",
         "keyword-spacing": "error",
         "eqeqeq": ["error", "always"],
         "padding-line-between-statements": [

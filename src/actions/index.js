@@ -192,13 +192,6 @@ function combo(data) {
     };
 }
 
-function peerSavePeer(data) {
-    return {
-        type: reducerType.PEER_SAVE_PEER,
-        data,
-    };
-}
-
 function setMyPlayerID(data) {
     return {
         type: reducerType.MYPLAYERID,
@@ -245,6 +238,42 @@ function resetLockDelay() {
     };
 }
 
+// LEADER/ TEAMMATE
+function peerSaveMyId(id, role = 'NONE') {
+    return {
+        type: reducerType.PEER_SAVE_MY_ID,
+        payload: { id, role },
+    };
+}
+
+function peerSaveLeaderId(id) {
+    return {
+        type: reducerType.PEER_SAVE_LEADER_ID,
+        payload: { id },
+    };
+}
+
+function peerSaveOpponentLeaderId(id) {
+    return {
+        type: reducerType.PEER_SAVE_OPPONENT_LEADER_ID,
+        payload: { id },
+    };
+}
+
+function peerSaveOpponentTeammateId(id) {
+    return {
+        type: reducerType.PEER_SAVE_OPPONENT_TEAMMATE_ID,
+        payload: { id },
+    };
+}
+
+function peerSaveTeammateId(id) {
+    return {
+        type: reducerType.PEER_SAVE_TEAMMATE_ID,
+        payload: { id },
+    };
+}
+
 export default {
     nextBlock,
     moveBlock,
@@ -273,7 +302,6 @@ export default {
     shiftNextBlock,
     resetBag,
     combo,
-    peerSavePeer,
     peerSaveConnection,
     setMyPlayerID,
     tempMatrix,
@@ -281,4 +309,10 @@ export default {
     startLockDelay,
     updateLockDelay,
     resetLockDelay,
+
+    peerSaveMyId,
+    peerSaveOpponentLeaderId,
+    peerSaveOpponentTeammateId,
+    peerSaveTeammateId,
+    peerSaveLeaderId,
 };

@@ -1,10 +1,14 @@
+import 'regenerator-runtime/runtime.js';
+
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route, browserHistory } from 'react-router-dom';
-import store from './store';
+
 import Room from './containers/room';
 import Tetris from './containers/tetris';
+
+import store from './store';
 import './unit/const';
 import './control';
 import { subscribeRecord } from './unit';
