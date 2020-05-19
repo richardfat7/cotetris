@@ -1,40 +1,59 @@
 import * as reducerType from '../../unit/reducerType';
 
-const initState = {
-    myId: '',
+/**
+ * @typedef {object} Member
+ * @property {string} id
+ * @property {string} displayName
+ * @property {bool} isReady
+ *
+ * @typedef {object} Team
+ * @property {string} id only team1 and 2
+ * @property {Array<string>} memberIds
+ * @property {string} teamColor
+ */
 
-    leaderId: '',
-    teammateId: '',
-    opponentLeaderId: '',
-    opponentTeammateId: '',
+const initState = {
+    myMember: '',
+    lobbyId: '',
+    isHosting: false,
+
+    connectionLookup: {},
+    connectionConfig: {},
+
+    teamInfo: [],
 };
 const peerConnection = (state = initState, action) => {
     switch (action.type) {
-        case reducerType.PEER_SAVE_MY_ID:
-            if (!action.payload.id) return state;
-
+        case reducerType.PEER_REGISTER:{
             return {
                 ...state,
-                myId: action.payload.id,
-                leaderId: action.payload.role === 'LEADER' ? action.payload.id : state.leaderId,
-                teammateId: action.payload.role === 'TEAMMATE' ? action.payload.id : state.teammateId,
+                myMember: action.payload.member,
+                lobbyId: action.payload.lobbyId,
+                isHosting: action.payload.isHosting,
             };
-        case reducerType.PEER_SAVE_TEAMMATE_ID:
-            if (!action.payload.id) return state;
+        }
 
-            return { ...state, teammateId: action.payload.id };
-        case reducerType.PEER_SAVE_LEADER_ID:
-            if (!action.payload.id) return state;
+        case reducerType.PEER_SAVE_TEAM_INFO: {
+            return {
+                ...state,
+                teamInfo: action.payload.teanInfo,
+            };
+        }
 
-            return { ...state, leaderId: action.payload.id };
-        case reducerType.PEER_SAVE_OPPONENT_LEADER_ID:
-            if (!action.payload.id) return state;
+        case reducerType.PEER_SAVE_CONNECTION_CONFIG: {
+            return {
+                ...state,
+                connectionConfig: action.payload.connectionConfig,
+            };
+        }
 
-            return { ...state, opponentLeaderId: action.payload.id };
-        case reducerType.PEER_SAVE_OPPONENT_TEAMMATE_ID:
-            if (!action.payload.id) return state;
+        case reducerType.PEER_SAVE_CONNECTION_LOOKUP: {
+            return {
+                ...state,
+                connectionLookup: action.payload.connectionLookup,
+            };
+        }
 
-            return { ...state, opponentTeammate: action.payload.id };
         default:
             return state;
     }

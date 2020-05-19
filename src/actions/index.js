@@ -199,13 +199,6 @@ function setMyPlayerID(data) {
     };
 }
 
-function peerSaveConnection(data) {
-    return {
-        type: reducerType.PEER_SAVE_CONNECTION,
-        data,
-    };
-}
-
 function tempMatrix(data) {
     return {
         type: reducerType.TEMP_MATRIX,
@@ -238,39 +231,42 @@ function resetLockDelay() {
     };
 }
 
-// LEADER/ TEAMMATE
-function peerSaveMyId(id, role = 'NONE') {
+// PeerJs
+function peerOnRegister(member, lobbyId, isHosting) {
     return {
-        type: reducerType.PEER_SAVE_MY_ID,
-        payload: { id, role },
+        type: reducerType.PEER_REGISTER,
+        payload: {
+            member,
+            lobbyId,
+            isHosting,
+        },
     };
 }
 
-function peerSaveLeaderId(id) {
+function peerSaveTeamInfo(teamInfo) {
     return {
-        type: reducerType.PEER_SAVE_LEADER_ID,
-        payload: { id },
+        type: reducerType.PEER_SAVE_TEAM_INFO,
+        payload: {
+            teamInfo,
+        },
     };
 }
 
-function peerSaveOpponentLeaderId(id) {
+function peerSaveConnectionConfig(connectionConfig) {
     return {
-        type: reducerType.PEER_SAVE_OPPONENT_LEADER_ID,
-        payload: { id },
+        type: reducerType.PEER_SAVE_CONNECTION_CONFIG,
+        payload: {
+            connectionConfig,
+        },
     };
 }
 
-function peerSaveOpponentTeammateId(id) {
+function peerSaveConnectionLookup(connectionLookup) {
     return {
-        type: reducerType.PEER_SAVE_OPPONENT_TEAMMATE_ID,
-        payload: { id },
-    };
-}
-
-function peerSaveTeammateId(id) {
-    return {
-        type: reducerType.PEER_SAVE_TEAMMATE_ID,
-        payload: { id },
+        type: reducerType.PEER_SAVE_CONNECTION_LOOKUP,
+        payload: {
+            connectionLookup,
+        },
     };
 }
 
@@ -302,7 +298,6 @@ export default {
     shiftNextBlock,
     resetBag,
     combo,
-    peerSaveConnection,
     setMyPlayerID,
     tempMatrix,
     tempMatrix2,
@@ -310,9 +305,8 @@ export default {
     updateLockDelay,
     resetLockDelay,
 
-    peerSaveMyId,
-    peerSaveOpponentLeaderId,
-    peerSaveOpponentTeammateId,
-    peerSaveTeammateId,
-    peerSaveLeaderId,
+    peerOnRegister,
+    peerSaveTeamInfo,
+    peerSaveConnectionConfig,
+    peerSaveConnectionLookup,
 };

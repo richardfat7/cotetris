@@ -1,124 +1,257 @@
+// TODO: verification message, chain of trust
 const PROTOCOL = 'CONNECTION';
-const messageTypes = {
-    PEER_CONNECTION_INFO: 'PEER_CONNECTION_INFO',
-    NOTIFY_PEER_CONNECTION_INFO: 'NOTIFY_PEER_CONNECTION_INFO',
+/**
+ * Character: Host, Player
+ * v2
+ * 1. Host a lobby with id
+ * 2. Join lobby by id
+ * 3. Create peer connection to everyone
+ * 4. Choose team/ be assign team and ready
+ */
 
-    REQUEST_CONNECT_TO_TEAMMATE: 'REQUEST_CONNECT_TO_TEAMMATE',
-    REQUEST_CONNECT_TO_OPPONENT_LEADER: 'REQUEST_CONNECT_TO_OPPONENT_LEADER',
-    REQUEST_CONNECT_TO_OPPONENT_TEAMMATE: 'REQUEST_CONNECT_TO_OPPONENT_TEAMMATE',
+const MessageTypes = {
+    // Connection
+    CONNECT_TO_USER: 'CONNECT_TO_USER',
+    ACK_CONNECT_TO_USER: 'ACK_CONNECT_TO_USER',
 
-    ACK_CONNECT_TO_TEAMMATE: 'ACK_CONNECT_TO_TEAMMATE',
-    ACK_CONNECT_TO_OPPONENT_LEADER: 'ACK_CONNECT_TO_OPPONENT_LEADER',
-    ACK_CONNECT_TO_OPPONENT_TEAMMATE: 'ACK_CONNECT_TO_OPPONENT_TEAMMATE',
+    REQUEST_CONNECTION_INFO: 'REQUEST_CONNECTION_INFO', // Player -> Host
+    RESPONSE_CONNECTION_INFO: 'RESPONSE_CONNECTION_INFO', // Host -> Player
+
+    JOIN_LOBBY: 'JOIN_LOBBY',
+    ACK_JOIN_LOBBY: 'ACK_JOIN_LOBBY',
+
+    // Team management
+    ASSIGN_TEAM: 'ASSIGN_TEAM', // Host -> Player
+    ACK_ASSIGN_TEAM: 'ACK_ASSIGN_TEAM',
+
+    CHOOSE_TEAM: 'CHOOSE_TEAM',
+    ACK_CHOOSE_TEAM: 'ACK_CHOOSE_TEAM',
+
+    // Game
+    READY: 'READY',
+    ACK_READY: 'ACK_READY',
+    INIT_GAME: 'INIT_GAME', // Broadcast
+    ACK_INIT_GAME: 'ACK_INIT_GAME',
+
+    // Utils
+    PING: 'PING',
+    PONG: 'PONG',
 };
 
-function createNotifyPeerConnectionInfoMessage(myId, opponentLeaderId, opponentTeammateId) {
+// Team messages
+function createConnectToUserMessage(myId, params) {
+    const { displayName } = params;
+
     return JSON.stringify({
         protocol: PROTOCOL,
-        type: messageTypes.NOTIFY_PEER_CONNECTION_INFO,
+        type: MessageTypes.CONNECT_TO_USER,
         from: myId,
         payload: {
-            opponentLeaderId,
-            opponentTeammateId,
+            displayName,
         },
     });
 }
 
-function createAckConnectToTeammateMessage(myId) {
-    return JSON.stringify({
-        protocol: PROTOCOL,
-        type: messageTypes.ACK_CONNECT_TO_TEAMMATE,
-        from: myId,
-    });
-}
+function createAckConnectToUserMessage(myId, params) {
+    const { displayName } = params;
 
-function createAckConnectToOpponentLeaderMessage(myId, leaderId, teammateId) {
     return JSON.stringify({
         protocol: PROTOCOL,
-        type: messageTypes.ACK_CONNECT_TO_OPPONENT_LEADER,
+        type: MessageTypes.ACK_CONNECT_TO_USER,
         from: myId,
         payload: {
-            leaderId,
-            teammateId,
+            displayName,
         },
     });
 }
 
-function createAckConnectToOpponentTeammateMessage(myId, leaderId, teammateId) {
+function createRequestConnectionInfoMessage(myId) {
     return JSON.stringify({
         protocol: PROTOCOL,
-        type: messageTypes.ACK_CONNECT_TO_OPPONENT_TEAMMATE,
+        type: MessageTypes.REQUEST_CONNECTION_INFO,
+        from: myId,
+        payload: {},
+    });
+}
+
+function createResponseConnectionInfoMessage(myId, params) {
+    const { teamInfo } = params; // [Team1, Team2]
+    const [ team1, team2 ] = teamInfo;
+
+    return JSON.stringify({
+        protocol: PROTOCOL,
+        type: MessageTypes.RESPONSE_CONNECTION_INFO,
         from: myId,
         payload: {
-            leaderId,
-            teammateId,
+            team1,
+            team2,
         },
     });
 }
 
-function createPeerConnectionInfoMessage(myId, leaderId, teammateId, opponentLeaderId, opponentTeammateId) {
+function createJoinLobbyMessage(myId, params) {
+    const { targetId } = params;
+
     return JSON.stringify({
         protocol: PROTOCOL,
-        type: messageTypes.PEER_CONNECTION_INFO,
+        type: MessageTypes.JOIN_LOBBY,
         from: myId,
         payload: {
-            myId,
-            teammateId,
-            opponentLeaderId,
-            opponentTeammateId,
+            targetId,
         },
     });
 }
 
-function createConnectToTeammateMessage(myId) {
+function createAckJoinLobbyMessage(myId, params) {
+    const { teamInfo } = params; // [Team1, Team2]
+    const [ team1, team2 ] = teamInfo;
+
     return JSON.stringify({
         protocol: PROTOCOL,
-        type: messageTypes.REQUEST_CONNECT_TO_TEAMMATE,
+        type: MessageTypes.ACK_JOIN_LOBBY,
         from: myId,
         payload: {
-            id: myId,
+            team1,
+            team2,
         },
     });
 }
 
-function createConnectToOpponentLeaderMessage(myId, leaderId, teammateId) {
+function createAssignTeamMessage(myId, params) {
+    const { targetUserId } = params;
+
     return JSON.stringify({
         protocol: PROTOCOL,
-        type: messageTypes.REQUEST_CONNECT_TO_OPPONENT_LEADER,
+        type: MessageTypes.ASSIGN_TEAM,
         from: myId,
         payload: {
-            id: myId,
-            leaderId: leaderId,
-            teammateId: teammateId,
+            targetUserId,
         },
     });
 }
 
-function createConnectToOpponentTeammateMessage(myId, leaderId, teammateId, { referrer = '' }) {
+function createAckAssignTeamMessage(myId) {
     return JSON.stringify({
         protocol: PROTOCOL,
-        type: messageTypes.REQUEST_CONNECT_TO_OPPONENT_TEAMMATE,
+        type: MessageTypes.ACK_ASSIGN_TEAM,
+        from: myId,
+        payload: {},
+    });
+}
+
+function createChooseTeamMessage(myId, params) {
+    const { targetTeamId } = params;
+
+    return JSON.stringify({
+        protocol: PROTOCOL,
+        type: MessageTypes.CHOOSE_TEAM,
         from: myId,
         payload: {
-            leaderId,
-            teammateId,
+            targetTeamId,
         },
-        referrer,
+    });
+}
+
+function createAckChooseTeamMessage(myId, params) {
+    const { targetUserId, targetTeamId } = params;
+
+    return JSON.stringify({
+        protocol: PROTOCOL,
+        type: MessageTypes.ACK_CHOOSE_TEAM,
+        from: myId,
+        payload: {
+            targetUserId,
+            targetTeamId,
+        },
+    });
+}
+
+function createReadyMessage(myId) {
+    return JSON.stringify({
+        protocol: PROTOCOL,
+        type: MessageTypes.READY,
+        from: myId,
+        payload: {},
+    });
+}
+
+function createAckReadyMessage(myId, params) {
+    const { targetUserId, targetTeamId } = params;
+
+    return JSON.stringify({
+        protocol: PROTOCOL,
+        type: MessageTypes.ACK_READY,
+        from: myId,
+        payload: {
+            targetUserId,
+            targetTeamId,
+        },
+    });
+}
+
+function createInitGameMessage(myId, params) {
+    const { teamInfo } = params; // [Team1, Team2]
+    const [ team1, team2 ] = teamInfo;
+
+    return JSON.stringify({
+        protocol: PROTOCOL,
+        type: MessageTypes.INIT_GAME,
+        from: myId,
+        payload: {
+            team1,
+            team2,
+        },
+    });
+}
+
+function createAckInitGameMessage(myId) {
+    return JSON.stringify({
+        protocol: PROTOCOL,
+        type: MessageTypes.ACK_INIT_GAME,
+        from: myId,
+        payload: {},
+    });
+}
+
+function createPingMessage(myId) {
+    return JSON.stringify({
+        protocol: PROTOCOL,
+        type: MessageTypes.PING,
+        from: myId,
+        payload: {},
+    });
+}
+
+function createPongMessage(myId) {
+    return JSON.stringify({
+        protocol: PROTOCOL,
+        type: MessageTypes.PONG,
+        from: myId,
+        payload: {},
     });
 }
 
 export {
     PROTOCOL,
-    messageTypes,
+    MessageTypes,
 
-    createPeerConnectionInfoMessage,
-    createNotifyPeerConnectionInfoMessage,
+    createConnectToUserMessage,
+    createAckConnectToUserMessage,
+    createRequestConnectionInfoMessage,
+    createResponseConnectionInfoMessage,
+    createJoinLobbyMessage,
+    createAckJoinLobbyMessage,
 
-    createConnectToTeammateMessage,
-    createConnectToOpponentLeaderMessage,
-    createConnectToOpponentTeammateMessage,
+    createAssignTeamMessage,
+    createAckAssignTeamMessage,
+    createChooseTeamMessage,
+    createAckChooseTeamMessage,
 
-    createAckConnectToTeammateMessage,
-    createAckConnectToOpponentLeaderMessage,
-    createAckConnectToOpponentTeammateMessage,
+    createReadyMessage,
+    createAckReadyMessage,
+    createInitGameMessage,
+    createAckInitGameMessage,
+
+    createPingMessage,
+    createPongMessage,
 };

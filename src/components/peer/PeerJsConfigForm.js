@@ -5,13 +5,7 @@ import styles from './index.less';
 
 class PeerJsConfigForm extends React.PureComponent {
     static propTypes = {
-        shouldLockConfig: PropTypes.bool.isRequired,
-
         onSubmit: PropTypes.func.isRequired,
-    }
-
-    static defaultProps = {
-        shouldLockConfig: false,
     }
 
     constructor(props) {
@@ -55,7 +49,6 @@ class PeerJsConfigForm extends React.PureComponent {
     }
 
     render() {
-        const { shouldLockConfig } = this.props;
         const {
             host,
             port,
@@ -73,7 +66,6 @@ class PeerJsConfigForm extends React.PureComponent {
                         type="text"
                         onChange={this._handleConfigChange}
                         value={host}
-                        disabled={shouldLockConfig}
                     />
                 </div>
                 <div>
@@ -83,7 +75,6 @@ class PeerJsConfigForm extends React.PureComponent {
                         type="text"
                         onChange={this._handleConfigChange}
                         value={port}
-                        disabled={shouldLockConfig}
                     />
                 </div>
                 <div>
@@ -93,7 +84,6 @@ class PeerJsConfigForm extends React.PureComponent {
                         type="text"
                         onChange={this._handleConfigChange}
                         value={path}
-                        disabled={shouldLockConfig}
                     />
                 </div>
                 <div>
@@ -103,10 +93,9 @@ class PeerJsConfigForm extends React.PureComponent {
                         type="text"
                         onChange={this._handleConfigChange}
                         value={debug}
-                        disabled={shouldLockConfig}
                     />
                 </div>
-                <input type="submit" value="Use config" disabled={shouldLockConfig}/>
+                <input type="submit" value="Use config"/>
             </form>
         );
     }
