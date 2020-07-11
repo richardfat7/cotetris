@@ -87,5 +87,8 @@
     "redux": "^3.5.2",
     "redux-immutable": "^3.0.8",
     "regenerator-runtime": "^0.13.5"
+  },
+  "resolutions": {
+    "websocket-extensions": "=0.1.4"
   }
 }
