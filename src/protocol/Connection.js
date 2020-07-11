@@ -1,4 +1,8 @@
-// TODO: verification message, chain of trust
+// TODO: Connection Protocol doesn't support message hopping :)
+// TODO: Verification of message? chain of trust
+// TODO: Message Session for paired messages?
+import { nanoid } from 'nanoid';
+
 const PROTOCOL = 'CONNECTION';
 /**
  * Character: Host, Player
@@ -10,10 +14,11 @@ const PROTOCOL = 'CONNECTION';
  */
 
 const MessageTypes = {
-    // Connection
+    // Connection -- inter-player
     CONNECT_TO_USER: 'CONNECT_TO_USER',
     ACK_CONNECT_TO_USER: 'ACK_CONNECT_TO_USER',
 
+    // Lobby Management
     REQUEST_CONNECTION_INFO: 'REQUEST_CONNECTION_INFO', // Player -> Host
     RESPONSE_CONNECTION_INFO: 'RESPONSE_CONNECTION_INFO', // Host -> Player
 
@@ -38,12 +43,20 @@ const MessageTypes = {
     PONG: 'PONG',
 };
 
+function createCommonProperties() {
+    return {
+        protocol: PROTOCOL,
+        uniqueId: nanoid(),
+        timestamp: Date.now(),
+    };
+}
+
 // Team messages
 function createConnectToUserMessage(myId, params) {
     const { displayName } = params;
 
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.CONNECT_TO_USER,
         from: myId,
         payload: {
@@ -56,7 +69,7 @@ function createAckConnectToUserMessage(myId, params) {
     const { displayName } = params;
 
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.ACK_CONNECT_TO_USER,
         from: myId,
         payload: {
@@ -67,7 +80,7 @@ function createAckConnectToUserMessage(myId, params) {
 
 function createRequestConnectionInfoMessage(myId) {
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.REQUEST_CONNECTION_INFO,
         from: myId,
         payload: {},
@@ -75,44 +88,38 @@ function createRequestConnectionInfoMessage(myId) {
 }
 
 function createResponseConnectionInfoMessage(myId, params) {
-    const { teamInfo } = params; // [Team1, Team2]
-    const [ team1, team2 ] = teamInfo;
+    const { teamInfo, lobbyMembers } = params;
 
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.RESPONSE_CONNECTION_INFO,
         from: myId,
         payload: {
-            team1,
-            team2,
+            teamInfo,
+            lobbyMembers,
         },
     });
 }
 
-function createJoinLobbyMessage(myId, params) {
-    const { targetId } = params;
-
+function createJoinLobbyMessage(myId) {
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.JOIN_LOBBY,
         from: myId,
-        payload: {
-            targetId,
-        },
+        payload: {},
     });
 }
 
 function createAckJoinLobbyMessage(myId, params) {
-    const { teamInfo } = params; // [Team1, Team2]
-    const [ team1, team2 ] = teamInfo;
+    const { teamInfo, lobbyMembers } = params; // [Team1, Team2]
 
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.ACK_JOIN_LOBBY,
         from: myId,
         payload: {
-            team1,
-            team2,
+            teamInfo,
+            lobbyMembers,
         },
     });
 }
@@ -121,7 +128,7 @@ function createAssignTeamMessage(myId, params) {
     const { targetUserId } = params;
 
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.ASSIGN_TEAM,
         from: myId,
         payload: {
@@ -132,7 +139,7 @@ function createAssignTeamMessage(myId, params) {
 
 function createAckAssignTeamMessage(myId) {
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.ACK_ASSIGN_TEAM,
         from: myId,
         payload: {},
@@ -143,7 +150,7 @@ function createChooseTeamMessage(myId, params) {
     const { targetTeamId } = params;
 
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.CHOOSE_TEAM,
         from: myId,
         payload: {
@@ -156,7 +163,7 @@ function createAckChooseTeamMessage(myId, params) {
     const { targetUserId, targetTeamId } = params;
 
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.ACK_CHOOSE_TEAM,
         from: myId,
         payload: {
@@ -168,7 +175,7 @@ function createAckChooseTeamMessage(myId, params) {
 
 function createReadyMessage(myId) {
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.READY,
         from: myId,
         payload: {},
@@ -179,7 +186,7 @@ function createAckReadyMessage(myId, params) {
     const { targetUserId, targetTeamId } = params;
 
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.ACK_READY,
         from: myId,
         payload: {
@@ -194,7 +201,7 @@ function createInitGameMessage(myId, params) {
     const [ team1, team2 ] = teamInfo;
 
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.INIT_GAME,
         from: myId,
         payload: {
@@ -206,7 +213,7 @@ function createInitGameMessage(myId, params) {
 
 function createAckInitGameMessage(myId) {
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.ACK_INIT_GAME,
         from: myId,
         payload: {},
@@ -215,7 +222,7 @@ function createAckInitGameMessage(myId) {
 
 function createPingMessage(myId) {
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.PING,
         from: myId,
         payload: {},
@@ -224,7 +231,7 @@ function createPingMessage(myId) {
 
 function createPongMessage(myId) {
     return JSON.stringify({
-        protocol: PROTOCOL,
+        ...createCommonProperties(),
         type: MessageTypes.PONG,
         from: myId,
         payload: {},

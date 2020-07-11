@@ -4,25 +4,24 @@ import Peer from './Peer';
 import actions from '../../actions';
 
 const mapStateToProps = (state) => {
-    const { peerConnection } = state;
-
-    return {
-        peerConnection,
-    };
+    return {};
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    onRegister: (member, lobbyId, isHosting) => {
-        dispatch(actions.peerOnRegister(member, lobbyId, isHosting));
+    onRegister: (member, lobbyId, isHosting, connectionConfig) => {
+        dispatch(actions.peerOnRegister(member, lobbyId, isHosting, connectionConfig));
     },
     onSaveTeamInfo: (teamInfo) => {
         dispatch(actions.peerSaveTeamInfo(teamInfo));
     },
-    onSaveConnectionConfig: (connectionConfig) => {
-        dispatch(actions.peerSaveConnectionConfig(connectionConfig));
-    },
     onSaveConnectionLookup: (connectionLookup) => {
         dispatch(actions.peerSaveConnectionLookup(connectionLookup));
+    },
+    onAddMember: (member) => {
+        dispatch(actions.addLobbyMember(member));
+    },
+    onRemoveMember: (memberId) => {
+        dispatch(actions.removeLobbyMember(memberId));
     },
 });
 
@@ -31,9 +30,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
     ...dispatchProps,
     ...ownProps,
     showReduxConnectionInfo: () => {
-        console.log('stateProps.peerConnection', stateProps.peerConnection);
-        console.log('dispatchProps.peerConnection', dispatchProps.peerConnection);
-        console.log('ownProps.peerConnection', ownProps.peerConnection);
+        console.log('stateProps', stateProps);
+        console.log('dispatchProps', dispatchProps);
+        console.log('ownProps', ownProps);
     },
 });
 

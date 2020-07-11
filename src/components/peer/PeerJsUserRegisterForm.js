@@ -64,7 +64,7 @@ class PeerJsUserRegisterForm extends React.PureComponent {
                 <br />
                 Display name: <input name="displayName" placeholder="display name" onChange={this._handleInputChange}/>
                 <br />
-                <input type="submit" value="Register" />
+                <input type="submit" value={isHosting ? 'Host' : 'Join'} />
             </form>
         );
     }

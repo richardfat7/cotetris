@@ -232,13 +232,14 @@ function resetLockDelay() {
 }
 
 // PeerJs
-function peerOnRegister(member, lobbyId, isHosting) {
+function peerOnRegister(member, lobbyId, isHosting, connectionConfig) {
     return {
         type: reducerType.PEER_REGISTER,
         payload: {
             member,
             lobbyId,
             isHosting,
+            connectionConfig,
         },
     };
 }
@@ -252,20 +253,29 @@ function peerSaveTeamInfo(teamInfo) {
     };
 }
 
-function peerSaveConnectionConfig(connectionConfig) {
-    return {
-        type: reducerType.PEER_SAVE_CONNECTION_CONFIG,
-        payload: {
-            connectionConfig,
-        },
-    };
-}
-
 function peerSaveConnectionLookup(connectionLookup) {
     return {
         type: reducerType.PEER_SAVE_CONNECTION_LOOKUP,
         payload: {
             connectionLookup,
+        },
+    };
+}
+
+function addLobbyMember(member) {
+    return {
+        type: reducerType.ADD_LOBBY_MEMBER,
+        payload: {
+            member,
+        },
+    };
+}
+
+function removeLobbyMember(memberId) {
+    return {
+        type: reducerType.REMOVE_LOBBY_MEMBER,
+        payload: {
+            memberId,
         },
     };
 }
@@ -307,6 +317,8 @@ export default {
 
     peerOnRegister,
     peerSaveTeamInfo,
-    peerSaveConnectionConfig,
     peerSaveConnectionLookup,
+
+    addLobbyMember,
+    removeLobbyMember,
 };

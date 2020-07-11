@@ -1,3 +1,4 @@
+import * as R from 'ramda';
 import * as reducerType from '../../unit/reducerType';
 
 /**
@@ -13,14 +14,15 @@ import * as reducerType from '../../unit/reducerType';
  */
 
 const initState = {
-    myMember: '',
-    lobbyId: '',
-    isHosting: false,
+    // myMember: '',
+    // lobbyId: '',
+    // isHosting: false,
 
-    connectionLookup: {},
-    connectionConfig: {},
+    // connectionLookup: {},
+    // connectionConfig: {},
+    // lobbyMembers: [],
 
-    teamInfo: [],
+    // teamInfo: [],
 };
 const peerConnection = (state = initState, action) => {
     switch (action.type) {
@@ -30,6 +32,7 @@ const peerConnection = (state = initState, action) => {
                 myMember: action.payload.member,
                 lobbyId: action.payload.lobbyId,
                 isHosting: action.payload.isHosting,
+                connectionConfig: action.payload.connectionConfig,
             };
         }
 
@@ -40,17 +43,40 @@ const peerConnection = (state = initState, action) => {
             };
         }
 
-        case reducerType.PEER_SAVE_CONNECTION_CONFIG: {
-            return {
-                ...state,
-                connectionConfig: action.payload.connectionConfig,
-            };
-        }
-
         case reducerType.PEER_SAVE_CONNECTION_LOOKUP: {
             return {
                 ...state,
                 connectionLookup: action.payload.connectionLookup,
+            };
+        }
+
+        // allow to update by same id
+        case reducerType.ADD_LOBBY_MEMBER: {
+            const member = action.payload.member;
+            const targetMemberId = member.id;
+            const isTargetMember = R.propEq('id', targetMemberId);
+            const memberIndex = R.findIndex(isTargetMember, state.lobbyMembers);
+            let newMember;
+
+            if (memberIndex === -1) {
+                newMember = R.append(member, state.lobbyMembers);
+            } else {
+                newMember = R.update(memberIndex, member, state.lobbyMembers);
+            }
+
+            return {
+                lobbyMembers: newMember,
+                ...state,
+            };
+        }
+
+        case reducerType.REMOVE_LOBBY_MEMBER: {
+            const memberIdToRemove = action.payload.memberId;
+            const isTargetMember = R.propEq('id', memberIdToRemove);
+
+            return {
+                member: R.reject(isTargetMember, state.member),
+                ...state,
             };
         }
 
