@@ -18,6 +18,9 @@ const MessageTypes = {
     CONNECT_TO_USER: 'CONNECT_TO_USER',
     ACK_CONNECT_TO_USER: 'ACK_CONNECT_TO_USER',
 
+    SYNC_USER_LOOKUP: 'SYNC_USER_LOOKUP',
+    ACK_SYNC_USER_LOOKUP: 'ACK_SYNC_USER_LOOKUP',
+
     // Lobby Management
     REQUEST_CONNECTION_INFO: 'REQUEST_CONNECTION_INFO', // Player -> Host
     RESPONSE_CONNECTION_INFO: 'RESPONSE_CONNECTION_INFO', // Host -> Player
@@ -26,6 +29,9 @@ const MessageTypes = {
     ACK_JOIN_LOBBY: 'ACK_JOIN_LOBBY',
 
     // Team management
+    SYNC_TEAM_LOOKUP: 'SYNC_TEAM_LOOKUP', // Host -> Player
+    ACK_SYNC_TEAM_LOOKUP: 'ACK_SYNC_TEAM_LOOKUP',
+
     ASSIGN_TEAM: 'ASSIGN_TEAM', // Host -> Player
     ACK_ASSIGN_TEAM: 'ACK_ASSIGN_TEAM',
 
@@ -87,16 +93,39 @@ function createRequestConnectionInfoMessage(myId) {
     });
 }
 
+function createSyncUserLookupMessage(myId, params) {
+    const { userLookup } = params;
+
+    return JSON.stringify({
+        ...createCommonProperties(),
+        type: MessageTypes.SYNC_USER_LOOKUP,
+        from: myId,
+        payload: {
+            userLookup,
+        },
+    });
+}
+
+function createAckSyncUserLookupMessage(myId) {
+    return JSON.stringify({
+        ...createCommonProperties(),
+        type: MessageTypes.ACK_SYNC_USER_LOOKUP,
+        from: myId,
+        payload: {},
+    });
+}
+
 function createResponseConnectionInfoMessage(myId, params) {
-    const { teamInfo, memberLookup, lobbyMemberIds } = params;
+    const { teamIds, lobbyMemberIds, teamLookup, memberLookup } = params;
 
     return JSON.stringify({
         ...createCommonProperties(),
         type: MessageTypes.RESPONSE_CONNECTION_INFO,
         from: myId,
         payload: {
-            teamInfo,
+            teamLookup,
             memberLookup,
+            teamIds,
             lobbyMemberIds,
         },
     });
@@ -112,16 +141,40 @@ function createJoinLobbyMessage(myId) {
 }
 
 function createAckJoinLobbyMessage(myId, params) {
-    const { teamInfo, lobbyMemberIds } = params; // [Team1, Team2]
+    const { teamLookup, memberLookup, teamIds, lobbyMemberIds } = params; // [Team1, Team2]
 
     return JSON.stringify({
         ...createCommonProperties(),
         type: MessageTypes.ACK_JOIN_LOBBY,
         from: myId,
         payload: {
-            teamInfo,
+            teamLookup,
+            memberLookup,
+            teamIds,
             lobbyMemberIds,
         },
+    });
+}
+
+function createSyncTeamLookupMessage(myId, params) {
+    const { teamLookup } = params;
+
+    return JSON.stringify({
+        ...createCommonProperties(),
+        type: MessageTypes.SYNC_TEAM_LOOKUP,
+        from: myId,
+        payload: {
+            teamLookup,
+        },
+    });
+}
+
+function createAckSyncTeamLookupMessage(myId) {
+    return JSON.stringify({
+        ...createCommonProperties(),
+        type: MessageTypes.ACK_SYNC_TEAM_LOOKUP,
+        from: myId,
+        payload: {},
     });
 }
 
@@ -184,16 +237,14 @@ function createToggleReadyMessage(myId) {
 }
 
 function createInitGameMessage(myId, params) {
-    const { teamInfo } = params; // [Team1, Team2]
-    const [ team1, team2 ] = teamInfo;
+    const { teamIds } = params; // [Team1, Team2]
 
     return JSON.stringify({
         ...createCommonProperties(),
         type: MessageTypes.INIT_GAME,
         from: myId,
         payload: {
-            team1,
-            team2,
+            teamIds,
         },
     });
 }
@@ -231,11 +282,16 @@ export {
 
     createConnectToUserMessage,
     createAckConnectToUserMessage,
+    createSyncUserLookupMessage,
+    createAckSyncUserLookupMessage,
+
     createRequestConnectionInfoMessage,
     createResponseConnectionInfoMessage,
     createJoinLobbyMessage,
     createAckJoinLobbyMessage,
 
+    createSyncTeamLookupMessage,
+    createAckSyncTeamLookupMessage,
     createAssignTeamMessage,
     createAckAssignTeamMessage,
     createChooseTeamMessage,

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 /**
  * @typedef {object} Team
  * @property {string} id                only team1 and 2 for now
@@ -16,4 +17,10 @@ export default class Team {
         this.teamColor = teamColor;
         this.memberIds = memberIds;
     }
+
+    static PropType = PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        memberIds: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+        teamColor: PropTypes.string.isRequired,
+    });
 }

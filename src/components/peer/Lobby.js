@@ -2,22 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
 import Member from '../../model/Member';
+import Team from '../../model/Team';
 
 import styles from './index.less';
 
 class Lobby extends React.PureComponent {
     static propTypes = {
-        teamInfoList: PropTypes.arrayOf(PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            memberIds: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
-            teamColor: PropTypes.string.isRequired,
-        })),
-        lobbyMemberIds: PropTypes.arrayOf(PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            displayName: PropTypes.string.isRequired,
-            isReady: PropTypes.bool.isRequired,
-        })),
-        memberLookup: PropTypes.objectOf(PropTypes.shape(Member.PropType)),
+        teamIds: PropTypes.arrayOf(PropTypes.string),
+        lobbyMemberIds: PropTypes.arrayOf(PropTypes.string),
+        teamLookup: PropTypes.objectOf(Team.PropType),
+        memberLookup: PropTypes.objectOf(Member.PropType),
 
         myId: PropTypes.string.isRequired,
         maxMember: PropTypes.number.isRequired,
@@ -51,8 +45,9 @@ class Lobby extends React.PureComponent {
         );
     }
 
-    _renderRow = (member, additionalRowStyle) => {
-        const { teamInfoList, myId } = this.props;
+    _renderRow = (member) => {
+        const { teamIds, teamLookup, myId } = this.props;
+        const teamInfoList = teamIds.map((id) => (teamLookup[id]));
 
         console.log('teamInfoList', teamInfoList);
         console.log('member.id', member.id);
@@ -108,7 +103,6 @@ class Lobby extends React.PureComponent {
     render() {
         const { lobbyMemberIds, memberLookup } = this.props;
         const lobbyMembers = lobbyMemberIds.map((id) => (memberLookup[id]));
-
         const lobbyRows = this._fillMembers(lobbyMembers).map(this._renderRow);
 
         return (

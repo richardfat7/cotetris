@@ -49,20 +49,6 @@ const initConnection = async (connection, callbacks = {}) => {
     return connection;
 };
 
-// const retryAfterIf = (intervalTime, getShouldRetry, callback) => {
-//     const shouldRetry = getShouldRetry();
-
-//     if (shouldRetry) {
-//         setTimeout(() => {
-//             getShouldRetry() && callback() || retryAfterIf(intervalTime, getShouldRetry, callback);
-//         }, intervalTime);
-//     } else {
-//         callback();
-//     }
-// };
-
-// TODO: utils: block message send/ receive until received?
-
 export {
     initPeerJsClient,
     initConnection,

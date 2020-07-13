@@ -18,9 +18,9 @@ export default class Member {
     }
 
     static PropType = PropTypes.shape({
-        id: PropTypes.string,
-        displayName: PropTypes.string,
-        isReady: PropTypes.bool,
+        id: PropTypes.string.isRequired,
+        displayName: PropTypes.string.isRequired,
+        isReady: PropTypes.bool.isRequired,
     });
 
     static fromObj(memberObj) {
