@@ -17,7 +17,10 @@ class Lobby extends React.PureComponent {
             isReady: PropTypes.bool.isRequired,
         })),
 
+        myId: PropTypes.string.isRequired,
         maxMember: PropTypes.number.isRequired,
+
+        onReadyButtonClick: PropTypes.func.isRequired,
     }
 
     static defaultProps = {
@@ -30,8 +33,24 @@ class Lobby extends React.PureComponent {
         this.state = {};
     }
 
+    _handleReadyButtonClick = (event) => {
+        this.props.onReadyButtonClick(event);
+    }
+
+    _renderEmptyRow = (member) => {
+        const rowStyle = { backgroundColor: '#eeeeee', justifyContent: 'center' };
+
+        return (
+            <div className={styles.lobbyRow} style={rowStyle}>
+                <div>
+                    { member.displayName }
+                </div>
+            </div>
+        );
+    }
+
     _renderRow = (member, additionalRowStyle) => {
-        const { teamInfoList } = this.props;
+        const { teamInfoList, myId } = this.props;
 
         console.log('teamInfoList', teamInfoList);
         console.log('member.id', member.id);
@@ -42,17 +61,31 @@ class Lobby extends React.PureComponent {
         let rowStyle = { backgroundColor };
 
         if (member.isPlaceholder) {
-            rowStyle.justifyContent = 'center';
+            return this._renderEmptyRow(member);
         }
 
         return (
             <div className={styles.lobbyRow} style={rowStyle}>
-                <div>
+                <div className={styles.nameCol}>
                     { member.displayName }
                 </div>
-                <div>
-                    { member.isReady ? 'Ready' : '' }
+                <div className={styles.readyCol}>
+                    { member.isReady ? 'Ready' : 'Not Ready' }
                 </div>
+                {
+                    myId === member.id ? (
+                        <div className={styles.readyButtonCol}>
+                            <button
+                                className={styles.readyButton}
+                                onClick={this._handleReadyButtonClick}
+                            >
+                                Ready
+                            </button>
+                        </div>
+                    ) : (
+                        <div className={styles.readyButtonCol} />
+                    )
+                }
             </div>
         );
     }

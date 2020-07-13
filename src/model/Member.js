@@ -15,4 +15,8 @@ export default class Member {
         this.displayName = displayName;
         this.isReady = isReady;
     }
+
+    static fromObj(memberObj) {
+        return new Member(memberObj.id, memberObj.displayName, memberObj.isReady);
+    }
 }

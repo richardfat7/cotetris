@@ -33,8 +33,8 @@ const MessageTypes = {
     ACK_CHOOSE_TEAM: 'ACK_CHOOSE_TEAM',
 
     // Game
-    READY: 'READY',
-    ACK_READY: 'ACK_READY',
+    TOGGLE_READY: 'TOGGLE_READY',
+    ACK_TOGGLE_READY: 'ACK_TOGGLE_READY',
     INIT_GAME: 'INIT_GAME', // Broadcast
     ACK_INIT_GAME: 'ACK_INIT_GAME',
 
@@ -88,7 +88,7 @@ function createRequestConnectionInfoMessage(myId) {
 }
 
 function createResponseConnectionInfoMessage(myId, params) {
-    const { teamInfo, lobbyMembers } = params;
+    const { teamInfo, memberLookup, lobbyMemberIds } = params;
 
     return JSON.stringify({
         ...createCommonProperties(),
@@ -96,7 +96,8 @@ function createResponseConnectionInfoMessage(myId, params) {
         from: myId,
         payload: {
             teamInfo,
-            lobbyMembers,
+            memberLookup,
+            lobbyMemberIds,
         },
     });
 }
@@ -173,21 +174,21 @@ function createAckChooseTeamMessage(myId, params) {
     });
 }
 
-function createReadyMessage(myId) {
+function createToggleReadyMessage(myId) {
     return JSON.stringify({
         ...createCommonProperties(),
-        type: MessageTypes.READY,
+        type: MessageTypes.TOGGLE_READY,
         from: myId,
         payload: {},
     });
 }
 
-function createAckReadyMessage(myId, params) {
+function createAckToggleReadyMessage(myId, params) {
     const { targetUserId, targetTeamId } = params;
 
     return JSON.stringify({
         ...createCommonProperties(),
-        type: MessageTypes.ACK_READY,
+        type: MessageTypes.ACK_TOGGLE_READY,
         from: myId,
         payload: {
             targetUserId,
@@ -254,8 +255,8 @@ export {
     createChooseTeamMessage,
     createAckChooseTeamMessage,
 
-    createReadyMessage,
-    createAckReadyMessage,
+    createToggleReadyMessage,
+    createAckToggleReadyMessage,
     createInitGameMessage,
     createAckInitGameMessage,
 

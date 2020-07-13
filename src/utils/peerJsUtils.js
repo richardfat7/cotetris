@@ -46,7 +46,7 @@ const initConnection = async (connection, callbacks = {}) => {
         callbacks.onError && callbacks.onError(err, connection);
     });
 
-    return;
+    return connection;
 };
 
 // const retryAfterIf = (intervalTime, getShouldRetry, callback) => {
