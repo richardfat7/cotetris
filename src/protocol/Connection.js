@@ -34,8 +34,8 @@ const MessageTypes = {
 
     // Game
     TOGGLE_READY: 'TOGGLE_READY',
-    ACK_TOGGLE_READY: 'ACK_TOGGLE_READY',
-    INIT_GAME: 'INIT_GAME', // Broadcast
+    // Toggle ready -> broadcast RESPONSE_CONNECTION_INFO
+    INIT_GAME: 'INIT_GAME',
     ACK_INIT_GAME: 'ACK_INIT_GAME',
 
     // Utils
@@ -112,7 +112,7 @@ function createJoinLobbyMessage(myId) {
 }
 
 function createAckJoinLobbyMessage(myId, params) {
-    const { teamInfo, lobbyMembers } = params; // [Team1, Team2]
+    const { teamInfo, lobbyMemberIds } = params; // [Team1, Team2]
 
     return JSON.stringify({
         ...createCommonProperties(),
@@ -120,7 +120,7 @@ function createAckJoinLobbyMessage(myId, params) {
         from: myId,
         payload: {
             teamInfo,
-            lobbyMembers,
+            lobbyMemberIds,
         },
     });
 }
@@ -183,20 +183,6 @@ function createToggleReadyMessage(myId) {
     });
 }
 
-function createAckToggleReadyMessage(myId, params) {
-    const { targetUserId, targetTeamId } = params;
-
-    return JSON.stringify({
-        ...createCommonProperties(),
-        type: MessageTypes.ACK_TOGGLE_READY,
-        from: myId,
-        payload: {
-            targetUserId,
-            targetTeamId,
-        },
-    });
-}
-
 function createInitGameMessage(myId, params) {
     const { teamInfo } = params; // [Team1, Team2]
     const [ team1, team2 ] = teamInfo;
@@ -256,7 +242,6 @@ export {
     createAckChooseTeamMessage,
 
     createToggleReadyMessage,
-    createAckToggleReadyMessage,
     createInitGameMessage,
     createAckInitGameMessage,
 

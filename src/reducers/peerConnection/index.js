@@ -29,7 +29,7 @@ const peerConnection = (state = initState, action) => {
         case reducerType.PEER_REGISTER:{
             return {
                 ...state,
-                myMember: action.payload.member,
+                memberIds: action.payload.memberIds,
                 lobbyId: action.payload.lobbyId,
                 isHosting: action.payload.isHosting,
                 connectionConfig: action.payload.connectionConfig,

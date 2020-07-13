@@ -8,8 +8,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    onRegister: (member, lobbyId, isHosting, connectionConfig) => {
-        dispatch(actions.peerOnRegister(member, lobbyId, isHosting, connectionConfig));
+    onRegister: (memberIds, lobbyId, isHosting, connectionConfig) => {
+        dispatch(actions.peerOnRegister(memberIds, lobbyId, isHosting, connectionConfig));
     },
     onSaveTeamInfo: (teamInfo) => {
         dispatch(actions.peerSaveTeamInfo(teamInfo));

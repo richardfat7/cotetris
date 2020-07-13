@@ -232,11 +232,11 @@ function resetLockDelay() {
 }
 
 // PeerJs
-function peerOnRegister(member, lobbyId, isHosting, connectionConfig) {
+function peerOnRegister(memberIds, lobbyId, isHosting, connectionConfig) {
     return {
         type: reducerType.PEER_REGISTER,
         payload: {
-            member,
+            memberIds,
             lobbyId,
             isHosting,
             connectionConfig,

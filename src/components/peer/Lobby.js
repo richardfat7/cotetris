@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as R from 'ramda';
+import Member from '../../model/Member';
 
 import styles from './index.less';
 
@@ -11,11 +12,12 @@ class Lobby extends React.PureComponent {
             memberIds: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
             teamColor: PropTypes.string.isRequired,
         })),
-        lobbyMembers: PropTypes.arrayOf(PropTypes.shape({
+        lobbyMemberIds: PropTypes.arrayOf(PropTypes.shape({
             id: PropTypes.string.isRequired,
             displayName: PropTypes.string.isRequired,
             isReady: PropTypes.bool.isRequired,
         })),
+        memberLookup: PropTypes.objectOf(PropTypes.shape(Member.PropType)),
 
         myId: PropTypes.string.isRequired,
         maxMember: PropTypes.number.isRequired,
@@ -104,7 +106,8 @@ class Lobby extends React.PureComponent {
     }
 
     render() {
-        const { lobbyMembers } = this.props;
+        const { lobbyMemberIds, memberLookup } = this.props;
+        const lobbyMembers = lobbyMemberIds.map((id) => (memberLookup[id]));
 
         const lobbyRows = this._fillMembers(lobbyMembers).map(this._renderRow);
 

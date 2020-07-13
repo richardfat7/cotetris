@@ -49,8 +49,9 @@ class PeerJsUserRegisterForm extends React.PureComponent {
     }
 
     render() {
-        const { option } = this.state;
+        const { option, displayName, lobbyId } = this.state;
         const isHosting = (option === ConnectionOption.HOST_LOBBY);
+        const isAllFilled = displayName && lobbyId;
 
         const lobbyIdPlaceholder = isHosting ? 'new lobby id' : 'target lobby id';
 
@@ -64,7 +65,7 @@ class PeerJsUserRegisterForm extends React.PureComponent {
                 <br />
                 Display name: <input name="displayName" placeholder="display name" onChange={this._handleInputChange}/>
                 <br />
-                <input type="submit" value={isHosting ? 'Host' : 'Join'} />
+                <input type="submit" disabled={!isAllFilled} value={isHosting ? 'Host' : 'Join'} />
             </form>
         );
     }
