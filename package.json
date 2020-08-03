@@ -89,6 +89,7 @@
     "regenerator-runtime": "^0.13.5"
   },
   "resolutions": {
-    "websocket-extensions": "=0.1.4"
+    "websocket-extensions": "=0.1.4",
+    "elliptic": "=6.5.3"
   }
 }
