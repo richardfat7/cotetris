@@ -17,7 +17,8 @@ module.exports = {
     plugins: config.devPlugins,
     devServer: config.devServer,
     optimization: {
-        minimize: false, // true for prod
+        minimize: true, // true for prod
     },
+    mode: 'development',
     // postcss: config.postcss,
 };

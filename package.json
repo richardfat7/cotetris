@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "使用React、Redux、Immutable编写「俄罗斯方块」。Use Tetact, Redux, Immutable to coding \"Tetris\".",
   "scripts": {
-    "watch": "webpack --watch",
+    "watch": "node scripts/watch.js",
     "dev": "webpack-dev-server",
     "build": "rm -rf ./docs/* && webpack --config ./webpack.production.config.js --progress && ls ./docs",
     "runPeer": "peerjs --port 9000 --key peerjs --path /cotetris"

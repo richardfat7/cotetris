@@ -1,12 +1,13 @@
-let path = require('path');
-let webpack = require('webpack');
-let HtmlWebpackPlugin = require('html-webpack-plugin');
-let MiniCssExtractPlugin = require('mini-css-extract-plugin');
-let precss = require('precss');
-let autoprefixer = require('autoprefixer');
-let CopyWebpackPlugin = require('copy-webpack-plugin');
-let version = require('./package.json').version;
-
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// == Legacy shit, investigate later ==
+// let precss = require('precss');
+// let autoprefixer = require('autoprefixer');
+// == Legacy shit, investigate later ==
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const version = require('./package.json').version;
 
 // 程序入口
 let entry =  {
@@ -139,6 +140,9 @@ let devServer = {
     contentBase: path.join(__dirname, 'server'),
     publicPath: path.join(__dirname, 'server'),
     filename: '[name].js',
+    watchOptions: {
+        poll: 1000,
+    },
     // colors: true,
     // historyApiFallback: true,
     port: 8080, // defaults to "8080"

@@ -13,5 +13,6 @@ module.exports = {
         rules: config.rules,
     },
     plugins: config.productionPlugins,
+    mode: 'production',
     // postcss: config.postcss,
 };
